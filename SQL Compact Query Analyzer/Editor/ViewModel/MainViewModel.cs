@@ -142,7 +142,7 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
                     return ResultSet = dataTable;
                 }
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return null;
             }
