@@ -1,0 +1,82 @@
+﻿<Window x:Class="ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:avalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit"
+        xmlns:wf="clr-namespace:System.Windows.Forms;assembly=System.Windows.Forms"
+        DataContext="{StaticResource MainViewModel}"
+        Title="{Binding Text, FallbackValue='SQL Compact Query Analyzer'}"
+        Loaded="Window_Loaded"
+        KeyUp="Window_KeyUp"
+        Height="600"
+        Width="800">
+    <Grid>
+        <DockPanel>
+            <Menu Width="Auto"
+                  Height="20"
+                  IsMainMenu="True"
+                  DockPanel.Dock="Top">
+                <MenuItem Header="File">
+                    <MenuItem Header="New"
+                              Click="New_Click" />
+                    <MenuItem Header="Open" />
+                    <Separator />
+                    <MenuItem Header="Save" />
+                    <MenuItem Header="Save As" />
+                    <Separator />
+                    <MenuItem Header="Exit" />
+                </MenuItem>
+                <MenuItem Header="Query">
+                    <MenuItem Header="Execute Query"
+                              InputGestureText="F5"
+                              Click="ExecuteQuery_Click" />
+                </MenuItem>
+                <MenuItem Header="Help">
+                    <MenuItem Header="About" />
+                </MenuItem>
+            </Menu>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="240" />
+                    <ColumnDefinition Width="443*" />
+                </Grid.ColumnDefinitions>
+                <GridSplitter />
+                <TreeView Grid.Column="0"
+                          ItemsSource="{Binding Tree}" />
+                <Grid Grid.Column="1">
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+                    <avalonEdit:TextEditor FontFamily="Consolas"
+                                           FontSize="10pt"
+                                           SyntaxHighlighting="{Binding SyntaxHighlighting}"
+                                           ShowLineNumbers="True"
+                                           Document="{Binding Query, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                    <TabControl Grid.Row="1">
+                        <TabItem Header="Results">
+                            <WindowsFormsHost>
+                                <wf:DataGridView x:Name="dataGrid"
+                                                 ReadOnly="True"
+                                                 DataSourceChanged="dataGrid_DataSourceChanged"
+                                                 AutoSizeRowsMode="AllCells"
+                                                 AutoSizeColumnsMode="AllCells" />
+                            </WindowsFormsHost>
+                            <!--<DataGrid Grid.Row="1"
+                                      AutoGenerateColumns="True"
+                                      IsReadOnly="True"
+                                      HorizontalScrollBarVisibility="Auto"
+                                      VerticalScrollBarVisibility="Auto"
+                                      ItemsSource="{Binding ResultSet}" />-->
+                        </TabItem>
+                        <TabItem Header="Messages">
+                            <TextBox Text="{Binding ResultSetMessages}" />
+                        </TabItem>
+                        <TabItem Header="Errors">
+                            <TextBox Text="{Binding ResultSetErrors}" />
+                        </TabItem>
+                    </TabControl>
+                </Grid>
+            </Grid>
+        </DockPanel>
+    </Grid>
+</Window>
