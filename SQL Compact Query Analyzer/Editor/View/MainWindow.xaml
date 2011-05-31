@@ -52,42 +52,44 @@
                           BorderThickness="0"
                           ItemsSource="{Binding Tree}" />
                 <Grid Grid.Column="2">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="*" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="*" />
-                    </Grid.RowDefinitions>
-                    <avalonEdit:TextEditor Grid.Row="0"
-                                           FontFamily="Consolas"
-                                           FontSize="10pt"
-                                           SyntaxHighlighting="{Binding SyntaxHighlighting}"
-                                           ShowLineNumbers="True"
-                                           Document="{Binding Query, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                    <GridSplitter Grid.Row="1"
-                                  Height="5"
-                                  HorizontalAlignment="Stretch"
-                                  VerticalAlignment="Stretch" />
-                    <TabControl Grid.Row="2"
-                                SelectedIndex="{Binding CurrentTabIndex}">
-                        <TabItem Header="Results">
-                            <!--<WindowsFormsHost>
-                                <wf:DataGridView x:Name="dataGrid"
-                                                 ReadOnly="True"
-                                                 DataSourceChanged="dataGrid_DataSourceChanged"
-                                                 AutoSizeRowsMode="AllCells"
-                                                 AutoSizeColumnsMode="AllCells" />
-                            </WindowsFormsHost>-->
-                            <DataGrid Grid.Row="1"
-                                      IsReadOnly="True"
-                                      HorizontalScrollBarVisibility="Auto"
-                                      VerticalScrollBarVisibility="Auto"
-                                      ItemsSource="{Binding ResultSet}" />
+                    <TabControl>
+                        <TabItem Header="Query">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="*" />
+                                </Grid.RowDefinitions>
+                                <avalonEdit:TextEditor Grid.Row="0"
+                                                       FontFamily="Consolas"
+                                                       FontSize="10pt"
+                                                       SyntaxHighlighting="{Binding SyntaxHighlighting}"
+                                                       ShowLineNumbers="True"
+                                                       Document="{Binding Query, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                <GridSplitter Grid.Row="1"
+                                              Height="5"
+                                              HorizontalAlignment="Stretch"
+                                              VerticalAlignment="Stretch" />
+                                <TabControl Grid.Row="2"
+                                            SelectedIndex="{Binding CurrentTabIndex}">
+                                    <TabItem Header="Results">
+                                        <DataGrid Grid.Row="1"
+                                                  IsReadOnly="True"
+                                                  ItemsSource="{Binding ResultSet}" />
+                                    </TabItem>
+                                    <TabItem Header="Messages">
+                                        <TextBox Text="{Binding ResultSetMessages}" />
+                                    </TabItem>
+                                    <TabItem Header="Errors">
+                                        <TextBox Text="{Binding ResultSetErrors}" />
+                                    </TabItem>
+                                </TabControl>
+                            </Grid>
                         </TabItem>
-                        <TabItem Header="Messages">
-                            <TextBox Text="{Binding ResultSetMessages}" />
-                        </TabItem>
-                        <TabItem Header="Errors">
-                            <TextBox Text="{Binding ResultSetErrors}" />
+                        <TabItem Header="Table Data">
+                            <DataGrid ItemsSource="{Binding TableData, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                      SelectedCellsChanged="DataGrid_SelectedCellsChanged"
+                                      CellEditEnding="DataGrid_CellEditEnding" />
                         </TabItem>
                     </TabControl>
                 </Grid>

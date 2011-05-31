@@ -16,6 +16,7 @@ using GalaSoft.MvvmLight;
 using ICSharpCode.AvalonEdit.Document;
 using ICSharpCode.AvalonEdit.Highlighting;
 using ICSharpCode.AvalonEdit.Highlighting.Xshd;
+using System.Windows.Input;
 
 namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
 {
@@ -58,6 +59,17 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
             {
                 resultSet = value;
                 RaisePropertyChanged("ResultSet");
+            }
+        }
+
+        private DataTable tableData;
+        public DataTable TableData
+        {
+            get { return tableData; }
+            set
+            {
+                tableData = value;
+                RaisePropertyChanged("TableData");
             }
         }
 
@@ -226,6 +238,7 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
             foreach (var item in list)
             {
                 var node = new TreeViewItem { Header = item.DisplayName };
+                node.Selected += TableSelected;
                 node.Tag = item;
                 node.FontWeight = FontWeights.Bold;
                 node.ExpandSubtree();
@@ -259,6 +272,40 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
             Tree.Clear();
             Tree.Add(tablesNode);
             RaisePropertyChanged("Tree");
+        }
+
+        private void TableSelected(object sender, RoutedEventArgs e)
+        {
+            var treeViewItem = (TreeViewItem)sender;
+            LoadTableData(treeViewItem.Tag as Table);
+        }
+
+        public void LoadTableData(Table table)
+        {
+            using (var conn = new SqlCeConnection(database.ConnectionString))
+            using (var adapter = new SqlCeDataAdapter("SELECT * FROM " + table.Name, conn))
+            {
+                if (TableData != null)
+                {
+                    TableData.Dispose();
+                    TableData = null;
+                }
+
+                var dataTable = new DataTable(table.Name);
+                adapter.Fill(dataTable);
+                TableData = dataTable;
+            }
+        }
+
+        public void SaveTableDataChanges()
+        {
+            if (TableData == null)
+                return;
+
+            using (var conn = new SqlCeConnection(database.ConnectionString))
+            using (var adapter = new SqlCeDataAdapter("SELECT * FROM " + TableData.TableName, conn))
+            using (var commands = new SqlCeCommandBuilder(adapter))
+                adapter.Update(TableData);
         }
 
         public void LoadSqlSyntaxHighlighter()

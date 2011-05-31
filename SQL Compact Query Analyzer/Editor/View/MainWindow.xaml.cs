@@ -3,6 +3,8 @@ using System.Windows;
 using System.Windows.Input;
 using ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel;
 using ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.View;
+using System.Windows.Controls;
+using System.Data;
 
 namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer
 {
@@ -11,10 +13,11 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer
     /// </summary>
     public partial class MainWindow : Window
     {
+        bool dirty;
+
         public MainWindow()
         {
             InitializeComponent();
-            //dataGrid.Visible = false;
         }
 
         private MainViewModel ViewModel
@@ -34,16 +37,11 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer
 
         private void ExecuteQuery_Click(object sender, RoutedEventArgs e)
         {
-            //dataGrid.DataSource = 
             ViewModel.ExecuteQuery();
         }
 
         private void Window_KeyUp(object sender, KeyEventArgs e)
         {
-            //if (e.Key == Key.F5)
-            //    //dataGrid.DataSource = 
-            //    ViewModel.ExecuteQuery();
-
             switch (e.Key)
             {
                 case Key.F5:
@@ -55,12 +53,6 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer
             }
         }
 
-        private void dataGrid_DataSourceChanged(object sender, EventArgs e)
-        {
-            //if (dataGrid.DataSource == null)
-            //    dataGrid.DataBindings.Clear();
-        }
-
         private void About_Click(object sender, RoutedEventArgs e)
         {
             new AboutBox(this).ShowDialog();
@@ -69,6 +61,18 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer
         private void Open_Click(object sender, RoutedEventArgs e)
         {
             ViewModel.OpenDatabase();
+        }
+
+        private void DataGrid_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
+        {
+            dirty = true;
+        }
+
+        private void DataGrid_SelectedCellsChanged(object sender, SelectedCellsChangedEventArgs e)
+        {
+            if (!dirty) return;
+            ViewModel.SaveTableDataChanges();
+            dirty = false;
         }
     }
 }
