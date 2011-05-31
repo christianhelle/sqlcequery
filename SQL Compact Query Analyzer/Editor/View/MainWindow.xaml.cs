@@ -1,17 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel;
+using ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.View;
 
 namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer
 {
@@ -23,7 +14,7 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer
         public MainWindow()
         {
             InitializeComponent();
-            dataGrid.Visible = false;
+            //dataGrid.Visible = false;
         }
 
         private MainViewModel ViewModel
@@ -33,29 +24,51 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            ViewModel.NewDataSource();
+            if (ViewModel.LaunchedWithArgument)
+                ViewModel.OpenDatabase();
         }
 
         private void New_Click(object sender, RoutedEventArgs e)
         {
-            ViewModel.NewDataSource();
         }
 
         private void ExecuteQuery_Click(object sender, RoutedEventArgs e)
         {
-            dataGrid.DataSource = ViewModel.ExecuteQuery();
+            //dataGrid.DataSource = 
+            ViewModel.ExecuteQuery();
         }
 
         private void Window_KeyUp(object sender, KeyEventArgs e)
         {
-            if (e.Key == Key.F5)
-                dataGrid.DataSource = ViewModel.ExecuteQuery();
+            //if (e.Key == Key.F5)
+            //    //dataGrid.DataSource = 
+            //    ViewModel.ExecuteQuery();
+
+            switch (e.Key)
+            {
+                case Key.F5:
+                    ViewModel.ExecuteQuery();
+                    break;
+                case Key.F1:
+                    new AboutBox(this).ShowDialog();
+                    break;
+            }
         }
 
         private void dataGrid_DataSourceChanged(object sender, EventArgs e)
         {
-            if (dataGrid.DataSource == null)
-                dataGrid.DataBindings.Clear();
+            //if (dataGrid.DataSource == null)
+            //    dataGrid.DataBindings.Clear();
+        }
+
+        private void About_Click(object sender, RoutedEventArgs e)
+        {
+            new AboutBox(this).ShowDialog();
+        }
+
+        private void Open_Click(object sender, RoutedEventArgs e)
+        {
+            ViewModel.OpenDatabase();
         }
     }
 }

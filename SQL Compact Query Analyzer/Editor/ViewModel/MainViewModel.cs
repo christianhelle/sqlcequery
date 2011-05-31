@@ -2,19 +2,20 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data;
+using System.Data.SqlServerCe;
+using System.Diagnostics;
+using System.IO;
 using System.Reflection;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Forms;
 using System.Xml;
+using ChristianHelle.DatabaseTools.SqlCe.CodeGenCore;
 using GalaSoft.MvvmLight;
 using ICSharpCode.AvalonEdit.Document;
 using ICSharpCode.AvalonEdit.Highlighting;
 using ICSharpCode.AvalonEdit.Highlighting.Xshd;
-using System.Windows.Forms;
-using System.IO;
-using ChristianHelle.DatabaseTools.SqlCe.CodeGenCore;
-using System.Diagnostics;
-using System.Data.SqlServerCe;
 
 namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
 {
@@ -31,6 +32,8 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
             ProcessCommandLineArguments(Environment.GetCommandLineArgs());
             LoadSqlSyntaxHighlighter();
         }
+
+        public bool LaunchedWithArgument { get; private set; }
 
         #region Data Binding
 
@@ -91,9 +94,42 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
             }
         }
 
+        private string resultSetMessages;
+        public string ResultSetMessages
+        {
+            get { return resultSetMessages; }
+            set
+            {
+                resultSetMessages = value;
+                RaisePropertyChanged("ResultSetMessages");
+            }
+        }
+
+        private string resultSetErrors;
+        public string ResultSetErrors
+        {
+            get { return resultSetErrors; }
+            set
+            {
+                resultSetErrors = value;
+                RaisePropertyChanged("ResultSetErrors");
+            }
+        }
+
+        private int currentTabIndex;
+        public int CurrentTabIndex
+        {
+            get { return currentTabIndex; }
+            set
+            {
+                currentTabIndex = value;
+                RaisePropertyChanged("CurrentTabIndex");
+            }
+        }
+
         #endregion
 
-        public void NewDataSource()
+        public void OpenDatabase()
         {
             using (var dialog = new OpenFileDialog())
             {
@@ -111,7 +147,6 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
                 AnalyzeDatabase();
 
                 Status = "Executed in " + sw.Elapsed;
-                Text = "SQL Compact Query Analyzer - Untitled";
             }
         }
 
@@ -126,26 +161,61 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
 
         public DataTable ExecuteQuery()
         {
+            var errors = new StringBuilder();
+            var messages = new StringBuilder();
+            var stopwatch = Stopwatch.StartNew();
+
             try
             {
                 using (var conn = new SqlCeConnection(database.ConnectionString))
-                using (var adapter = new SqlCeDataAdapter(Query.Text, conn))
                 {
-                    if (ResultSet != null)
+                    conn.InfoMessage += (sender, e) =>
                     {
-                        ResultSet.Dispose();
-                        ResultSet = null;
-                    }
+                        messages.AppendLine(e.Message);
+                        foreach (SqlCeError error in e.Errors)
+                            errors.AppendLine(error.ToString());
+                    };
+                    conn.Disposed += (sender, e) =>
+                    {
+                        if (errors.Length > 0) return;
+                        messages.AppendLine();
+                        messages.AppendLine("Executed in " + stopwatch.Elapsed);
+                    };
 
-                    var dataTable = new DataTable();
-                    adapter.Fill(dataTable);
-                    return ResultSet = dataTable;
+                    using (var adapter = new SqlCeDataAdapter(Query.Text, conn))
+                    {
+                        if (ResultSet != null)
+                        {
+                            ResultSet.Dispose();
+                            ResultSet = null;
+                        }
+
+                        var dataTable = new DataTable();
+                        adapter.Fill(dataTable);
+                        messages.AppendLine(string.Format("Retrieved {0} row(s)", dataTable.Rows.Count));
+
+                        CurrentTabIndex = 0;
+                        return ResultSet = dataTable;
+                    }
                 }
             }
-            catch (Exception)
+            catch (SqlCeException e)
             {
-                return null;
+                foreach (SqlCeError error in e.Errors)
+                    errors.AppendLine(error.Message);
             }
+            catch (Exception e)
+            {
+                errors.AppendLine(e.Message);
+            }
+            finally
+            {
+                ResultSetMessages = messages.ToString();
+                ResultSetErrors = errors.ToString();
+            }
+
+            CurrentTabIndex = 2;
+            return null;
         }
 
         public void PopulateTables(IEnumerable<Table> list)
@@ -203,6 +273,17 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
 
         public void ProcessCommandLineArguments(string[] args)
         {
+            if (args != null && args.Length == 1)
+            {
+                LaunchedWithArgument = true;
+                dataSource = args[0];
+
+                var ext = Path.GetExtension(dataSource);
+                if (string.Compare(ext, ".sdf", true) == 0)
+                {
+                    AnalyzeDatabase();
+                }
+            }
         }
     }
 }
