@@ -348,5 +348,15 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
                 AnalyzeDatabase();
             }
         }
+
+        public void ShrinkDatabase()
+        {
+            database.Shrink();
+        }
+
+        public void CompactDatabase()
+        {
+            database.Compact();
+        }
     }
 }

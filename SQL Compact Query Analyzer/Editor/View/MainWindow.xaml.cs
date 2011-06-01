@@ -32,10 +32,6 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer
                 ViewModel.OpenDatabase();
         }
 
-        private void New_Click(object sender, RoutedEventArgs e)
-        {
-        }
-
         private void ExecuteQuery_Click(object sender, RoutedEventArgs e)
         {
             ViewModel.ExecuteQuery();
@@ -79,6 +75,21 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer
         private void Window_Drop(object sender, DragEventArgs e)
         {
             ViewModel.LoadDroppedFile(e.Data);
-        }    
+        }
+
+        private void Shrink_Click(object sender, RoutedEventArgs e)
+        {
+            ViewModel.ShrinkDatabase();
+        }
+
+        private void Compact_Click(object sender, RoutedEventArgs e)
+        {
+            ViewModel.CompactDatabase();
+        }
+
+        private void Exit_Click(object sender, RoutedEventArgs e)
+        {
+            Application.Current.Shutdown();
+        }   
     }
 }

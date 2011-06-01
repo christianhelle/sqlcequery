@@ -6,6 +6,7 @@ using System.Text;
 using System.Diagnostics;
 using System.Data.SqlClient;
 using System.IO;
+using System.Windows;
 
 namespace ChristianHelle.DatabaseTools.SqlCe.CodeGenCore
 {
@@ -36,8 +37,21 @@ namespace ChristianHelle.DatabaseTools.SqlCe.CodeGenCore
             }
             catch (SqlCeInvalidDatabaseFormatException)
             {
-                Upgrade();
+                MessageBox.Show("The version of the SQL Server Compact Edition database loaded is currently not supported", "Unsupported Database Version");
+                //Upgrade();
             }
+        }
+
+        public void Shrink()
+        {
+            using (var engine = new SqlCeEngine(ConnectionString))
+                engine.Shrink();
+        }
+
+        public void Compact()
+        {
+            using (var engine = new SqlCeEngine(ConnectionString))
+                engine.Compact(null);
         }
 
         public void Upgrade()
@@ -207,16 +221,6 @@ namespace ChristianHelle.DatabaseTools.SqlCe.CodeGenCore
                 }
             }
             return tableList;
-        }
-
-        public string GenerateCreateScript()
-        {
-            foreach (var table in Tables)
-            {
-
-            }
-
-            throw new NotImplementedException();
         }
     }
 }

@@ -21,19 +21,21 @@
                     <MenuItem Header="Open Database"
                               Click="Open_Click" />
                     <Separator />
-                    <MenuItem Header="Exit" />
+                    <MenuItem Header="Exit"
+                              Click="Exit_Click" />
                 </MenuItem>
                 <MenuItem Header="Query">
                     <MenuItem Header="Execute Query"
                               InputGestureText="F5"
                               Click="ExecuteQuery_Click" />
                 </MenuItem>
-                <!--<MenuItem Header="Database">
-                    <MenuItem Header="Shrink" />
-                    <MenuItem Header="Compact" />
-                    <MenuItem Header="Verify" />
-                    <MenuItem Header="Create Table" />
-                </MenuItem>-->
+                <MenuItem Header="Database">
+                    <MenuItem Header="Shrink"
+                              Click="Shrink_Click" />
+                    <MenuItem Header="Compact"
+                              Click="Compact_Click" />
+                    <!--<MenuItem Header="Create Table" />-->
+                </MenuItem>
                 <MenuItem Header="Help">
                     <MenuItem Header="About"
                               InputGestureText="F1"
