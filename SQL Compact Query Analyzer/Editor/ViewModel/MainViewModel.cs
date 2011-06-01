@@ -332,5 +332,18 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
                 }
             }
         }
+
+        public void LoadDroppedFile(System.Windows.IDataObject data)
+        {
+            if (!data.GetDataPresent(System.Windows.DataFormats.FileDrop))
+                return;
+            var filePaths = (string[])(data.GetData(System.Windows.DataFormats.FileDrop));
+            var ext = Path.GetExtension(filePaths[0]).ToLower();
+            if (string.Compare(ext, ".sdf", true) == 0)
+            {
+                dataSource = filePaths[0];
+                AnalyzeDatabase();
+            }
+        }
     }
 }

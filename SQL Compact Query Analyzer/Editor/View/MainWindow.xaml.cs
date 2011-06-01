@@ -5,6 +5,7 @@ using ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel;
 using ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.View;
 using System.Windows.Controls;
 using System.Data;
+using System.Windows.Shapes;
 
 namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer
 {
@@ -74,5 +75,10 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer
             ViewModel.SaveTableDataChanges();
             dirty = false;
         }
+
+        private void Window_Drop(object sender, DragEventArgs e)
+        {
+            ViewModel.LoadDroppedFile(e.Data);
+        }    
     }
 }
