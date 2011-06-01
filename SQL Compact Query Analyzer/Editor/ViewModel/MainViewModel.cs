@@ -174,7 +174,7 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
             PopulateTables(database.Tables);
         }
 
-        public DataTable ExecuteQuery()
+        public DataTable ExecuteQuery(string sql = null)
         {
             var errors = new StringBuilder();
             var messages = new StringBuilder();
@@ -197,7 +197,9 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
                         messages.AppendLine("Executed in " + stopwatch.Elapsed);
                     };
 
-                    using (var adapter = new SqlCeDataAdapter(Query.Text, conn))
+                    if (string.IsNullOrEmpty(sql))
+                        sql = Query.Text;
+                    using (var adapter = new SqlCeDataAdapter(sql, conn))
                     {
                         if (ResultSet != null)
                         {

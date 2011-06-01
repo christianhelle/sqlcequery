@@ -66,7 +66,8 @@
                                     <RowDefinition Height="Auto" />
                                     <RowDefinition Height="*" />
                                 </Grid.RowDefinitions>
-                                <avalonEdit:TextEditor Grid.Row="0"
+                                <avalonEdit:TextEditor Name="editor"
+                                                       Grid.Row="0"
                                                        FontFamily="Consolas"
                                                        FontSize="10pt"
                                                        SyntaxHighlighting="{Binding SyntaxHighlighting}"
