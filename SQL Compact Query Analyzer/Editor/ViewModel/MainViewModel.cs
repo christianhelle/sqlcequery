@@ -143,6 +143,8 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
 
         public void OpenDatabase()
         {
+            Text = "SQL Compact Query Analyzer";
+
             using (var dialog = new OpenFileDialog())
             {
                 dialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
@@ -166,6 +168,7 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
         {
             Status = "Analyzing Database...";
             database = new SqlCeDatabase("Data Source=" + dataSource);
+            Text = "SQL Compact Query Analyzer" + " - " + new FileInfo(dataSource).Name;
 
             Status = string.Format("Found {0} tables", database.Tables.Count);
             PopulateTables(database.Tables);
