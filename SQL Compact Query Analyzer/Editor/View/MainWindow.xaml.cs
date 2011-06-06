@@ -34,7 +34,7 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer
 
         private void ExecuteQuery_Click(object sender, RoutedEventArgs e)
         {
-            ViewModel.ExecuteQuery(editor.SelectedText);
+            ViewModel.ExecuteQuery();
         }
 
         private void Window_KeyUp(object sender, KeyEventArgs e)
@@ -42,7 +42,7 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer
             switch (e.Key)
             {
                 case Key.F5:
-                    ViewModel.ExecuteQuery(editor.SelectedText);
+                    ViewModel.ExecuteQuery();
                     break;
                 case Key.F1:
                     new AboutBox(this).ShowDialog();

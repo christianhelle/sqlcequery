@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data;
-using System.Data.SqlServerCe;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
@@ -11,19 +10,17 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Forms;
 using System.Xml;
-using ChristianHelle.DatabaseTools.SqlCe.CodeGenCore;
 using GalaSoft.MvvmLight;
 using ICSharpCode.AvalonEdit.Document;
 using ICSharpCode.AvalonEdit.Highlighting;
 using ICSharpCode.AvalonEdit.Highlighting.Xshd;
-using System.Windows.Input;
 
 namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
 {
     public class MainViewModel : ViewModelBase
     {
         string dataSource;
-        SqlCeDatabase database;
+        ISqlCeDatabase database;
 
         public MainViewModel()
         {
@@ -167,71 +164,34 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
         private void AnalyzeDatabase()
         {
             Status = "Analyzing Database...";
-            database = new SqlCeDatabase("Data Source=" + dataSource);
+            database = SqlCeDatabaseFactory.Create("Data Source=" + dataSource); // new SqlCeDatabase("Data Source=" + dataSource);
             Text = "SQL Compact Query Analyzer" + " - " + new FileInfo(dataSource).Name;
 
             Status = string.Format("Found {0} tables", database.Tables.Count);
             PopulateTables(database.Tables);
         }
 
-        public DataTable ExecuteQuery(string sql = null)
+        public DataTable ExecuteQuery()
         {
             var errors = new StringBuilder();
             var messages = new StringBuilder();
-            var stopwatch = Stopwatch.StartNew();
 
             try
             {
-                using (var conn = new SqlCeConnection(database.ConnectionString))
+                if (ResultSet != null)
                 {
-                    conn.InfoMessage += (sender, e) =>
-                    {
-                        messages.AppendLine(e.Message);
-                        foreach (SqlCeError error in e.Errors)
-                            errors.AppendLine(error.ToString());
-                    };
-                    conn.Disposed += (sender, e) =>
-                    {
-                        if (errors.Length > 0) return;
-                        messages.AppendLine();
-                        messages.AppendLine("Executed in " + stopwatch.Elapsed);
-                    };
-
-                    if (string.IsNullOrEmpty(sql))
-                        sql = Query.Text;
-                    using (var adapter = new SqlCeDataAdapter(sql, conn))
-                    {
-                        if (ResultSet != null)
-                        {
-                            ResultSet.Dispose();
-                            ResultSet = null;
-                        }
-
-                        var dataTable = new DataTable();
-                        adapter.Fill(dataTable);
-                        messages.AppendLine(string.Format("Retrieved {0} row(s)", dataTable.Rows.Count));
-
-                        CurrentTabIndex = 0;
-                        return ResultSet = dataTable;
-                    }
+                    ResultSet.Dispose();
+                    ResultSet = null;
                 }
-            }
-            catch (SqlCeException e)
-            {
-                foreach (SqlCeError error in e.Errors)
-                    errors.AppendLine(error.Message);
-            }
-            catch (Exception e)
-            {
-                errors.AppendLine(e.Message);
+                return ResultSet = database.ExecuteQuery(Query.Text, errors, messages);
             }
             finally
             {
+                CurrentTabIndex = ResultSet != null ? 0 : 2;
                 ResultSetMessages = messages.ToString();
                 ResultSetErrors = errors.ToString();
             }
 
-            CurrentTabIndex = 2;
             return null;
         }
 
@@ -287,30 +247,18 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
 
         public void LoadTableData(Table table)
         {
-            using (var conn = new SqlCeConnection(database.ConnectionString))
-            using (var adapter = new SqlCeDataAdapter("SELECT * FROM " + table.Name, conn))
+            if (TableData != null)
             {
-                if (TableData != null)
-                {
-                    TableData.Dispose();
-                    TableData = null;
-                }
-
-                var dataTable = new DataTable(table.Name);
-                adapter.Fill(dataTable);
-                TableData = dataTable;
+                TableData.Dispose();
+                TableData = null;
             }
+
+            TableData = database.GetTableData(table) as DataTable;
         }
 
         public void SaveTableDataChanges()
         {
-            if (TableData == null)
-                return;
-
-            using (var conn = new SqlCeConnection(database.ConnectionString))
-            using (var adapter = new SqlCeDataAdapter("SELECT * FROM " + TableData.TableName, conn))
-            using (var commands = new SqlCeCommandBuilder(adapter))
-                adapter.Update(TableData);
+            database.SaveTableDataChanges(TableData);
         }
 
         public void LoadSqlSyntaxHighlighter()
