@@ -191,8 +191,6 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
                 ResultSetMessages = messages.ToString();
                 ResultSetErrors = errors.ToString();
             }
-
-            return null;
         }
 
         public void PopulateTables(IEnumerable<Table> list)

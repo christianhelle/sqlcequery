@@ -39,6 +39,8 @@ namespace ChristianHelle.DatabaseTools.SqlCe
 
             switch (version)
             {
+                case SupportedVersions.SqlCe31:
+                    return LoadSqlCe31();
                 case SupportedVersions.SqlCe35:
                     return LoadSqlCe35();
                 case SupportedVersions.SqlCe40:
@@ -46,6 +48,14 @@ namespace ChristianHelle.DatabaseTools.SqlCe
                 default:
                     throw new NotSupportedException();
             }
+        }
+
+        private static Type LoadSqlCe31()
+        {
+            var file = Path.Combine(Environment.CurrentDirectory, "SqlCe31");
+            var assembly = Assembly.LoadFile(Path.Combine(file, "SqlCeDatabase31.dll"));
+            var type = assembly.GetType("ChristianHelle.DatabaseTools.SqlCe.SqlCeDatabase");
+            return type;
         }
 
         private static Type LoadSqlCe35()
@@ -75,7 +85,7 @@ namespace ChristianHelle.DatabaseTools.SqlCe
                 switch (signature)
                 {
                     case 0x73616261: return SupportedVersions.SqlCe20;
-                    case 0x002dd714: return SupportedVersions.SqlCe30;
+                    case 0x002dd714: return SupportedVersions.SqlCe31;
                     case 0x00357b9d: return SupportedVersions.SqlCe35;
                     case 0x003D0900: return SupportedVersions.SqlCe40;
                     default: return SupportedVersions.Unsupported;
@@ -87,7 +97,7 @@ namespace ChristianHelle.DatabaseTools.SqlCe
         {
             Unsupported,
             SqlCe20,
-            SqlCe30,
+            SqlCe31,
             SqlCe35,
             SqlCe40
         }
