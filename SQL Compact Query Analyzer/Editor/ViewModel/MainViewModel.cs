@@ -171,7 +171,7 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
             PopulateTables(database.Tables);
         }
 
-        public DataTable ExecuteQuery()
+        public DataTable ExecuteQuery(string query = null)
         {
             var errors = new StringBuilder();
             var messages = new StringBuilder();
@@ -183,7 +183,9 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
                     ResultSet.Dispose();
                     ResultSet = null;
                 }
-                return ResultSet = database.ExecuteQuery(Query.Text, errors, messages);
+                if (string.IsNullOrEmpty(query))
+                    query = Query.Text;
+                return ResultSet = database.ExecuteQuery(query, errors, messages);
             }
             finally
             {
@@ -204,12 +206,12 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
                 node.Selected += TableSelected;
                 node.Tag = item;
                 node.FontWeight = FontWeights.Bold;
-                node.ExpandSubtree();
+                //node.ExpandSubtree();
                 tablesNode.Items.Add(node);
 
                 var columns = new TreeViewItem { Header = "Columns" };
                 columns.FontWeight = FontWeights.Normal;
-                columns.ExpandSubtree();
+                //columns.ExpandSubtree();
                 node.Items.Add(columns);
 
                 foreach (var column in item.Columns)

@@ -86,12 +86,6 @@ namespace ChristianHelle.DatabaseTools.SqlCe
                         foreach (SqlCeError error in e.Errors)
                             errors.AppendLine(error.ToString());
                     };
-                    conn.Disposed += (sender, e) =>
-                    {
-                        if (errors.Length > 0) return;
-                        messages.AppendLine();
-                        messages.AppendLine("Executed in " + stopwatch.Elapsed);
-                    };
 
                     using (var adapter = new SqlCeDataAdapter(query, conn))
                     {
@@ -111,6 +105,11 @@ namespace ChristianHelle.DatabaseTools.SqlCe
             catch (Exception e)
             {
                 errors.AppendLine(e.Message);
+            }
+            finally
+            {
+                messages.AppendLine();
+                messages.AppendLine("Executed in " + stopwatch.Elapsed);
             }
 
             return null;

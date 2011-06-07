@@ -88,10 +88,12 @@
                                     </TabItem>
                                     <TabItem Header="Messages">
                                         <TextBox Text="{Binding ResultSetMessages}"
+                                                 TextWrapping="Wrap"
                                                  Drop="Window_Drop" />
                                     </TabItem>
                                     <TabItem Header="Errors">
                                         <TextBox Text="{Binding ResultSetErrors}"
+                                                 TextWrapping="Wrap"
                                                  Drop="Window_Drop" />
                                     </TabItem>
                                 </TabControl>
