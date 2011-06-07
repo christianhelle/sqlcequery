@@ -20,6 +20,6 @@ namespace ChristianHelle.DatabaseTools.SqlCe
         object GetTableData(Table table);
         object GetTableData(string tableName, string columnName);
         void SaveTableDataChanges(DataTable TableData);
-        DataTable ExecuteQuery(string query, StringBuilder errors, StringBuilder messages);
+        object ExecuteQuery(string query, StringBuilder errors, StringBuilder messages);
     }    
 }

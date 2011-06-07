@@ -14,6 +14,9 @@ using GalaSoft.MvvmLight;
 using ICSharpCode.AvalonEdit.Document;
 using ICSharpCode.AvalonEdit.Highlighting;
 using ICSharpCode.AvalonEdit.Highlighting.Xshd;
+using System.Windows.Threading;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
 {
@@ -24,6 +27,7 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
 
         public MainViewModel()
         {
+            ResultSet = new ObservableCollection<DataTable>();
             Tree = new ObservableCollection<TreeViewItem>();
             Query = new TextDocument();
 
@@ -48,16 +52,18 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
             }
         }
 
-        private DataTable resultSet;
-        public DataTable ResultSet
-        {
-            get { return resultSet; }
-            set
-            {
-                resultSet = value;
-                RaisePropertyChanged("ResultSet");
-            }
-        }
+        public ObservableCollection<DataTable> ResultSet { get; private set; }
+
+        //private DataTable resultSet;
+        //public DataTable ResultSet
+        //{
+        //    get { return resultSet; }
+        //    set
+        //    {
+        //        resultSet = value;
+        //        RaisePropertyChanged("ResultSet");
+        //    }
+        //}
 
         private DataTable tableData;
         public DataTable TableData
@@ -136,6 +142,28 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
             }
         }
 
+        private bool queryIsBusy;
+        public bool QueryIsBusy
+        {
+            get { return queryIsBusy; }
+            set
+            {
+                queryIsBusy = value;
+                RaisePropertyChanged("QueryIsBusy");
+            }
+        }
+
+        private bool tableDataIsBusy;
+        public bool TableDataIsBusy
+        {
+            get { return tableDataIsBusy; }
+            set
+            {
+                tableDataIsBusy = value;
+                RaisePropertyChanged("TableDataIsBusy");
+            }
+        }
+
         #endregion
 
         public void OpenDatabase()
@@ -171,28 +199,47 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
             PopulateTables(database.Tables);
         }
 
-        public DataTable ExecuteQuery(string query = null)
+        public void ExecuteQuery(string query = null)
         {
-            var errors = new StringBuilder();
-            var messages = new StringBuilder();
+            ThreadPool.QueueUserWorkItem((s) =>
+            {
+                var errors = new StringBuilder();
+                var messages = new StringBuilder();
 
-            try
-            {
-                if (ResultSet != null)
+                try
                 {
-                    ResultSet.Dispose();
-                    ResultSet = null;
+                    System.Windows.Application.Current.Dispatcher.Invoke((Action)delegate
+                    {
+                        QueryIsBusy = true;
+                        ResultSet.Clear();
+                        RaisePropertyChanged("ResultSet");
+
+                        if (string.IsNullOrEmpty(query))
+                            query = Query.Text;
+                    });
+
+                    var result = database.ExecuteQuery(query, errors, messages) as IEnumerable<DataTable>;
+                    if (result == null)
+                        return;
+
+                    System.Windows.Application.Current.Dispatcher.Invoke((Action)delegate
+                    {
+                        foreach (var table in result)
+                            ResultSet.Add(table);
+                        RaisePropertyChanged("ResultSet");
+                    });
                 }
-                if (string.IsNullOrEmpty(query))
-                    query = Query.Text;
-                return ResultSet = database.ExecuteQuery(query, errors, messages);
-            }
-            finally
-            {
-                CurrentTabIndex = ResultSet != null ? 0 : 2;
-                ResultSetMessages = messages.ToString();
-                ResultSetErrors = errors.ToString();
-            }
+                finally
+                {
+                    System.Windows.Application.Current.Dispatcher.Invoke((Action)delegate
+                    {
+                        CurrentTabIndex = ResultSet != null ? 0 : 2;
+                        ResultSetMessages = messages.ToString();
+                        ResultSetErrors = errors.ToString();
+                        QueryIsBusy = false;
+                    });
+                }
+            }, null);
         }
 
         public void PopulateTables(IEnumerable<Table> list)
@@ -247,13 +294,30 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
 
         public void LoadTableData(Table table)
         {
-            if (TableData != null)
+            ThreadPool.QueueUserWorkItem((s) =>
             {
-                TableData.Dispose();
-                TableData = null;
-            }
+                try
+                {
+                    System.Windows.Application.Current.Dispatcher.Invoke((Action)delegate
+                    {
+                        TableDataIsBusy = true;
 
-            TableData = database.GetTableData(table) as DataTable;
+                        if (TableData != null)
+                        {
+                            TableData.Dispose();
+                            TableData = null;
+                        }
+                    });
+
+                    var dataTable = database.GetTableData(table) as DataTable;
+
+                    System.Windows.Application.Current.Dispatcher.Invoke((Action)delegate { TableData = dataTable; });
+                }
+                finally
+                {
+                    System.Windows.Application.Current.Dispatcher.Invoke((Action)delegate { TableDataIsBusy = false; });
+                }
+            }, null);
         }
 
         public void SaveTableDataChanges()

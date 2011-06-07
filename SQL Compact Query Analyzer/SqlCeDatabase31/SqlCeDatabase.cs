@@ -72,7 +72,7 @@ namespace ChristianHelle.DatabaseTools.SqlCe
             }
         }
 
-        public DataTable ExecuteQuery(string query, StringBuilder errors, StringBuilder messages)
+        public object ExecuteQuery(string query, StringBuilder errors, StringBuilder messages)
         {
             var stopwatch = Stopwatch.StartNew();
 
@@ -87,13 +87,42 @@ namespace ChristianHelle.DatabaseTools.SqlCe
                             errors.AppendLine(error.ToString());
                     };
 
-                    using (var adapter = new SqlCeDataAdapter(query, conn))
-                    {
-                        var dataTable = new DataTable();
-                        adapter.Fill(dataTable);
-                        messages.AppendLine(string.Format("Retrieved {0} row(s)", dataTable.Rows.Count));
+                    int affectedRows = 0;
+                    var split = query.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
 
-                        return dataTable;
+                    var tables = new List<DataTable>();
+                    using (var command = conn.CreateCommand())
+                    {
+                        conn.Open();
+                        foreach (var sql in split)
+                        {
+                            try
+                            {
+                                if (sql.Trim().StartsWith("select", StringComparison.InvariantCultureIgnoreCase))
+                                {
+                                    using (var adapter = new SqlCeDataAdapter(sql, conn))
+                                    {
+                                        var table = new DataTable();
+                                        affectedRows += adapter.Fill(table);
+                                        tables.Add(table);
+                                        messages.AppendLine(string.Format("Retrieved {0} row(s)", table.Rows.Count));
+                                    }
+                                }
+                                else
+                                {
+                                    command.CommandText = sql;
+                                    affectedRows += command.ExecuteNonQuery();
+                                }
+                            }
+                            catch (SqlCeException e)
+                            {
+                                foreach (SqlCeError error in e.Errors)
+                                    errors.AppendLine(error.Message);
+                            }
+                        }
+                        messages.AppendLine();
+                        messages.AppendLine(string.Format("Total affected row(s): {0}", affectedRows));
+                        return tables;
                     }
                 }
             }

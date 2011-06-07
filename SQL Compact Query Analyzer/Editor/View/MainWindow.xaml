@@ -3,6 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:avalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit"
         xmlns:wf="clr-namespace:System.Windows.Forms;assembly=System.Windows.Forms"
+        xmlns:extToolkit="clr-namespace:Microsoft.Windows.Controls;assembly=WPFToolkit.Extended"
         DataContext="{StaticResource MainViewModel}"
         Title="{Binding Text, FallbackValue='SQL Compact Query Analyzer'}"
         Loaded="Window_Loaded"
@@ -78,32 +79,54 @@
                                               Height="5"
                                               HorizontalAlignment="Stretch"
                                               VerticalAlignment="Stretch" />
-                                <TabControl Grid.Row="2"
-                                            SelectedIndex="{Binding CurrentTabIndex}">
-                                    <TabItem Header="Results">
-                                        <DataGrid Grid.Row="1"
-                                                  IsReadOnly="True"
-                                                  Drop="Window_Drop"
-                                                  ItemsSource="{Binding ResultSet}" />
-                                    </TabItem>
-                                    <TabItem Header="Messages">
-                                        <TextBox Text="{Binding ResultSetMessages}"
-                                                 TextWrapping="Wrap"
-                                                 Drop="Window_Drop" />
-                                    </TabItem>
-                                    <TabItem Header="Errors">
-                                        <TextBox Text="{Binding ResultSetErrors}"
-                                                 TextWrapping="Wrap"
-                                                 Drop="Window_Drop" />
-                                    </TabItem>
-                                </TabControl>
+                                <extToolkit:BusyIndicator Name="queryBusyIndicator"
+                                                          Grid.Row="2"
+                                                          IsBusy="{Binding QueryIsBusy}"
+                                                          DisplayAfter="00:00:00.0000001">
+                                    <TabControl SelectedIndex="{Binding CurrentTabIndex}">
+                                        <TabItem Header="Results">
+                                            <ScrollViewer HorizontalScrollBarVisibility="Auto"
+                                                          VerticalScrollBarVisibility="Auto">
+                                                <ListBox ItemsSource="{Binding ResultSet}"
+                                                         IsHitTestVisible="False">
+                                                    <ListBox.ItemTemplate>
+                                                        <DataTemplate>
+                                                            <DataGrid Grid.Row="1"
+                                                                      BorderThickness="0"
+                                                                      Margin="0,0,0,20"
+                                                                      IsReadOnly="True"
+                                                                      Drop="Window_Drop"
+                                                                      ItemsSource="{Binding}"
+                                                                      SelectionUnit="CellOrRowHeader" />
+                                                        </DataTemplate>
+                                                    </ListBox.ItemTemplate>
+                                                </ListBox>
+                                            </ScrollViewer>
+                                        </TabItem>
+                                        <TabItem Header="Messages">
+                                            <TextBox Text="{Binding ResultSetMessages}"
+                                                     TextWrapping="Wrap"
+                                                     Drop="Window_Drop" />
+                                        </TabItem>
+                                        <TabItem Header="Errors">
+                                            <TextBox Text="{Binding ResultSetErrors}"
+                                                     TextWrapping="Wrap"
+                                                     Drop="Window_Drop" />
+                                        </TabItem>
+                                    </TabControl>
+                                </extToolkit:BusyIndicator>
                             </Grid>
                         </TabItem>
                         <TabItem Header="Table Data">
-                            <DataGrid ItemsSource="{Binding TableData, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                      SelectedCellsChanged="DataGrid_SelectedCellsChanged"
-                                      CellEditEnding="DataGrid_CellEditEnding"
-                                      Drop="Window_Drop" />
+                            <extToolkit:BusyIndicator Name="tableDataBusyIndicator"
+                                                      DisplayAfter="00:00:00.0000001"
+                                                      IsBusy="{Binding TableDataIsBusy}">
+                                <DataGrid ItemsSource="{Binding TableData, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                          SelectedCellsChanged="DataGrid_SelectedCellsChanged"
+                                          CellEditEnding="DataGrid_CellEditEnding"
+                                          SelectionUnit="CellOrRowHeader"
+                                          Drop="Window_Drop" />
+                            </extToolkit:BusyIndicator>
                         </TabItem>
                     </TabControl>
                 </Grid>
