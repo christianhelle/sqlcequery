@@ -71,7 +71,7 @@
                                                        Grid.Row="0"
                                                        FontFamily="Consolas"
                                                        FontSize="10pt"
-                                                       SyntaxHighlighting="{Binding SyntaxHighlighting}"
+                                                       SyntaxHighlighting="{Binding SqlSyntaxHighlighting}"
                                                        ShowLineNumbers="True"
                                                        Drop="Window_Drop"
                                                        Document="{Binding Query, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
@@ -84,7 +84,7 @@
                                                           IsBusy="{Binding QueryIsBusy}"
                                                           DisplayAfter="00:00:00.0000001">
                                     <TabControl SelectedIndex="{Binding CurrentTabIndex}">
-                                        <TabItem Header="Results">
+                                        <TabItem Header="Results Grid">
                                             <ScrollViewer HorizontalScrollBarVisibility="Auto"
                                                           VerticalScrollBarVisibility="Auto">
                                                 <ListBox ItemsSource="{Binding ResultSet}"
@@ -103,15 +103,28 @@
                                                 </ListBox>
                                             </ScrollViewer>
                                         </TabItem>
+                                        <TabItem Header="Results XML">
+                                            <avalonEdit:TextEditor Name="resultSetXml"
+                                                                   Grid.Row="0"
+                                                                   FontFamily="Consolas"
+                                                                   FontSize="10pt"
+                                                                   SyntaxHighlighting="XML"
+                                                                   ShowLineNumbers="True"
+                                                                   Drop="Window_Drop"
+                                                                   Document="{Binding ResultSetXml}" />
+                                        </TabItem>
                                         <TabItem Header="Messages">
                                             <TextBox Text="{Binding ResultSetMessages}"
+                                                     FontFamily="Courier New"
                                                      TextWrapping="Wrap"
-                                                     Drop="Window_Drop" />
+                                                     Drop="Window_Drop"
+                                                     VerticalScrollBarVisibility="Auto" />
                                         </TabItem>
                                         <TabItem Header="Errors">
                                             <TextBox Text="{Binding ResultSetErrors}"
                                                      TextWrapping="Wrap"
-                                                     Drop="Window_Drop" />
+                                                     Drop="Window_Drop"
+                                                     VerticalScrollBarVisibility="Auto" />
                                         </TabItem>
                                     </TabControl>
                                 </extToolkit:BusyIndicator>

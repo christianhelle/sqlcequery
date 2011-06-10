@@ -30,6 +30,7 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
             ResultSet = new ObservableCollection<DataTable>();
             Tree = new ObservableCollection<TreeViewItem>();
             Query = new TextDocument();
+            ResultSetXml = new TextDocument();
 
             ProcessCommandLineArguments(Environment.GetCommandLineArgs());
             LoadSqlSyntaxHighlighter();
@@ -65,6 +66,8 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
         //    }
         //}
 
+        public TextDocument ResultSetXml { get; private set; }
+
         private DataTable tableData;
         public DataTable TableData
         {
@@ -76,14 +79,14 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
             }
         }
 
-        private IHighlightingDefinition syntaxHighlighting;
-        public IHighlightingDefinition SyntaxHighlighting
+        private IHighlightingDefinition sqlSyntaxHighlighting;
+        public IHighlightingDefinition SqlSyntaxHighlighting
         {
-            get { return syntaxHighlighting; }
+            get { return sqlSyntaxHighlighting; }
             set
             {
-                syntaxHighlighting = value;
-                RaisePropertyChanged("SyntaxHighlighting");
+                sqlSyntaxHighlighting = value;
+                RaisePropertyChanged("SqlSyntaxHighlighting");
             }
         }
 
@@ -224,9 +227,27 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
 
                     System.Windows.Application.Current.Dispatcher.Invoke((Action)delegate
                     {
+                        int counter = 1;
+                        StringBuilder sb = new StringBuilder();
+
                         foreach (var table in result)
+                        {
                             ResultSet.Add(table);
+
+                            if (string.IsNullOrEmpty(table.TableName))
+                                table.TableName = "ResultSet" + counter++;
+
+                            using (var writer = new StringWriter(sb))
+                            using (var xml = new XmlTextWriter(writer) { Formatting = Formatting.Indented })
+                            {
+                                table.WriteXml(writer);
+                                writer.WriteLine(string.Empty);
+                            }
+                        }
+
+                        ResultSetXml.Text = sb.ToString();
                         RaisePropertyChanged("ResultSet");
+                        RaisePropertyChanged("ResultSetXml");
                     });
                 }
                 finally
@@ -331,7 +352,7 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
             using (var reader = new XmlTextReader(stream))
             {
                 var xshd = HighlightingLoader.LoadXshd(reader);
-                SyntaxHighlighting = HighlightingLoader.Load(xshd, HighlightingManager.Instance);
+                SqlSyntaxHighlighting = HighlightingLoader.Load(xshd, HighlightingManager.Instance);
             }
         }
 
