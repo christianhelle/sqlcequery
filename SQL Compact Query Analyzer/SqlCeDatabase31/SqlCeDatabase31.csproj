@@ -76,9 +76,7 @@
     <Content Include="sqlcese30.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="System.Data.SqlServerCe.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    <None Include="System.Data.SqlServerCe.dll" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SqlCeDatabase\SqlCeDatabase.csproj">

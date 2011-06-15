@@ -11,9 +11,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SqlCeDatabase40", "SqlCeDat
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SqlCeDatabase31", "SqlCeDatabase31\SqlCeDatabase31.csproj", "{79C4D465-2DA8-45D3-81C7-443E210918AC}"
 EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "Setup", "Setup\Setup.vdproj", "{A1EF5B2D-95D9-44DD-9355-10E61E860849}"
+EndProject
 Global
 	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 6
+		SccNumberOfProjects = 7
 		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
 		SccTeamFoundationServer = https://tfs.codeplex.com/tfs/tfs02
 		SccLocalPath0 = .
@@ -32,6 +34,9 @@ Global
 		SccProjectUniqueName5 = SqlCeDatabase31\\SqlCeDatabase31.csproj
 		SccProjectName5 = SqlCeDatabase31
 		SccLocalPath5 = SqlCeDatabase31
+		SccProjectUniqueName6 = Setup\\Setup.vdproj
+		SccProjectName6 = Setup
+		SccLocalPath6 = Setup
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -92,6 +97,13 @@ Global
 		{79C4D465-2DA8-45D3-81C7-443E210918AC}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{79C4D465-2DA8-45D3-81C7-443E210918AC}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{79C4D465-2DA8-45D3-81C7-443E210918AC}.Release|x86.ActiveCfg = Release|Any CPU
+		{A1EF5B2D-95D9-44DD-9355-10E61E860849}.Debug|Any CPU.ActiveCfg = Debug
+		{A1EF5B2D-95D9-44DD-9355-10E61E860849}.Debug|Mixed Platforms.ActiveCfg = Debug
+		{A1EF5B2D-95D9-44DD-9355-10E61E860849}.Debug|x86.ActiveCfg = Debug
+		{A1EF5B2D-95D9-44DD-9355-10E61E860849}.Release|Any CPU.ActiveCfg = Release
+		{A1EF5B2D-95D9-44DD-9355-10E61E860849}.Release|Mixed Platforms.ActiveCfg = Release
+		{A1EF5B2D-95D9-44DD-9355-10E61E860849}.Release|Mixed Platforms.Build.0 = Release
+		{A1EF5B2D-95D9-44DD-9355-10E61E860849}.Release|x86.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -39,6 +39,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>Resources\Database.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="GalaSoft.MvvmLight.Extras.WPF4">
       <HintPath>..\packages\MvvmLight.3.0.2\lib\net40\GalaSoft.MvvmLight.Extras.WPF4.dll</HintPath>
@@ -90,9 +93,6 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <None Include="Utilities\SqlCeDatabase.cs" />
-    <None Include="Utilities\SqlCeEngineExtensions.cs" />
-    <None Include="Utilities\Table.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
     <Compile Include="View\AboutBox.xaml.cs">
       <DependentUpon>AboutBox.xaml</DependentUpon>
@@ -129,6 +129,9 @@
       <Project>{FEA11D5F-8C5D-4E8A-AD82-579312F47F05}</Project>
       <Name>SqlCeDatabase</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Database.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
