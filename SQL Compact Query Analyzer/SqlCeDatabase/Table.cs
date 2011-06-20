@@ -36,7 +36,7 @@ namespace ChristianHelle.DatabaseTools.SqlCe
 
         public override string ToString()
         {
-            return ManagedType.ToString();
+            return DisplayName;
         }
     }
 }

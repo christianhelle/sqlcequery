@@ -116,5 +116,11 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer
         {
             Application.Current.Shutdown();
         }
+
+        private void TreeView_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+        {
+            var table = ((TreeView)sender).SelectedItem as Table;
+            ViewModel.LoadTableData(table);
+        }
     }
 }

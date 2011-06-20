@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Text;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Forms;
@@ -15,7 +16,6 @@ using ICSharpCode.AvalonEdit.Document;
 using ICSharpCode.AvalonEdit.Highlighting;
 using ICSharpCode.AvalonEdit.Highlighting.Xshd;
 using System.Windows.Threading;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
@@ -27,8 +27,6 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
 
         public MainViewModel()
         {
-            ResultSet = new ObservableCollection<DataTable>();
-            Tree = new ObservableCollection<TreeViewItem>();
             Query = new TextDocument();
             ResultSetXml = new TextDocument();
 
@@ -42,7 +40,16 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
 
         #region Data Binding
 
-        public ObservableCollection<TreeViewItem> Tree { get; set; }
+        private ObservableCollection<Table> tables;
+        public ObservableCollection<Table> Tables
+        {
+            get { return tables; }
+            set
+            {
+                tables = value;
+                RaisePropertyChanged("Tables");
+            }
+        }
 
         private TextDocument query;
         public TextDocument Query
@@ -55,18 +62,16 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
             }
         }
 
-        public ObservableCollection<DataTable> ResultSet { get; private set; }
-
-        //private DataTable resultSet;
-        //public DataTable ResultSet
-        //{
-        //    get { return resultSet; }
-        //    set
-        //    {
-        //        resultSet = value;
-        //        RaisePropertyChanged("ResultSet");
-        //    }
-        //}
+        private ObservableCollection<DataTable> resultSet;
+        public ObservableCollection<DataTable> ResultSet
+        {
+            get { return resultSet; }
+            set
+            {
+                resultSet = value;
+                RaisePropertyChanged("ResultSet");
+            }
+        }
 
         public TextDocument ResultSetXml { get; private set; }
 
@@ -169,6 +174,17 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
             }
         }
 
+        private bool analyzingTablesIsBusy;
+        public bool AnalyzingTablesIsBusy
+        {
+            get { return analyzingTablesIsBusy; }
+            set
+            {
+                analyzingTablesIsBusy = value;
+                RaisePropertyChanged("AnalyzingTablesIsBusy");
+            }
+        }
+
         #endregion
 
         public void OpenDatabase()
@@ -192,36 +208,45 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
 
         private void AnalyzeDatabase()
         {
-            var sw = Stopwatch.StartNew();
-            Status = "Analyzing Database...";
+            Task.Factory.StartNew(() =>
+            {
+                try
+                {
+                    AnalyzingTablesIsBusy = true;
 
-            if (!File.Exists(dataSource))
-                throw new InvalidOperationException("Unable to find " + dataSource);
+                    if (!File.Exists(dataSource))
+                        throw new InvalidOperationException("Unable to find " + dataSource);
 
-            database = SqlCeDatabaseFactory.Create("Data Source=" + dataSource); // new SqlCeDatabase("Data Source=" + dataSource);
-            Text = "SQL Compact Query Analyzer" + " - " + new FileInfo(dataSource).Name;
+                    database = SqlCeDatabaseFactory.Create("Data Source=" + dataSource);
 
-            Status = string.Format("Found {0} tables", database.Tables.Count);
-            PopulateTables(database.Tables);
+                    Text = "SQL Compact Query Analyzer" + " - " + new FileInfo(dataSource).Name;
 
-            Status = "Executed in " + sw.Elapsed;
+                    var tables = new ObservableCollection<Table>();
+                    foreach (var table in database.Tables)
+                        tables.Add(table);
+                    Tables = tables;
+                }
+                finally
+                {
+                    AnalyzingTablesIsBusy = false;
+                }
+            });
         }
 
         public void ExecuteQuery(string query = null)
         {
-            ThreadPool.QueueUserWorkItem((s) =>
+            Task.Factory.StartNew(() =>
             {
                 var errors = new StringBuilder();
                 var messages = new StringBuilder();
 
                 try
                 {
+                    QueryIsBusy = true;
+                    var tables = new ObservableCollection<DataTable>();
+
                     System.Windows.Application.Current.Dispatcher.Invoke((Action)delegate
                     {
-                        QueryIsBusy = true;
-                        ResultSet.Clear();
-                        RaisePropertyChanged("ResultSet");
-
                         if (string.IsNullOrEmpty(query))
                             query = Query.Text;
                     });
@@ -230,120 +255,64 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
                     if (result == null)
                         return;
 
+                    int counter = 1;
+                    var sb = new StringBuilder();
+                    foreach (var table in result)
+                    {
+                        tables.Add(table);
+
+                        if (string.IsNullOrEmpty(table.TableName))
+                            table.TableName = "ResultSet" + counter++;
+
+                        using (var writer = new StringWriter(sb))
+                        using (var xml = new XmlTextWriter(writer) { Formatting = Formatting.Indented })
+                        {
+                            table.WriteXml(writer);
+                            writer.WriteLine(string.Empty);
+                        }
+                    }
+                    ResultSet = tables;
+
                     System.Windows.Application.Current.Dispatcher.Invoke((Action)delegate
                     {
-                        int counter = 1;
-                        StringBuilder sb = new StringBuilder();
-
-                        foreach (var table in result)
-                        {
-                            ResultSet.Add(table);
-
-                            if (string.IsNullOrEmpty(table.TableName))
-                                table.TableName = "ResultSet" + counter++;
-
-                            using (var writer = new StringWriter(sb))
-                            using (var xml = new XmlTextWriter(writer) { Formatting = Formatting.Indented })
-                            {
-                                table.WriteXml(writer);
-                                writer.WriteLine(string.Empty);
-                            }
-                        }
-
                         ResultSetXml.Text = sb.ToString();
-                        RaisePropertyChanged("ResultSet");
                         RaisePropertyChanged("ResultSetXml");
                     });
                 }
                 finally
                 {
-                    System.Windows.Application.Current.Dispatcher.Invoke((Action)delegate
-                    {
-                        CurrentTabIndex = ResultSet != null ? 0 : 2;
-                        ResultSetMessages = messages.ToString();
-                        ResultSetErrors = errors.ToString();
-                        QueryIsBusy = false;
-                    });
+                    CurrentTabIndex = ResultSet != null && ResultSet.Count > 0 ? 0 : 2;
+                    ResultSetMessages = messages.ToString();
+                    ResultSetErrors = errors.ToString();
+                    QueryIsBusy = false;
                 }
-            }, null);
-        }
-
-        public void PopulateTables(IEnumerable<Table> list)
-        {
-            var tablesNode = new TreeViewItem { Header = "Tables" };
-            tablesNode.ExpandSubtree();
-
-            foreach (var item in list)
-            {
-                var node = new TreeViewItem { Header = item.DisplayName };
-                node.Selected += TableSelected;
-                node.Tag = item;
-                node.FontWeight = FontWeights.Bold;
-                //node.ExpandSubtree();
-                tablesNode.Items.Add(node);
-
-                var columns = new TreeViewItem { Header = "Columns" };
-                columns.FontWeight = FontWeights.Normal;
-                //columns.ExpandSubtree();
-                node.Items.Add(columns);
-
-                foreach (var column in item.Columns)
-                {
-                    var columnNode = new TreeViewItem { Header = column.Value.DisplayName };
-                    columnNode.Tag = new KeyValuePair<string, string>(item.Name, column.Value.Name);
-                    //columnNode.Items.Add("Ordinal Position - " + column.Value.Ordinal);
-                    if (column.Value.IsPrimaryKey)
-                        columnNode.Items.Add("Primary Key");
-                    if (column.Value.AutoIncrement.HasValue)
-                        columnNode.Items.Add("Auto Increment");
-                    if (column.Value.IsForeignKey)
-                        columnNode.Items.Add("Foreign Key");
-                    columnNode.Items.Add(new TreeViewItem { Header = "Database Type - " + column.Value.DatabaseType });
-                    columnNode.Items.Add(new TreeViewItem { Header = "Managed Type - " + column.Value.ManagedType });
-                    if (column.Value.ManagedType.Equals(typeof(string)))
-                        columnNode.Items.Add("Max Length - " + column.Value.MaxLength);
-                    columnNode.Items.Add(new TreeViewItem { Header = "Allows Null - " + column.Value.AllowsNull });
-                    columns.Items.Add(columnNode);
-                }
-            }
-
-            Tree.Clear();
-            Tree.Add(tablesNode);
-            RaisePropertyChanged("Tree");
-        }
-
-        private void TableSelected(object sender, RoutedEventArgs e)
-        {
-            var treeViewItem = (TreeViewItem)sender;
-            LoadTableData(treeViewItem.Tag as Table);
+            });
         }
 
         public void LoadTableData(Table table)
         {
-            ThreadPool.QueueUserWorkItem((s) =>
+            if (table == null)
+                return;
+
+            Task.Factory.StartNew(() =>
             {
                 try
                 {
-                    System.Windows.Application.Current.Dispatcher.Invoke((Action)delegate
+                    TableDataIsBusy = true;
+                    if (TableData != null)
                     {
-                        TableDataIsBusy = true;
-
-                        if (TableData != null)
-                        {
-                            TableData.Dispose();
-                            TableData = null;
-                        }
-                    });
+                        TableData.Dispose();
+                        TableData = null;
+                    }
 
                     var dataTable = database.GetTableData(table) as DataTable;
-
-                    System.Windows.Application.Current.Dispatcher.Invoke((Action)delegate { TableData = dataTable; });
+                    TableData = dataTable;
                 }
                 finally
                 {
-                    System.Windows.Application.Current.Dispatcher.Invoke((Action)delegate { TableDataIsBusy = false; });
+                    TableDataIsBusy = false;
                 }
-            }, null);
+            });
         }
 
         public void SaveTableDataChanges()
@@ -390,12 +359,26 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
 
         public void ShrinkDatabase()
         {
+            var previous = new FileInfo(dataSource).Length;
+
             database.Shrink();
+
+            var current = new FileInfo(dataSource).Length;
+            
+            ResultSetMessages = string.Format("Database shrinked to {0:0,0.0} from {1:0,0.0} bytes", previous, current);
+            CurrentTabIndex = 2;
         }
 
         public void CompactDatabase()
         {
+            var previous = new FileInfo(dataSource).Length;
+
             database.Compact();
+
+            var current = new FileInfo(dataSource).Length;
+
+            ResultSetMessages = string.Format("Database compacted to {0:0,0.0} from {1:0,0.0} bytes", previous, current);
+            CurrentTabIndex = 2;
         }
     }
 }

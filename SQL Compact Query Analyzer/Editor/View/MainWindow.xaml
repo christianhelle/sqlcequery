@@ -17,8 +17,6 @@
             <Menu IsMainMenu="True"
                   DockPanel.Dock="Top">
                 <MenuItem Header="File">
-                    <!--<MenuItem Header="New Database"
-                              Click="New_Click" />-->
                     <MenuItem Header="Open Database"
                               Click="Open_Click" />
                     <Separator />
@@ -35,7 +33,6 @@
                               Click="Shrink_Click" />
                     <MenuItem Header="Compact"
                               Click="Compact_Click" />
-                    <!--<MenuItem Header="Create Table" />-->
                 </MenuItem>
                 <MenuItem Header="Help">
                     <MenuItem Header="About"
@@ -53,10 +50,38 @@
                               Width="5"
                               HorizontalAlignment="Stretch"
                               VerticalAlignment="Stretch" />
-                <TreeView Grid.Column="0"
-                          BorderThickness="0"
-                          AllowDrop="True"
-                          ItemsSource="{Binding Tree}" />
+                <extToolkit:BusyIndicator IsBusy="{Binding AnalyzingTablesIsBusy}"
+                                          BusyContent="Analyzing database...">
+                    <TreeView Grid.Column="0"
+                              BorderThickness="0"
+                              AllowDrop="True"
+                              ItemsSource="{Binding Tables}"
+                              SelectedItemChanged="TreeView_SelectedItemChanged">
+                        <TreeView.ItemContainerStyle>
+                            <Style TargetType="{x:Type TreeViewItem}">
+                                <Setter Property="IsExpanded"
+                                        Value="{Binding IsExpanded, Mode=TwoWay}" />
+                                <Setter Property="IsSelected"
+                                        Value="{Binding IsSelected, Mode=TwoWay}" />
+                                <Setter Property="FontWeight"
+                                        Value="Normal" />
+                                <Style.Triggers>
+                                    <Trigger Property="IsSelected"
+                                             Value="True">
+                                        <Setter Property="FontWeight"
+                                                Value="Bold" />
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TreeView.ItemContainerStyle>
+                        <TreeView.ItemTemplate>
+                            <HierarchicalDataTemplate ItemsSource="{Binding Columns.Values}">
+                                <TextBlock Text="{Binding DisplayName}"
+                                           Margin="5,2" />
+                            </HierarchicalDataTemplate>
+                        </TreeView.ItemTemplate>
+                    </TreeView>
+                </extToolkit:BusyIndicator>
                 <Grid Grid.Column="2">
                     <TabControl>
                         <TabItem Header="Query">
