@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Windows;
-using System.Windows.Input;
-using ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel;
-using ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.View;
 using System.Windows.Controls;
-using System.Data;
-using System.Windows.Shapes;
+using System.Windows.Input;
+using ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.View;
+using ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel;
 
 namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer
 {
@@ -26,28 +24,52 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer
             get { return ((MainViewModel)DataContext); }
         }
 
+        static void SafeOperation(Action annonymousMethod)
+        {
+            try
+            {
+                annonymousMethod.Invoke();
+            }
+            catch (Exception e)
+            {
+#if DEBUG
+                MessageBox.Show(e.ToString(), "Unexpected Error");
+#else
+                MessageBox.Show(e.Message, "Unexpected Error");
+#endif
+            }
+        }
+
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            if (ViewModel.LaunchedWithArgument)
-                ViewModel.OpenDatabase();
+            SafeOperation(() =>
+            {
+                if (!ViewModel.LaunchedWithArgument)
+                    ViewModel.OpenDatabase();
+                else
+                    ViewModel.ProcessCommandLineArguments();
+            });
         }
 
         private void ExecuteQuery_Click(object sender, RoutedEventArgs e)
         {
-            ViewModel.ExecuteQuery(editor.SelectedText);
+            SafeOperation(() => ViewModel.ExecuteQuery(editor.SelectedText));
         }
 
         private void Window_KeyUp(object sender, KeyEventArgs e)
         {
-            switch (e.Key)
+            SafeOperation(() =>
             {
-                case Key.F5:
-                    ViewModel.ExecuteQuery(editor.SelectedText);
-                    break;
-                case Key.F1:
-                    new AboutBox(this).ShowDialog();
-                    break;
-            }
+                switch (e.Key)
+                {
+                    case Key.F5:
+                        ViewModel.ExecuteQuery(editor.SelectedText);
+                        break;
+                    case Key.F1:
+                        new AboutBox(this).ShowDialog();
+                        break;
+                }
+            });
         }
 
         private void About_Click(object sender, RoutedEventArgs e)
@@ -57,7 +79,7 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer
 
         private void Open_Click(object sender, RoutedEventArgs e)
         {
-            ViewModel.OpenDatabase();
+            SafeOperation(() => ViewModel.OpenDatabase());
         }
 
         private void DataGrid_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
@@ -67,24 +89,27 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer
 
         private void DataGrid_SelectedCellsChanged(object sender, SelectedCellsChangedEventArgs e)
         {
-            if (!dirty) return;
-            ViewModel.SaveTableDataChanges();
-            dirty = false;
+            SafeOperation(() =>
+            {
+                if (!dirty) return;
+                ViewModel.SaveTableDataChanges();
+                dirty = false;
+            });
         }
 
         private void Window_Drop(object sender, DragEventArgs e)
         {
-            ViewModel.LoadDroppedFile(e.Data);
+            SafeOperation(() => ViewModel.LoadDroppedFile(e.Data));
         }
 
         private void Shrink_Click(object sender, RoutedEventArgs e)
         {
-            ViewModel.ShrinkDatabase();
+            SafeOperation(() => ViewModel.ShrinkDatabase());
         }
 
         private void Compact_Click(object sender, RoutedEventArgs e)
         {
-            ViewModel.CompactDatabase();
+            SafeOperation(() => ViewModel.CompactDatabase());
         }
 
         private void Exit_Click(object sender, RoutedEventArgs e)

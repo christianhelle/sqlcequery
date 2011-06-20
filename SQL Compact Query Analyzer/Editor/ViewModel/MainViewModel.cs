@@ -32,7 +32,9 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
             Query = new TextDocument();
             ResultSetXml = new TextDocument();
 
-            ProcessCommandLineArguments(Environment.GetCommandLineArgs());
+            var args = Environment.GetCommandLineArgs();
+            LaunchedWithArgument = args != null && args.Length == 2;
+
             LoadSqlSyntaxHighlighter();
         }
 
@@ -184,22 +186,25 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
                 fi.Attributes = FileAttributes.Normal;
 
                 dataSource = dialog.FileName;
-                var sw = Stopwatch.StartNew();
-
                 AnalyzeDatabase();
-
-                Status = "Executed in " + sw.Elapsed;
             }
         }
 
         private void AnalyzeDatabase()
         {
+            var sw = Stopwatch.StartNew();
             Status = "Analyzing Database...";
+
+            if (!File.Exists(dataSource))
+                throw new InvalidOperationException("Unable to find " + dataSource);
+
             database = SqlCeDatabaseFactory.Create("Data Source=" + dataSource); // new SqlCeDatabase("Data Source=" + dataSource);
             Text = "SQL Compact Query Analyzer" + " - " + new FileInfo(dataSource).Name;
 
             Status = string.Format("Found {0} tables", database.Tables.Count);
             PopulateTables(database.Tables);
+
+            Status = "Executed in " + sw.Elapsed;
         }
 
         public void ExecuteQuery(string query = null)
@@ -356,18 +361,17 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
             }
         }
 
-        public void ProcessCommandLineArguments(string[] args)
+        public void ProcessCommandLineArguments()
         {
-            if (args != null && args.Length == 1)
+            var args = Environment.GetCommandLineArgs();
+            if (args != null && args.Length == 2)
             {
                 LaunchedWithArgument = true;
-                dataSource = args[0];
+                dataSource = args[1];
 
                 var ext = Path.GetExtension(dataSource);
                 if (string.Compare(ext, ".sdf", true) == 0)
-                {
                     AnalyzeDatabase();
-                }
             }
         }
 

@@ -56,7 +56,6 @@
                 <TreeView Grid.Column="0"
                           BorderThickness="0"
                           AllowDrop="True"
-                          Drop="Window_Drop"
                           ItemsSource="{Binding Tree}" />
                 <Grid Grid.Column="2">
                     <TabControl>
@@ -73,7 +72,6 @@
                                                        FontSize="10pt"
                                                        SyntaxHighlighting="{Binding SqlSyntaxHighlighting}"
                                                        ShowLineNumbers="True"
-                                                       Drop="Window_Drop"
                                                        Document="{Binding Query, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                                 <GridSplitter Grid.Row="1"
                                               Height="5"
@@ -95,7 +93,6 @@
                                                                       BorderThickness="0"
                                                                       Margin="0,0,0,20"
                                                                       IsReadOnly="True"
-                                                                      Drop="Window_Drop"
                                                                       ItemsSource="{Binding}"
                                                                       SelectionUnit="CellOrRowHeader" />
                                                         </DataTemplate>
@@ -110,20 +107,17 @@
                                                                    FontSize="10pt"
                                                                    SyntaxHighlighting="XML"
                                                                    ShowLineNumbers="True"
-                                                                   Drop="Window_Drop"
                                                                    Document="{Binding ResultSetXml}" />
                                         </TabItem>
                                         <TabItem Header="Messages">
                                             <TextBox Text="{Binding ResultSetMessages}"
                                                      FontFamily="Courier New"
                                                      TextWrapping="Wrap"
-                                                     Drop="Window_Drop"
                                                      VerticalScrollBarVisibility="Auto" />
                                         </TabItem>
                                         <TabItem Header="Errors">
                                             <TextBox Text="{Binding ResultSetErrors}"
                                                      TextWrapping="Wrap"
-                                                     Drop="Window_Drop"
                                                      VerticalScrollBarVisibility="Auto" />
                                         </TabItem>
                                     </TabControl>
@@ -137,8 +131,7 @@
                                 <DataGrid ItemsSource="{Binding TableData, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                           SelectedCellsChanged="DataGrid_SelectedCellsChanged"
                                           CellEditEnding="DataGrid_CellEditEnding"
-                                          SelectionUnit="CellOrRowHeader"
-                                          Drop="Window_Drop" />
+                                          SelectionUnit="CellOrRowHeader" />
                             </extToolkit:BusyIndicator>
                         </TabItem>
                     </TabControl>

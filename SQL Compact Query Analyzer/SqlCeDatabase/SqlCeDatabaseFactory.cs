@@ -50,9 +50,14 @@ namespace ChristianHelle.DatabaseTools.SqlCe
             }
         }
 
+        private static string GetExecutingAssemblyPath()
+        {
+            return Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+        }
+
         private static Type LoadSqlCe31()
         {
-            var file = Path.Combine(Environment.CurrentDirectory, "SqlCe31");
+            var file = Path.Combine(GetExecutingAssemblyPath(), "SqlCe31");
             var assembly = Assembly.LoadFile(Path.Combine(file, "SqlCeDatabase31.dll"));
             var type = assembly.GetType("ChristianHelle.DatabaseTools.SqlCe.SqlCeDatabase");
             return type;
@@ -60,7 +65,7 @@ namespace ChristianHelle.DatabaseTools.SqlCe
 
         private static Type LoadSqlCe35()
         {
-            var file = Path.Combine(Environment.CurrentDirectory, "SqlCe35");
+            var file = Path.Combine(GetExecutingAssemblyPath(), "SqlCe35");
             var assembly = Assembly.LoadFile(Path.Combine(file, "SqlCeDatabase35.dll"));
             var type = assembly.GetType("ChristianHelle.DatabaseTools.SqlCe.SqlCeDatabase");
             return type;
@@ -68,7 +73,7 @@ namespace ChristianHelle.DatabaseTools.SqlCe
 
         private static Type LoadSqlCe40()
         {
-            var file = Path.Combine(Environment.CurrentDirectory, "SqlCe40");
+            var file = Path.Combine(GetExecutingAssemblyPath(), "SqlCe40");
             var assembly = Assembly.LoadFile(Path.Combine(file, "SqlCeDatabase40.dll"));
             var type = assembly.GetType("ChristianHelle.DatabaseTools.SqlCe.SqlCeDatabase");
             return type;
