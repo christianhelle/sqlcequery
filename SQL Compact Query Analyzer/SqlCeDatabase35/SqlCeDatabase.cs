@@ -269,7 +269,7 @@ namespace ChristianHelle.DatabaseTools.SqlCe
                     var columnDescriptions = new DataTable();
                     command.CommandText = @"SELECT * FROM " + table;
                     using (var adapter = new SqlCeDataAdapter(command))
-                        adapter.Fill(columnDescriptions);
+                        adapter.Fill(0, 1, columnDescriptions);
 
                     var item = new Table
                     {

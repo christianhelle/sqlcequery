@@ -112,7 +112,6 @@
                                 </Grid.RowDefinitions>
                                 <extToolkit:BusyIndicator Grid.Row="0"
                                                           IsBusy="{Binding QueryStringIsBusy}"
-                                                          BusyContent="Generating Query..."
                                                           DisplayAfter="00:00:00.0000001">
                                     <avalonEdit:TextEditor Name="editor"
                                                            FontFamily="Consolas"
@@ -125,36 +124,40 @@
                                               Height="5"
                                               HorizontalAlignment="Stretch"
                                               VerticalAlignment="Stretch" />
-                                <extToolkit:BusyIndicator  Grid.Row="2"
-                                                           IsBusy="{Binding QueryIsBusy}"
-                                                           DisplayAfter="00:00:00.0000001">
+                                <Grid Grid.Row="2">
                                     <TabControl SelectedIndex="{Binding CurrentResultsTabIndex}">
                                         <TabItem Header="Results Grid">
-                                            <ScrollViewer HorizontalScrollBarVisibility="Auto"
-                                                          VerticalScrollBarVisibility="Auto">
-                                                <ListBox ItemsSource="{Binding ResultSet, Mode=OneWay}"
-                                                         IsHitTestVisible="False">
-                                                    <ListBox.ItemTemplate>
-                                                        <DataTemplate>
-                                                            <DataGrid Grid.Row="1"
-                                                                      BorderThickness="0"
-                                                                      Margin="0,0,0,20"
-                                                                      IsReadOnly="True"
-                                                                      ItemsSource="{Binding}"
-                                                                      SelectionUnit="CellOrRowHeader" />
-                                                        </DataTemplate>
-                                                    </ListBox.ItemTemplate>
-                                                </ListBox>
-                                            </ScrollViewer>
+                                            <extToolkit:BusyIndicator IsBusy="{Binding QueryIsBusy}"
+                                                                      DisplayAfter="00:00:00.0000001">
+                                                <ScrollViewer HorizontalScrollBarVisibility="Auto"
+                                                              VerticalScrollBarVisibility="Auto">
+                                                    <ListBox ItemsSource="{Binding ResultSet, Mode=OneWay}"
+                                                             IsHitTestVisible="False">
+                                                        <ListBox.ItemTemplate>
+                                                            <DataTemplate>
+                                                                <DataGrid Grid.Row="1"
+                                                                          BorderThickness="0"
+                                                                          Margin="0,0,0,20"
+                                                                          IsReadOnly="True"
+                                                                          ItemsSource="{Binding DefaultView, Mode=OneWay, IsAsync=True}"
+                                                                          SelectionUnit="CellOrRowHeader" />
+                                                            </DataTemplate>
+                                                        </ListBox.ItemTemplate>
+                                                    </ListBox>
+                                                </ScrollViewer>
+                                            </extToolkit:BusyIndicator>
                                         </TabItem>
                                         <TabItem Header="Results XML">
-                                            <avalonEdit:TextEditor Name="resultSetXml"
-                                                                   Grid.Row="0"
-                                                                   FontFamily="Consolas"
-                                                                   FontSize="10pt"
-                                                                   SyntaxHighlighting="XML"
-                                                                   ShowLineNumbers="True"
-                                                                   Document="{Binding ResultSetXml}" />
+                                            <extToolkit:BusyIndicator IsBusy="{Binding QueryIsBusy}"
+                                                                      DisplayAfter="00:00:00.0000001">
+                                                <avalonEdit:TextEditor Name="resultSetXml"
+                                                                       Grid.Row="0"
+                                                                       FontFamily="Consolas"
+                                                                       FontSize="10pt"
+                                                                       SyntaxHighlighting="XML"
+                                                                       ShowLineNumbers="True"
+                                                                       Document="{Binding ResultSetXml, IsAsync=True}" />
+                                            </extToolkit:BusyIndicator>
                                         </TabItem>
                                         <TabItem Header="Messages">
                                             <TextBox Text="{Binding ResultSetMessages}"
@@ -168,14 +171,14 @@
                                                      VerticalScrollBarVisibility="Auto" />
                                         </TabItem>
                                     </TabControl>
-                                </extToolkit:BusyIndicator>
+                                </Grid>
                             </Grid>
                         </TabItem>
                         <TabItem Header="Table Data">
                             <extToolkit:BusyIndicator Name="tableDataBusyIndicator"
                                                       DisplayAfter="00:00:00.0000001"
                                                       IsBusy="{Binding TableDataIsBusy}">
-                                <DataGrid ItemsSource="{Binding TableData, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                <DataGrid ItemsSource="{Binding TableData, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, IsAsync=True}"
                                           SelectedCellsChanged="DataGrid_SelectedCellsChanged"
                                           CellEditEnding="DataGrid_CellEditEnding"
                                           SelectionUnit="CellOrRowHeader" />

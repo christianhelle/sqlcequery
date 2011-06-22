@@ -690,7 +690,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:SQL Compact Query Analyzer"
         "ProductCode" = "8:{AB82AD54-7AC7-43B6-8032-2FB1DF8EA2B0}"
-        "PackageCode" = "8:{707B00CB-6196-42D4-9DEF-40B5ED67BA7B}"
+        "PackageCode" = "8:{1A13E9D5-9FC9-430D-956C-CF0CBD0C6545}"
         "UpgradeCode" = "8:{7955E1B9-D626-41AD-BB40-60483A2E7086}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
@@ -1365,7 +1365,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_AC3EF5EC977446BD9B6FC630FA4CC679"
             {
-            "SourcePath" = "8:..\\Editor\\obj\\x86\\Debug\\QueryAnalyzer.exe"
+            "SourcePath" = "8:"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_DE98AAC9375741DCB29C17160E6BF7F3"

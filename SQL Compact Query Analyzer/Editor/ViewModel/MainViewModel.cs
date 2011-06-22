@@ -16,6 +16,7 @@ using Application = System.Windows.Application;
 using DataFormats = System.Windows.DataFormats;
 using IDataObject = System.Windows.IDataObject;
 using ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.Properties;
+using System.Threading;
 
 namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
 {
@@ -23,6 +24,7 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
     {
         private string dataSource;
         private ISqlCeDatabase database;
+        private static bool queryExecuting;
 
         public MainViewModel()
         {
@@ -289,6 +291,9 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
 
         public void ExecuteQuery(string sql = null)
         {
+            if (queryExecuting)
+                return;
+
             Task.Factory.StartNew(() =>
             {
                 var errors = new StringBuilder();
@@ -296,9 +301,17 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
 
                 try
                 {
-                    QueryIsBusy = true;
+                    queryExecuting = true;
+                    QueryStringIsBusy = QueryIsBusy = true;
                     ResultSetXml = null;
                     ResultSet = null;
+
+                    if (ResultSet != null)
+                    {
+                        foreach (var item in ResultSet)
+                            item.Dispose();
+                        ResultSet.Clear();
+                    }
 
                     Application.Current.Dispatcher.Invoke((Action)delegate
                     {
@@ -344,7 +357,8 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
                     CurrentResultsTabIndex = ResultSet != null && ResultSet.Count > 0 ? 0 : 2;
                     ResultSetMessages = messages.ToString();
                     ResultSetErrors = errors.ToString();
-                    QueryIsBusy = false;
+                    QueryStringIsBusy = QueryIsBusy = false;
+                    queryExecuting = false;
                 }
             });
         }
