@@ -12,7 +12,7 @@
                 </ApplicationInfo>
             </x:XData>
         </XmlDataProvider>
-        <Image x:Key="aboutLogo" Source="AboutLogo.png" />
+        <Image x:Key="aboutLogo" Source="/QueryAnalyzer;component/Resources/AboutLogo.png" />
         <Style x:Key="AboutDialogStyle" TargetType="Window">
             <Setter Property="Height" Value="Auto" />
             <Setter Property="Width" Value="500" />

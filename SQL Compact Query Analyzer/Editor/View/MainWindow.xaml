@@ -1,8 +1,7 @@
-﻿<Window x:Class="ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.MainWindow"
+﻿<Window x:Class="ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.View.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:avalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit"
-        xmlns:wf="clr-namespace:System.Windows.Forms;assembly=System.Windows.Forms"
         xmlns:extToolkit="clr-namespace:Microsoft.Windows.Controls;assembly=WPFToolkit.Extended"
         DataContext="{StaticResource MainViewModel}"
         Title="{Binding Text, FallbackValue='SQL Compact Query Analyzer'}"
@@ -27,12 +26,26 @@
                     <MenuItem Header="Execute Query"
                               InputGestureText="F5"
                               Click="ExecuteQuery_Click" />
+                    <MenuItem Header="Results">
+                        <MenuItem Header="Display in Grid"
+                                  IsCheckable="True"
+                                  IsChecked="{Binding DisplayResultsInGrid, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        <MenuItem Header="Display as XML"
+                                  IsCheckable="True"
+                                  IsChecked="{Binding DisplayResultsAsXml, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                    </MenuItem>
                 </MenuItem>
                 <MenuItem Header="Database">
                     <MenuItem Header="Shrink"
                               Click="Shrink_Click" />
                     <MenuItem Header="Compact"
                               Click="Compact_Click" />
+                    <MenuItem Header="Script Schema"
+                              Click="ScriptSchema_Click" />
+                    <MenuItem Header="Script Data"
+                              Click="ScriptData_Click" />
+                    <MenuItem Header="Script Schema and Data"
+                              Click="ScriptSchemaAndData_Click" />
                 </MenuItem>
                 <MenuItem Header="Help">
                     <MenuItem Header="About"
@@ -77,13 +90,19 @@
                         <TreeView.ItemTemplate>
                             <HierarchicalDataTemplate ItemsSource="{Binding Columns.Values}">
                                 <TextBlock Text="{Binding DisplayName}"
-                                           Margin="5,2" />
+                                           Margin="5,2">
+                                    <TextBlock.ContextMenu>
+                                        <ContextMenu>
+                                            <MenuItem Header="Rename" />
+                                        </ContextMenu>
+                                    </TextBlock.ContextMenu>
+                                </TextBlock>
                             </HierarchicalDataTemplate>
                         </TreeView.ItemTemplate>
                     </TreeView>
                 </extToolkit:BusyIndicator>
                 <Grid Grid.Column="2">
-                    <TabControl>
+                    <TabControl SelectedIndex="{Binding CurrentMainTabIndex}">
                         <TabItem Header="Query">
                             <Grid>
                                 <Grid.RowDefinitions>
@@ -91,26 +110,29 @@
                                     <RowDefinition Height="Auto" />
                                     <RowDefinition Height="*" />
                                 </Grid.RowDefinitions>
-                                <avalonEdit:TextEditor Name="editor"
-                                                       Grid.Row="0"
-                                                       FontFamily="Consolas"
-                                                       FontSize="10pt"
-                                                       SyntaxHighlighting="{Binding SqlSyntaxHighlighting}"
-                                                       ShowLineNumbers="True"
-                                                       Document="{Binding Query, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                <extToolkit:BusyIndicator Grid.Row="0"
+                                                          IsBusy="{Binding QueryStringIsBusy}"
+                                                          BusyContent="Generating Query..."
+                                                          DisplayAfter="00:00:00.0000001">
+                                    <avalonEdit:TextEditor Name="editor"
+                                                           FontFamily="Consolas"
+                                                           FontSize="10pt"
+                                                           SyntaxHighlighting="{Binding SqlSyntaxHighlighting}"
+                                                           ShowLineNumbers="True"
+                                                           Document="{Binding Query, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                </extToolkit:BusyIndicator>
                                 <GridSplitter Grid.Row="1"
                                               Height="5"
                                               HorizontalAlignment="Stretch"
                                               VerticalAlignment="Stretch" />
-                                <extToolkit:BusyIndicator Name="queryBusyIndicator"
-                                                          Grid.Row="2"
-                                                          IsBusy="{Binding QueryIsBusy}"
-                                                          DisplayAfter="00:00:00.0000001">
-                                    <TabControl SelectedIndex="{Binding CurrentTabIndex}">
+                                <extToolkit:BusyIndicator  Grid.Row="2"
+                                                           IsBusy="{Binding QueryIsBusy}"
+                                                           DisplayAfter="00:00:00.0000001">
+                                    <TabControl SelectedIndex="{Binding CurrentResultsTabIndex}">
                                         <TabItem Header="Results Grid">
                                             <ScrollViewer HorizontalScrollBarVisibility="Auto"
                                                           VerticalScrollBarVisibility="Auto">
-                                                <ListBox ItemsSource="{Binding ResultSet}"
+                                                <ListBox ItemsSource="{Binding ResultSet, Mode=OneWay}"
                                                          IsHitTestVisible="False">
                                                     <ListBox.ItemTemplate>
                                                         <DataTemplate>

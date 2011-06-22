@@ -2,10 +2,9 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.View;
 using ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel;
 
-namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer
+namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.View
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
@@ -44,6 +43,7 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer
         {
             SafeOperation(() =>
             {
+                ViewModel.Load();
                 if (!ViewModel.LaunchedWithArgument)
                     ViewModel.OpenDatabase();
                 else
@@ -119,8 +119,22 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer
 
         private void TreeView_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
-            var table = ((TreeView)sender).SelectedItem as Table;
-            ViewModel.LoadTableData(table);
+            SafeOperation(() => ViewModel.LoadTableData(((TreeView)sender).SelectedItem as Table));
+        }
+
+        private void ScriptSchema_Click(object sender, RoutedEventArgs e)
+        {
+            SafeOperation(() => ViewModel.GenerateSchemaScript());
+        }
+
+        private void ScriptSchemaAndData_Click(object sender, RoutedEventArgs e)
+        {
+            SafeOperation(() => ViewModel.GenerateSchemaAndDataScript());
+        }
+
+        private void ScriptData_Click(object sender, RoutedEventArgs e)
+        {
+            SafeOperation(() => ViewModel.GenerateDataScript());
         }
     }
 }

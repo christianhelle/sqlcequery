@@ -22,5 +22,29 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.Properties {
                 return defaultInstance;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool DisplayResultsInGrid {
+            get {
+                return ((bool)(this["DisplayResultsInGrid"]));
+            }
+            set {
+                this["DisplayResultsInGrid"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool DisplayResultsAsXml {
+            get {
+                return ((bool)(this["DisplayResultsAsXml"]));
+            }
+            set {
+                this["DisplayResultsAsXml"] = value;
+            }
+        }
     }
 }
