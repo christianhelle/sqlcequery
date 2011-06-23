@@ -189,6 +189,7 @@
                                           SelectionUnit="CellOrRowHeader" />-->
                                 <WindowsFormsHost>
                                     <View:DataGridViewEx x:Name="tableDataGrid"
+                                                         DataError="tableDataGrid_DataError"
                                                          CellBeginEdit="tableDataGrid_CellBeginEdit"
                                                          SelectionChanged="tableDataGrid_SelectionChanged"/>
                                 </WindowsFormsHost>

@@ -159,6 +159,11 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.View
                 dirty = false;
             });
         }
+
+        private void tableDataGrid_DataError(object sender, DataGridViewDataErrorEventArgs e)
+        {
+            e.ThrowException = false;
+        }
     }
 
     public sealed class ResultsContainer : System.Windows.Forms.TableLayoutPanel
@@ -174,6 +179,7 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.View
 
         public void Add(DataGridViewEx dataGrid)
         {
+            dataGrid.DataError += (sender, e) => e.ThrowException = false;
             dataGrid.ReadOnly = true;
             dataGrid.Dock = DockStyle.Fill;
             Controls.Add(dataGrid);

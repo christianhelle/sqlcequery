@@ -690,7 +690,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:SQL Compact Query Analyzer"
         "ProductCode" = "8:{AB82AD54-7AC7-43B6-8032-2FB1DF8EA2B0}"
-        "PackageCode" = "8:{D3A4FDC8-0685-4AA2-8F02-2273D959F562}"
+        "PackageCode" = "8:{3EBEB19F-49B8-4A49-B111-C4E931A38B6B}"
         "UpgradeCode" = "8:{7955E1B9-D626-41AD-BB40-60483A2E7086}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
