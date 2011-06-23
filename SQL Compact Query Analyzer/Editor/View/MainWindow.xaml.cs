@@ -1,8 +1,13 @@
 ﻿using System;
 using System.Windows;
-using System.Windows.Controls;
+using System.Windows.Forms;
 using System.Windows.Input;
 using ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel;
+using Application = System.Windows.Application;
+using DragEventArgs = System.Windows.DragEventArgs;
+using KeyEventArgs = System.Windows.Input.KeyEventArgs;
+using MessageBox = System.Windows.MessageBox;
+using TreeView = System.Windows.Controls.TreeView;
 
 namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.View
 {
@@ -44,6 +49,9 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.View
             SafeOperation(() =>
             {
                 ViewModel.Load();
+                ViewModel.ResultsContainer = resultsContainer;
+                ViewModel.TableDataGrid = tableDataGrid;
+
                 if (!ViewModel.LaunchedWithArgument)
                     ViewModel.OpenDatabase();
                 else
@@ -82,20 +90,20 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.View
             SafeOperation(() => ViewModel.OpenDatabase());
         }
 
-        private void DataGrid_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
-        {
-            dirty = true;
-        }
+        //private void DataGrid_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
+        //{
+        //    dirty = true;
+        //}
 
-        private void DataGrid_SelectedCellsChanged(object sender, SelectedCellsChangedEventArgs e)
-        {
-            SafeOperation(() =>
-            {
-                if (!dirty) return;
-                ViewModel.SaveTableDataChanges();
-                dirty = false;
-            });
-        }
+        //private void DataGrid_SelectedCellsChanged(object sender, SelectedCellsChangedEventArgs e)
+        //{
+        //    SafeOperation(() =>
+        //    {
+        //        if (!dirty) return;
+        //        ViewModel.SaveTableDataChanges();
+        //        dirty = false;
+        //    });
+        //}
 
         private void Window_Drop(object sender, DragEventArgs e)
         {
@@ -135,6 +143,48 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.View
         private void ScriptData_Click(object sender, RoutedEventArgs e)
         {
             SafeOperation(() => ViewModel.GenerateDataScript());
+      }
+
+        private void tableDataGrid_CellBeginEdit(object sender, DataGridViewCellCancelEventArgs e)
+        {
+            dirty = true;
+        }
+
+        private void tableDataGrid_SelectionChanged(object sender, EventArgs e)
+        {
+            SafeOperation(() =>
+            {
+                if (!dirty) return;
+                ViewModel.SaveTableDataChanges();
+                dirty = false;
+            });
+        }
+    }
+
+    public sealed class ResultsContainer : System.Windows.Forms.TableLayoutPanel
+    {
+        public void Clear()
+        {
+            foreach (System.Windows.Forms.Control control in Controls)
+                control.Dispose();
+            Controls.Clear();
+        }
+
+        public int Count { get { return Controls.Count; } }
+
+        public void Add(DataGridViewEx dataGrid)
+        {
+            dataGrid.ReadOnly = true;
+            dataGrid.Dock = DockStyle.Fill;
+            Controls.Add(dataGrid);
+        }
+    }
+
+    public sealed class DataGridViewEx : System.Windows.Forms.DataGridView
+    {
+        public DataGridViewEx()
+        {
+            DoubleBuffered = true;
         }
     }
 }

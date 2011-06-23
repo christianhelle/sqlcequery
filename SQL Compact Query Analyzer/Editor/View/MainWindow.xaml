@@ -3,6 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:avalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit"
         xmlns:extToolkit="clr-namespace:Microsoft.Windows.Controls;assembly=WPFToolkit.Extended"
+        xmlns:View="clr-namespace:ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.View"
         DataContext="{StaticResource MainViewModel}"
         Title="{Binding Text, FallbackValue='SQL Compact Query Analyzer'}"
         Loaded="Window_Loaded"
@@ -129,7 +130,11 @@
                                         <TabItem Header="Results Grid">
                                             <extToolkit:BusyIndicator IsBusy="{Binding QueryIsBusy}"
                                                                       DisplayAfter="00:00:00.0000001">
-                                                <ScrollViewer HorizontalScrollBarVisibility="Auto"
+                                                <WindowsFormsHost>
+                                                    <View:ResultsContainer x:Name="resultsContainer"
+                                                                           AutoScroll="True" />
+                                                </WindowsFormsHost>
+                                                <!--<ScrollViewer HorizontalScrollBarVisibility="Auto"
                                                               VerticalScrollBarVisibility="Auto">
                                                     <ListBox ItemsSource="{Binding ResultSet, Mode=OneWay}"
                                                              IsHitTestVisible="False">
@@ -144,7 +149,7 @@
                                                             </DataTemplate>
                                                         </ListBox.ItemTemplate>
                                                     </ListBox>
-                                                </ScrollViewer>
+                                                </ScrollViewer>-->
                                             </extToolkit:BusyIndicator>
                                         </TabItem>
                                         <TabItem Header="Results XML">
@@ -178,10 +183,15 @@
                             <extToolkit:BusyIndicator Name="tableDataBusyIndicator"
                                                       DisplayAfter="00:00:00.0000001"
                                                       IsBusy="{Binding TableDataIsBusy}">
-                                <DataGrid ItemsSource="{Binding TableData, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, IsAsync=True}"
+                                <!--<DataGrid ItemsSource="{Binding TableData, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, IsAsync=True}"
                                           SelectedCellsChanged="DataGrid_SelectedCellsChanged"
                                           CellEditEnding="DataGrid_CellEditEnding"
-                                          SelectionUnit="CellOrRowHeader" />
+                                          SelectionUnit="CellOrRowHeader" />-->
+                                <WindowsFormsHost>
+                                    <View:DataGridViewEx x:Name="tableDataGrid"
+                                                         CellBeginEdit="tableDataGrid_CellBeginEdit"
+                                                         SelectionChanged="tableDataGrid_SelectionChanged"/>
+                                </WindowsFormsHost>
                             </extToolkit:BusyIndicator>
                         </TabItem>
                     </TabControl>

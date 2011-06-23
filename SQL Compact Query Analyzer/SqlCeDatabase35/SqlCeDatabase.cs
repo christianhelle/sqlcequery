@@ -120,7 +120,7 @@ namespace ChristianHelle.DatabaseTools.SqlCe
                     int affectedRows = 0;
                     var split = query.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
 
-                    var tables = new List<DataTable>();
+                    var tables = new DataSet();
                     using (var command = conn.CreateCommand())
                     {
                         conn.Open();
@@ -134,7 +134,7 @@ namespace ChristianHelle.DatabaseTools.SqlCe
                                     {
                                         var table = new DataTable();
                                         affectedRows += adapter.Fill(table);
-                                        tables.Add(table);
+                                        tables.Tables.Add(table);
                                         messages.AppendLine(string.Format("Retrieved {0} row(s)", table.Rows.Count));
                                     }
                                 }

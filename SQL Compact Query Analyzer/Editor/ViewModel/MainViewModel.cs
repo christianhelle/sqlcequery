@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data;
 using System.IO;
@@ -8,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
+using ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.View;
 using GalaSoft.MvvmLight;
 using ICSharpCode.AvalonEdit.Document;
 using ICSharpCode.AvalonEdit.Highlighting;
@@ -16,7 +16,6 @@ using Application = System.Windows.Application;
 using DataFormats = System.Windows.DataFormats;
 using IDataObject = System.Windows.IDataObject;
 using ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.Properties;
-using System.Threading;
 
 namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
 {
@@ -53,12 +52,12 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
         private TextDocument query;
         private bool queryIsBusy;
         private bool queryStringIsBusy;
-        private ObservableCollection<DataTable> resultSet;
+        //private ObservableCollection<DataTable> resultSet;
         private string resultSetErrors;
         private string resultSetMessages;
         private IHighlightingDefinition sqlSyntaxHighlighting;
         private string status;
-        private DataTable tableData;
+        //private DataTable tableData;
         private bool tableDataIsBusy;
         private ObservableCollection<Table> tables;
         private string text;
@@ -85,27 +84,27 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
             }
         }
 
-        public ObservableCollection<DataTable> ResultSet
-        {
-            get { return resultSet; }
-            set
-            {
-                resultSet = value;
-                RaisePropertyChanged("ResultSet");
-            }
-        }
+        //public ObservableCollection<DataTable> ResultSet
+        //{
+        //    get { return resultSet; }
+        //    set
+        //    {
+        //        resultSet = value;
+        //        RaisePropertyChanged("ResultSet");
+        //    }
+        //}
 
         public TextDocument ResultSetXml { get; private set; }
 
-        public DataTable TableData
-        {
-            get { return tableData; }
-            set
-            {
-                tableData = value;
-                RaisePropertyChanged("TableData");
-            }
-        }
+        //public DataTable TableData
+        //{
+        //    get { return tableData; }
+        //    set
+        //    {
+        //        tableData = value;
+        //        RaisePropertyChanged("TableData");
+        //    }
+        //}
 
         public IHighlightingDefinition SqlSyntaxHighlighting
         {
@@ -239,6 +238,10 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
             }
         }
 
+        public ResultsContainer ResultsContainer { get; set; }
+
+        public DataGridViewEx TableDataGrid { get; set; }
+
         #endregion
 
         public void OpenDatabase()
@@ -255,11 +258,25 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
                 dataSource = dialog.FileName;
                 AnalyzeDatabase();
 
-                TableData = null;
+                ResetData();
                 Query.Text = string.Empty;
                 RaisePropertyChanged("Query");
                 CurrentMainTabIndex = 0;
             }
+        }
+
+        private void ResetData()
+        {
+            //TableData = null;
+
+            var table = TableDataGrid.DataSource as DataTable;
+            if (table != null)
+            {
+                table.Dispose();
+                table = null;
+            }
+
+            ResultsContainer.Clear();
         }
 
         private void AnalyzeDatabase()
@@ -304,57 +321,75 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
                     queryExecuting = true;
                     QueryStringIsBusy = QueryIsBusy = true;
                     ResultSetXml = null;
-                    ResultSet = null;
+                    ResultSetMessages = "Executing query...";
+                    ResultSetErrors = string.Empty;
+                    //ResultSet = null;
 
-                    if (ResultSet != null)
-                    {
-                        foreach (var item in ResultSet)
-                            item.Dispose();
-                        ResultSet.Clear();
-                    }
+                    //if (ResultSet != null)
+                    //{
+                    //    foreach (var item in ResultSet)
+                    //        item.Dispose();
+                    //    ResultSet.Clear();
+                    //}
 
                     Application.Current.Dispatcher.Invoke((Action)delegate
                     {
                         if (string.IsNullOrEmpty(sql))
                             sql = Query.Text;
+                        ResetData();
                     });
 
-                    var result = database.ExecuteQuery(sql, errors, messages) as IEnumerable<DataTable>;
+                    var result = database.ExecuteQuery(sql, errors, messages) as DataSet;
                     if (result == null)
                         return;
 
-                    var counter = 1;
-                    var sb = new StringBuilder();
-                    var dataTables = new ObservableCollection<DataTable>();
-                    foreach (var table in result)
-                    {
-                        dataTables.Add(table);
+                    //var counter = 1;
+                    //var sb = new StringBuilder();
+                    //var dataTables = new ObservableCollection<DataTable>();
+                    //foreach (var table in result)
+                    //{
+                    //    dataTables.Add(table);
 
-                        if (string.IsNullOrEmpty(table.TableName))
-                            table.TableName = "ResultSet" + counter++;
+                    //    if (string.IsNullOrEmpty(table.TableName))
+                    //        table.TableName = "ResultSet" + counter++;
 
-                        if (!DisplayResultsAsXml) continue;
-                        using (var writer = new StringWriter(sb))
-                        using (var xml = new XmlTextWriter(writer) { Formatting = Formatting.Indented })
-                        {
-                            table.WriteXml(xml);
-                            writer.WriteLine(string.Empty);
-                        }
-                    }
+                    //    if (!DisplayResultsAsXml) continue;
+                    //    using (var writer = new StringWriter(sb))
+                    //    using (var xml = new XmlTextWriter(writer) { Formatting = Formatting.Indented })
+                    //    {
+                    //        table.WriteXml(xml);
+                    //        writer.WriteLine(string.Empty);
+                    //    }
+                    //}
+
+                    //if (DisplayResultsInGrid)
+                    //    ResultSet = dataTables;
 
                     if (DisplayResultsInGrid)
-                        ResultSet = dataTables;
+                        Application.Current.Dispatcher.Invoke((Action)delegate
+                        {
+                            foreach (DataTable table in result.Tables)
+                                ResultsContainer.Add(new DataGridViewEx { DataSource = table });
+                        });
 
                     if (DisplayResultsAsXml)
                         Application.Current.Dispatcher.Invoke((Action)delegate
                         {
+                            var sb = new StringBuilder();
+                            using (var writer = new StringWriter(sb))
+                            using (var xml = new XmlTextWriter(writer) { Formatting = Formatting.Indented })
+                            {
+                                result.WriteXml(xml);
+                                writer.WriteLine(string.Empty);
+                            }
                             ResultSetXml.Text = sb.ToString();
                             RaisePropertyChanged("ResultSetXml");
                         });
                 }
                 finally
                 {
-                    CurrentResultsTabIndex = ResultSet != null && ResultSet.Count > 0 ? 0 : 2;
+                    //CurrentResultsTabIndex = ResultSet != null && ResultSet.Count > 0 ? 0 : 2;
+                    CurrentResultsTabIndex = ResultsContainer.Count > 0 ? 0 : 2;
                     ResultSetMessages = messages.ToString();
                     ResultSetErrors = errors.ToString();
                     QueryStringIsBusy = QueryIsBusy = false;
@@ -368,19 +403,22 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
             if (table == null)
                 return;
 
+            ResetData();
+
             Task.Factory.StartNew(() =>
             {
                 try
                 {
                     TableDataIsBusy = true;
-                    if (TableData != null)
-                    {
-                        TableData.Dispose();
-                        TableData = null;
-                    }
+                    //if (TableData != null)
+                    //{
+                    //    TableData.Dispose();
+                    //    TableData = null;
+                    //}
 
                     var dataTable = database.GetTableData(table) as DataTable;
-                    TableData = dataTable;
+                    Application.Current.Dispatcher.Invoke((Action)delegate { TableDataGrid.DataSource = dataTable; });
+                    //TableData = dataTable;
                 }
                 finally
                 {
@@ -391,7 +429,8 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
 
         public void SaveTableDataChanges()
         {
-            database.SaveTableDataChanges(TableData);
+            //database.SaveTableDataChanges(TableData);
+            database.SaveTableDataChanges(TableDataGrid.DataSource as DataTable);
         }
 
         public void LoadSqlSyntaxHighlighter()
