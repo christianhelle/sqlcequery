@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
-using ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.View;
+using ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.Controls;
 using GalaSoft.MvvmLight;
 using ICSharpCode.AvalonEdit.Document;
 using ICSharpCode.AvalonEdit.Highlighting;
@@ -38,29 +38,23 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
 
         public bool LaunchedWithArgument { get; private set; }
 
-        public void Load()
-        {
-            DisplayResultsInGrid = Settings.Default.DisplayResultsInGrid;
-            DisplayResultsAsXml = Settings.Default.DisplayResultsAsXml;
-        }
-
         #region Data Binding
 
+        private bool databaseIsBusy;
+        private bool queryIsBusy;
+        private bool tableDataIsBusy;
+        private bool queryStringIsBusy;
         private bool analyzingTablesIsBusy;
         private int currentResultsTabIndex;
         private int currentMainTabIndex;
-        private TextDocument query;
-        private bool queryIsBusy;
-        private bool queryStringIsBusy;
-        //private ObservableCollection<DataTable> resultSet;
+        private int tableDataCount;
+        private string text;
+        private string status;
         private string resultSetErrors;
         private string resultSetMessages;
+        private TextDocument query;
         private IHighlightingDefinition sqlSyntaxHighlighting;
-        private string status;
-        //private DataTable tableData;
-        private bool tableDataIsBusy;
         private ObservableCollection<Table> tables;
-        private string text;
         private bool displayResultsInGrid;
         private bool displayResultsAsXml;
 
@@ -84,27 +78,7 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
             }
         }
 
-        //public ObservableCollection<DataTable> ResultSet
-        //{
-        //    get { return resultSet; }
-        //    set
-        //    {
-        //        resultSet = value;
-        //        RaisePropertyChanged("ResultSet");
-        //    }
-        //}
-
         public TextDocument ResultSetXml { get; private set; }
-
-        //public DataTable TableData
-        //{
-        //    get { return tableData; }
-        //    set
-        //    {
-        //        tableData = value;
-        //        RaisePropertyChanged("TableData");
-        //    }
-        //}
 
         public IHighlightingDefinition SqlSyntaxHighlighting
         {
@@ -216,6 +190,16 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
             }
         }
 
+        public bool DatabaseIsBusy
+        {
+            get { return databaseIsBusy; }
+            set
+            {
+                databaseIsBusy = value;
+                RaisePropertyChanged("DatabaseIsBusy");
+            }
+        }
+
         public bool DisplayResultsInGrid
         {
             get { return displayResultsInGrid; }
@@ -238,11 +222,27 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
             }
         }
 
+        public int TableDataCount
+        {
+            get { return tableDataCount; }
+            set
+            {
+                tableDataCount = value;
+                RaisePropertyChanged("TableDataCount");
+            }
+        }
+
         public ResultsContainer ResultsContainer { get; set; }
 
         public DataGridViewEx TableDataGrid { get; set; }
 
         #endregion
+
+        public void Load()
+        {
+            DisplayResultsInGrid = Settings.Default.DisplayResultsInGrid;
+            DisplayResultsAsXml = Settings.Default.DisplayResultsAsXml;
+        }
 
         public void OpenDatabase()
         {
@@ -267,15 +267,11 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
 
         private void ResetData()
         {
-            //TableData = null;
-
             var table = TableDataGrid.DataSource as DataTable;
             if (table != null)
-            {
                 table.Dispose();
-                table = null;
-            }
-
+            TableDataCount = 0;
+            ResultSetXml.Text = string.Empty;
             ResultsContainer.Clear();
         }
 
@@ -292,12 +288,17 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
 
                     database = SqlCeDatabaseFactory.Create("Data Source=" + dataSource);
 
-                    Text = "SQL Compact Query Analyzer" + " - " + new FileInfo(dataSource).Name;
+                    Text = "SQL Compact Query Analyzer" + " - " + dataSource;
 
                     var collection = new ObservableCollection<Table>();
                     foreach (var table in database.Tables)
                         collection.Add(table);
                     Tables = collection;
+                }
+                catch (Exception e)
+                {
+                    ResultSetErrors = e.ToString();
+                    CurrentResultsTabIndex = 3;
                 }
                 finally
                 {
@@ -320,20 +321,12 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
                 {
                     queryExecuting = true;
                     QueryStringIsBusy = QueryIsBusy = true;
-                    ResultSetXml = null;
                     ResultSetMessages = "Executing query...";
                     ResultSetErrors = string.Empty;
-                    //ResultSet = null;
-
-                    //if (ResultSet != null)
-                    //{
-                    //    foreach (var item in ResultSet)
-                    //        item.Dispose();
-                    //    ResultSet.Clear();
-                    //}
 
                     Application.Current.Dispatcher.Invoke((Action)delegate
                     {
+                        ResultSetXml.Text = string.Empty;
                         if (string.IsNullOrEmpty(sql))
                             sql = Query.Text;
                         ResetData();
@@ -343,28 +336,6 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
                     if (result == null)
                         return;
 
-                    //var counter = 1;
-                    //var sb = new StringBuilder();
-                    //var dataTables = new ObservableCollection<DataTable>();
-                    //foreach (var table in result)
-                    //{
-                    //    dataTables.Add(table);
-
-                    //    if (string.IsNullOrEmpty(table.TableName))
-                    //        table.TableName = "ResultSet" + counter++;
-
-                    //    if (!DisplayResultsAsXml) continue;
-                    //    using (var writer = new StringWriter(sb))
-                    //    using (var xml = new XmlTextWriter(writer) { Formatting = Formatting.Indented })
-                    //    {
-                    //        table.WriteXml(xml);
-                    //        writer.WriteLine(string.Empty);
-                    //    }
-                    //}
-
-                    //if (DisplayResultsInGrid)
-                    //    ResultSet = dataTables;
-
                     if (DisplayResultsInGrid)
                         Application.Current.Dispatcher.Invoke((Action)delegate
                         {
@@ -373,22 +344,28 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
                         });
 
                     if (DisplayResultsAsXml)
+                    {
+                        var sb = new StringBuilder();
+                        using (var writer = new StringWriter(sb))
+                        using (var xml = new XmlTextWriter(writer) { Formatting = Formatting.Indented })
+                        {
+                            result.WriteXml(xml);
+                            writer.WriteLine(string.Empty);
+                        }
                         Application.Current.Dispatcher.Invoke((Action)delegate
                         {
-                            var sb = new StringBuilder();
-                            using (var writer = new StringWriter(sb))
-                            using (var xml = new XmlTextWriter(writer) { Formatting = Formatting.Indented })
-                            {
-                                result.WriteXml(xml);
-                                writer.WriteLine(string.Empty);
-                            }
                             ResultSetXml.Text = sb.ToString();
                             RaisePropertyChanged("ResultSetXml");
                         });
+                    }
+                }
+                catch (Exception e)
+                {
+                    ResultSetErrors = e.ToString();
+                    CurrentResultsTabIndex = 3;
                 }
                 finally
                 {
-                    //CurrentResultsTabIndex = ResultSet != null && ResultSet.Count > 0 ? 0 : 2;
                     CurrentResultsTabIndex = ResultsContainer.Count > 0 ? 0 : 2;
                     ResultSetMessages = messages.ToString();
                     ResultSetErrors = errors.ToString();
@@ -410,15 +387,14 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
                 try
                 {
                     TableDataIsBusy = true;
-                    //if (TableData != null)
-                    //{
-                    //    TableData.Dispose();
-                    //    TableData = null;
-                    //}
-
                     var dataTable = database.GetTableData(table) as DataTable;
                     Application.Current.Dispatcher.Invoke((Action)delegate { TableDataGrid.DataSource = dataTable; });
-                    //TableData = dataTable;
+                    TableDataCount = dataTable != null ? dataTable.Rows.Count : 0;
+                }
+                catch (Exception e)
+                {
+                    ResultSetErrors = e.ToString();
+                    CurrentResultsTabIndex = 3;
                 }
                 finally
                 {
@@ -429,8 +405,9 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
 
         public void SaveTableDataChanges()
         {
-            //database.SaveTableDataChanges(TableData);
-            database.SaveTableDataChanges(TableDataGrid.DataSource as DataTable);
+            var dataTable = TableDataGrid.DataSource as DataTable;
+            database.SaveTableDataChanges(dataTable);
+            TableDataCount = dataTable != null ? dataTable.Rows.Count : 0;
         }
 
         public void LoadSqlSyntaxHighlighter()
@@ -464,45 +441,65 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
             if (!data.GetDataPresent(DataFormats.FileDrop))
                 return;
             var filePaths = (string[])(data.GetData(DataFormats.FileDrop));
-            if (filePaths != null && filePaths.Length > 0)
-            {
-                var filePath = filePaths[0];
-                if (filePath != null)
-                {
-                    var ext = Path.GetExtension(filePath);
-                    if (ext != null)
-                        ext = ext.ToLower();
-                    if (string.Compare(ext, ".sdf", true) == 0)
-                    {
-                        dataSource = filePaths[0];
-                        AnalyzeDatabase();
-                    }
-                }
-            }
+            if (filePaths == null || filePaths.Length <= 0)
+                return;
+
+            var filePath = filePaths[0];
+            if (filePath == null)
+                return;
+
+            var ext = Path.GetExtension(filePath);
+            if (ext != null)
+                ext = ext.ToLower();
+            if (string.Compare(ext, ".sdf", true) != 0)
+                return;
+
+            dataSource = filePaths[0];
+            AnalyzeDatabase();
         }
 
         public void ShrinkDatabase()
         {
-            var previous = new FileInfo(dataSource).Length;
+            try
+            {
+                DatabaseIsBusy = true;
 
-            database.Shrink();
+                var fi = new FileInfo(dataSource);
+                var previous = fi.Length;
+                database.Shrink();
+                var current = fi.Length;
 
-            var current = new FileInfo(dataSource).Length;
-
-            ResultSetMessages = string.Format("Database shrinked to {0:0,0.0} from {1:0,0.0} bytes", previous, current);
-            CurrentResultsTabIndex = 2;
+                ResultSetMessages = string.Format("Database shrinked to {0:0,0.0} from {1:0,0.0} bytes", previous, current);
+                CurrentResultsTabIndex = 2;
+            }
+            catch (Exception e)
+            {
+                ResultSetErrors = e.ToString();
+                CurrentResultsTabIndex = 3;
+                DatabaseIsBusy = false;
+            }
         }
 
         public void CompactDatabase()
         {
-            var previous = new FileInfo(dataSource).Length;
+            try
+            {
+                DatabaseIsBusy = true;
 
-            database.Compact();
+                var fi = new FileInfo(dataSource);
+                var previous = fi.Length;
+                database.Compact();
+                var current = fi.Length;
 
-            var current = new FileInfo(dataSource).Length;
-
-            ResultSetMessages = string.Format("Database compacted to {0:0,0.0} from {1:0,0.0} bytes", previous, current);
-            CurrentResultsTabIndex = 2;
+                ResultSetMessages = string.Format("Database compacted to {0:0,0.0} from {1:0,0.0} bytes", previous, current);
+                CurrentResultsTabIndex = 2;
+            }
+            catch (Exception e)
+            {
+                ResultSetErrors = e.ToString();
+                CurrentResultsTabIndex = 3;
+                DatabaseIsBusy = false;
+            }
         }
 
         public void GenerateSchemaScript()
@@ -521,6 +518,11 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
                         RaisePropertyChanged("Query");
                     });
                     CurrentMainTabIndex = 0;
+                }
+                catch (Exception e)
+                {
+                    ResultSetErrors = e.ToString();
+                    CurrentResultsTabIndex = 3;
                 }
                 finally
                 {
@@ -545,6 +547,11 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
                     });
                     CurrentMainTabIndex = 0;
                 }
+                catch (Exception e)
+                {
+                    ResultSetErrors = e.ToString();
+                    CurrentResultsTabIndex = 3;
+                }
                 finally
                 {
                     QueryStringIsBusy = false;
@@ -567,6 +574,11 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
                         RaisePropertyChanged("Query");
                     });
                     CurrentMainTabIndex = 0;
+                }
+                catch (Exception e)
+                {
+                    ResultSetErrors = e.ToString();
+                    CurrentResultsTabIndex = 3;
                 }
                 finally
                 {

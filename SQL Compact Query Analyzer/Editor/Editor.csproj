@@ -93,6 +93,12 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Controls\DataGridViewEx.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\ResultsContainer.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="ViewModel\MainViewModel.cs" />
     <Compile Include="View\AboutBox.xaml.cs">
       <DependentUpon>AboutBox.xaml</DependentUpon>

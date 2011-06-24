@@ -164,33 +164,10 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.View
         {
             e.ThrowException = false;
         }
-    }
 
-    public sealed class ResultsContainer : System.Windows.Forms.TableLayoutPanel
-    {
-        public void Clear()
+        private void tableDataGrid_RowsRemoved(object sender, DataGridViewRowsRemovedEventArgs e)
         {
-            foreach (System.Windows.Forms.Control control in Controls)
-                control.Dispose();
-            Controls.Clear();
-        }
-
-        public int Count { get { return Controls.Count; } }
-
-        public void Add(DataGridViewEx dataGrid)
-        {
-            dataGrid.DataError += (sender, e) => e.ThrowException = false;
-            dataGrid.ReadOnly = true;
-            dataGrid.Dock = DockStyle.Fill;
-            Controls.Add(dataGrid);
-        }
-    }
-
-    public sealed class DataGridViewEx : System.Windows.Forms.DataGridView
-    {
-        public DataGridViewEx()
-        {
-            DoubleBuffered = true;
+            SafeOperation(() => ViewModel.SaveTableDataChanges());
         }
     }
 }
