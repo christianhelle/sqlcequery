@@ -258,21 +258,19 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
                 dataSource = dialog.FileName;
                 AnalyzeDatabase();
 
-                ResetData();
+                ResetTableData();
                 Query.Text = string.Empty;
                 RaisePropertyChanged("Query");
                 CurrentMainTabIndex = 0;
             }
         }
 
-        private void ResetData()
+        private void ResetTableData()
         {
             var table = TableDataGrid.DataSource as DataTable;
             if (table != null)
                 table.Dispose();
             TableDataCount = 0;
-            ResultSetXml.Text = string.Empty;
-            ResultsContainer.Clear();
         }
 
         private void AnalyzeDatabase()
@@ -326,10 +324,11 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
 
                     Application.Current.Dispatcher.Invoke((Action)delegate
                     {
-                        ResultSetXml.Text = string.Empty;
                         if (string.IsNullOrEmpty(sql))
                             sql = Query.Text;
-                        ResetData();
+
+                        ResultSetXml.Text = string.Empty;
+                        ResultsContainer.Clear();
                     });
 
                     var result = database.ExecuteQuery(sql, errors, messages) as DataSet;
@@ -358,6 +357,8 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
                             RaisePropertyChanged("ResultSetXml");
                         });
                     }
+
+                    CurrentResultsTabIndex = result.Tables.Count > 0 ? 0 : 2;
                 }
                 catch (Exception e)
                 {
@@ -366,7 +367,6 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
                 }
                 finally
                 {
-                    CurrentResultsTabIndex = ResultsContainer.Count > 0 ? 0 : 2;
                     ResultSetMessages = messages.ToString();
                     ResultSetErrors = errors.ToString();
                     QueryStringIsBusy = QueryIsBusy = false;
@@ -380,7 +380,7 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
             if (table == null)
                 return;
 
-            ResetData();
+            ResetTableData();
 
             Task.Factory.StartNew(() =>
             {
