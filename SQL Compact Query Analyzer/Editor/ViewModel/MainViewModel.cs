@@ -284,9 +284,12 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
                     if (!File.Exists(dataSource))
                         throw new InvalidOperationException("Unable to find " + dataSource);
 
-                    database = SqlCeDatabaseFactory.Create("Data Source=" + dataSource);
-
                     Text = "SQL Compact Query Analyzer" + " - " + dataSource;
+
+                    var fileInfo = new FileInfo(dataSource);
+                    fileInfo.Attributes &= ~FileAttributes.ReadOnly;
+
+                    database = SqlCeDatabaseFactory.Create("Data Source=" + dataSource);
 
                     var collection = new ObservableCollection<Table>();
                     foreach (var table in database.Tables)
@@ -463,19 +466,23 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
             try
             {
                 DatabaseIsBusy = true;
+                CurrentResultsTabIndex = 2;
+                ResultSetMessages = "Shrinking database...";
 
-                var fi = new FileInfo(dataSource);
-                var previous = fi.Length;
+                var previous = new FileInfo(dataSource).Length;
                 database.Shrink();
-                var current = fi.Length;
+                var current = new FileInfo(dataSource).Length;
 
                 ResultSetMessages = string.Format("Database shrinked to {0:0,0.0} from {1:0,0.0} bytes", previous, current);
-                CurrentResultsTabIndex = 2;
             }
             catch (Exception e)
             {
+                ResultSetMessages = string.Empty;
                 ResultSetErrors = e.ToString();
                 CurrentResultsTabIndex = 3;
+            }
+            finally
+            {
                 DatabaseIsBusy = false;
             }
         }
@@ -485,19 +492,23 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
             try
             {
                 DatabaseIsBusy = true;
+                CurrentResultsTabIndex = 2;
+                ResultSetMessages = "Compacting database...";
 
-                var fi = new FileInfo(dataSource);
-                var previous = fi.Length;
+                var previous = new FileInfo(dataSource).Length;
                 database.Compact();
-                var current = fi.Length;
+                var current = new FileInfo(dataSource).Length;
 
                 ResultSetMessages = string.Format("Database compacted to {0:0,0.0} from {1:0,0.0} bytes", previous, current);
-                CurrentResultsTabIndex = 2;
             }
             catch (Exception e)
             {
+                ResultSetMessages = string.Empty;
                 ResultSetErrors = e.ToString();
                 CurrentResultsTabIndex = 3;
+            }
+            finally
+            {
                 DatabaseIsBusy = false;
             }
         }
