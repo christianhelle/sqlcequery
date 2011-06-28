@@ -8,6 +8,8 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 using ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.Controls;
+using ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.Properties;
+using ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.View;
 using GalaSoft.MvvmLight;
 using ICSharpCode.AvalonEdit.Document;
 using ICSharpCode.AvalonEdit.Highlighting;
@@ -15,7 +17,6 @@ using ICSharpCode.AvalonEdit.Highlighting.Xshd;
 using Application = System.Windows.Application;
 using DataFormats = System.Windows.DataFormats;
 using IDataObject = System.Windows.IDataObject;
-using ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.Properties;
 
 namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
 {
@@ -596,6 +597,19 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
                     QueryStringIsBusy = false;
                 }
             });
+        }
+
+        public void RenameObject(object treeViewItem)
+        {
+            var window = new RenameObjectWindow();
+            
+            if (treeViewItem is Table)
+                window.ViewModel = new RenameObjectViewModel(database, treeViewItem as Table);
+            else if (treeViewItem is Column)
+                window.ViewModel = new RenameObjectViewModel(database, treeViewItem as Column);
+
+            if (window.ViewModel != null)
+                window.ShowDialog();
         }
     }
 }

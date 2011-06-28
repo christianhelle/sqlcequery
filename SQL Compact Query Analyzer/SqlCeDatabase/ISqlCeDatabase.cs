@@ -17,9 +17,11 @@ namespace ChristianHelle.DatabaseTools.SqlCe
         void Shrink();
         void Compact();
         void Upgrade();
+        void Rename(Table table, string newName);
+        void Rename(Column column, string newName);
         object GetTableData(Table table);
         object GetTableData(string tableName, string columnName);
         void SaveTableDataChanges(DataTable TableData);
         object ExecuteQuery(string query, StringBuilder errors, StringBuilder messages);
-    }    
+    }
 }

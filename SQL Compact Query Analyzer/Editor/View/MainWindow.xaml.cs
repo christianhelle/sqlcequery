@@ -143,7 +143,7 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.View
         private void ScriptData_Click(object sender, RoutedEventArgs e)
         {
             SafeOperation(() => ViewModel.GenerateDataScript());
-      }
+        }
 
         private void tableDataGrid_CellBeginEdit(object sender, DataGridViewCellCancelEventArgs e)
         {
@@ -168,6 +168,11 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.View
         private void tableDataGrid_RowsRemoved(object sender, DataGridViewRowsRemovedEventArgs e)
         {
             SafeOperation(() => ViewModel.SaveTableDataChanges());
+        }
+
+        private void Rename_Click(object sender, RoutedEventArgs e)
+        {
+            SafeOperation(() => ViewModel.RenameObject(((System.Windows.Controls.MenuItem)sender).Tag));
         }
     }
 }

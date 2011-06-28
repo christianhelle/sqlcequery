@@ -306,5 +306,15 @@ namespace ChristianHelle.DatabaseTools.SqlCe
             }
             return tableList;
         }
+        
+        public void Rename(Table table, string newName)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Rename(Column column, string newName)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

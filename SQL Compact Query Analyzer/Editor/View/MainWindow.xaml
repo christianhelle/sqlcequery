@@ -94,7 +94,7 @@
                                            Margin="5,2">
                                     <TextBlock.ContextMenu>
                                         <ContextMenu>
-                                            <MenuItem Header="Rename" />
+                                            <MenuItem Tag="{Binding}" Header="Rename" Click="Rename_Click" />
                                         </ContextMenu>
                                     </TextBlock.ContextMenu>
                                 </TextBlock>
