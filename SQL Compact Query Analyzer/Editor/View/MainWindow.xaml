@@ -69,38 +69,7 @@
                     <TreeView Grid.Column="0"
                               BorderThickness="0"
                               AllowDrop="True"
-                              ItemsSource="{Binding Tables}"
-                              SelectedItemChanged="TreeView_SelectedItemChanged">
-                        <TreeView.ItemContainerStyle>
-                            <Style TargetType="{x:Type TreeViewItem}">
-                                <Setter Property="IsExpanded"
-                                        Value="{Binding IsExpanded, Mode=TwoWay}" />
-                                <Setter Property="IsSelected"
-                                        Value="{Binding IsSelected, Mode=TwoWay}" />
-                                <Setter Property="FontWeight"
-                                        Value="Normal" />
-                                <Style.Triggers>
-                                    <Trigger Property="IsSelected"
-                                             Value="True">
-                                        <Setter Property="FontWeight"
-                                                Value="Bold" />
-                                    </Trigger>
-                                </Style.Triggers>
-                            </Style>
-                        </TreeView.ItemContainerStyle>
-                        <TreeView.ItemTemplate>
-                            <HierarchicalDataTemplate ItemsSource="{Binding Columns.Values}">
-                                <TextBlock Text="{Binding DisplayName}"
-                                           Margin="5,2">
-                                    <TextBlock.ContextMenu>
-                                        <ContextMenu>
-                                            <MenuItem Tag="{Binding}" Header="Rename" Click="Rename_Click" />
-                                        </ContextMenu>
-                                    </TextBlock.ContextMenu>
-                                </TextBlock>
-                            </HierarchicalDataTemplate>
-                        </TreeView.ItemTemplate>
-                    </TreeView>
+                              ItemsSource="{Binding Tree}" />
                 </extToolkit:BusyIndicator>
                 <Grid Grid.Column="2">
                     <extToolkit:BusyIndicator IsBusy="{Binding DatabaseIsBusy}"
@@ -184,8 +153,11 @@
                                         <StackPanel Grid.Row="1"
                                                     Margin="5"
                                                     Orientation="Horizontal">
-                                            <TextBlock Text="{Binding TableDataCount, FallbackValue='0'}" Margin="5,0,4,0" />
-                                            <TextBlock Text="row(s) retrieved" />
+                                            <TextBlock Text="{Binding TableDataCount, FallbackValue='0'}"
+                                                       Margin="5,0,4,0" />
+                                            <TextBlock Text="row(s) retrieved in" />
+                                            <TextBlock Text="{Binding TableDataExecutionTime, FallbackValue='00:00:00.000'}"
+                                                       Margin="5,0,4,0" />
                                         </StackPanel>
                                     </Grid>
                                 </extToolkit:BusyIndicator>

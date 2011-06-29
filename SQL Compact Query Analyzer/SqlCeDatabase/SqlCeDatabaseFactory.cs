@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Security.Policy;
 using System.Reflection;
 using System.Data.SqlClient;
 using System.IO;
@@ -58,7 +55,7 @@ namespace ChristianHelle.DatabaseTools.SqlCe
         private static Type LoadSqlCe31()
         {
             var file = Path.Combine(GetExecutingAssemblyPath(), "SqlCe31");
-            var assembly = Assembly.LoadFile(Path.Combine(file, "SqlCeDatabase31.dll"));
+            var assembly = Assembly.LoadFrom(Path.Combine(file, "SqlCeDatabase31.dll"));
             var type = assembly.GetType("ChristianHelle.DatabaseTools.SqlCe.SqlCeDatabase");
             return type;
         }
@@ -66,7 +63,7 @@ namespace ChristianHelle.DatabaseTools.SqlCe
         private static Type LoadSqlCe35()
         {
             var file = Path.Combine(GetExecutingAssemblyPath(), "SqlCe35");
-            var assembly = Assembly.LoadFile(Path.Combine(file, "SqlCeDatabase35.dll"));
+            var assembly = Assembly.LoadFrom(Path.Combine(file, "SqlCeDatabase35.dll"));
             var type = assembly.GetType("ChristianHelle.DatabaseTools.SqlCe.SqlCeDatabase");
             return type;
         }
@@ -74,14 +71,43 @@ namespace ChristianHelle.DatabaseTools.SqlCe
         private static Type LoadSqlCe40()
         {
             var file = Path.Combine(GetExecutingAssemblyPath(), "SqlCe40");
-            var assembly = Assembly.LoadFile(Path.Combine(file, "SqlCeDatabase40.dll"));
+            var assembly = Assembly.LoadFrom(Path.Combine(file, "SqlCeDatabase40.dll"));
             var type = assembly.GetType("ChristianHelle.DatabaseTools.SqlCe.SqlCeDatabase");
             return type;
         }
 
-        static SupportedVersions GetVersion(string file)
+        public static string GetRuntimeVersion(string file)
         {
-            using (FileStream fs = new FileStream(file, FileMode.Open))
+            string path;
+            var assemblyFileVersion = "Unknown";
+
+            var supportedVersions = GetVersion(file);
+            switch (supportedVersions)
+            {
+                case SupportedVersions.SqlCe31:
+                    path = "SqlCe31\\System.Data.SqlServerCe.dll";
+                    break;
+                case SupportedVersions.SqlCe35:
+                    path = "SqlCe35\\System.Data.SqlServerCe.dll";
+                    break;
+                case SupportedVersions.SqlCe40:
+                    path = "SqlCe40\\System.Data.SqlServerCe.dll";
+                    break;
+                default:
+                    throw new NotSupportedException();
+            }
+
+            var assembly = Assembly.LoadFrom(Path.Combine(GetExecutingAssemblyPath(), path));
+            var assemblyFileVersionAttribute = assembly.GetCustomAttributes(true).OfType<AssemblyFileVersionAttribute>().FirstOrDefault();
+            if (assemblyFileVersionAttribute != null)
+                assemblyFileVersion = assemblyFileVersionAttribute.Version;
+
+            return assemblyFileVersion;
+        }
+
+        private static SupportedVersions GetVersion(string file)
+        {
+            using (var fs = new FileStream(file, FileMode.Open))
             {
                 fs.Seek(16, SeekOrigin.Begin);
                 var reader = new BinaryReader(fs);
@@ -98,7 +124,7 @@ namespace ChristianHelle.DatabaseTools.SqlCe
             }
         }
 
-        enum SupportedVersions
+        public enum SupportedVersions
         {
             Unsupported,
             SqlCe20,
