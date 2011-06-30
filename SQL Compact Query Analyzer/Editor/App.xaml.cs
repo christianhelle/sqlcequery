@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Linq;
-using System.Windows;
+﻿using System.Windows;
 
 namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer
 {
@@ -12,5 +7,9 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer
     /// </summary>
     public partial class App : Application
     {
+        public App()
+        {
+            System.Windows.Forms.Application.EnableVisualStyles();
+        }
     }
 }

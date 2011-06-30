@@ -31,6 +31,9 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
         private ISqlCeDatabase database;
         private static bool queryExecuting;
 
+        private Table lastSelectedTable;
+        private string password;
+
         public MainViewModel()
         {
             Query = new TextDocument();
@@ -283,7 +286,10 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
                 RaisePropertyChanged("Query");
                 RaisePropertyChanged("ResultSetXml");
                 CurrentMainTabIndex = 0;
+                lastSelectedTable = null;
+                dataSource = null;
                 database = null;
+                password = null;
 
                 dataSource = dialog.FileName;
                 AnalyzeDatabase();
@@ -305,8 +311,6 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
             {
                 try
                 {
-                    AnalyzingTablesIsBusy = true;
-
                     if (!File.Exists(dataSource))
                         throw new InvalidOperationException("Unable to find " + dataSource);
 
@@ -315,7 +319,24 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
                     var fileInfo = new FileInfo(dataSource);
                     fileInfo.Attributes &= ~FileAttributes.ReadOnly;
 
-                    database = SqlCeDatabaseFactory.Create("Data Source=" + dataSource);
+                    database = SqlCeDatabaseFactory.Create(GetConnectionString());
+                    while (!database.VerifyConnectionStringPassword())
+                    {
+                        bool? result = null;
+                        PasswordWindow window = null;
+                        Application.Current.Dispatcher.Invoke((Action)delegate
+                        {
+                            window = new PasswordWindow();
+                            result = window.ShowDialog();
+                        });
+                        if (result != true)
+                            return;
+                        password = window.Password;
+                        database.ConnectionString = GetConnectionString();
+                    }
+
+                    AnalyzingTablesIsBusy = true;
+                    database.AnalyzeDatabase();
                     Application.Current.Dispatcher.Invoke((Action)PopulateTables);
                 }
                 catch (Exception e)
@@ -328,6 +349,11 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
                     AnalyzingTablesIsBusy = false;
                 }
             });
+        }
+
+        private string GetConnectionString()
+        {
+            return string.Format("Data Source={0}; Password={1}", dataSource, password);
         }
 
         public void PopulateTables()
@@ -386,6 +412,7 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
                 propertiesNode.Items.Add(new TreeViewItem { Header = "File name:  " + fileInfo.Name });
                 propertiesNode.Items.Add(new TreeViewItem { Header = "Created on:  " + fileInfo.CreationTime });
                 propertiesNode.Items.Add(new TreeViewItem { Header = "Version:  " + SqlCeDatabaseFactory.GetRuntimeVersion(dataSource) });
+                propertiesNode.Items.Add(new TreeViewItem { Header = "Password Protected:  " + !string.IsNullOrEmpty(password) });
                 propertiesNode.Items.Add(new TreeViewItem { Header = string.Format(new FileSizeFormatProvider(), "File size:  {0:fs}", fileInfo.Length) });
                 propertiesNode.ExpandSubtree();
 
@@ -414,7 +441,7 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
 
         public void ExecuteQuery(string sql = null)
         {
-            if (queryExecuting)
+            if (database == null || queryExecuting)
                 return;
 
             Task.Factory.StartNew(() =>
@@ -485,10 +512,9 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
             });
         }
 
-        private Table lastSelectedTable;
         public void LoadTableData(Table table)
         {
-            if (table == null || lastSelectedTable == table) return;
+            if (database == null || table == null || lastSelectedTable == table) return;
             lastSelectedTable = table;
 
             ResetTableData();
@@ -573,6 +599,9 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
 
         public void ShrinkDatabase()
         {
+            if (database == null)
+                return;
+
             try
             {
                 DatabaseIsBusy = true;
@@ -604,6 +633,9 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
 
         public void CompactDatabase()
         {
+            if (database == null)
+                return;
+
             try
             {
                 DatabaseIsBusy = true;
@@ -635,6 +667,9 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
 
         public void GenerateSchemaScript()
         {
+            if (database == null)
+                return;
+
             Task.Factory.StartNew(() =>
             {
                 try
@@ -664,6 +699,9 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
 
         public void GenerateDataScript()
         {
+            if (database == null)
+                return;
+
             Task.Factory.StartNew(() =>
             {
                 try
@@ -692,6 +730,9 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
 
         public void GenerateSchemaAndDataScript()
         {
+            if (database == null)
+                return;
+
             Task.Factory.StartNew(() =>
             {
                 try

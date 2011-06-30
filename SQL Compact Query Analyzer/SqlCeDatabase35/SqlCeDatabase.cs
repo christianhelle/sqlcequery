@@ -14,17 +14,8 @@ namespace ChristianHelle.DatabaseTools.SqlCe
     public class SqlCeDatabase : ISqlCeDatabase
     {
         public SqlCeDatabase(string connectionString)
-            : this("SqlCeCodeGen", connectionString)
         {
-        }
-
-        public SqlCeDatabase(string defaultNamespace, string connectionString)
-        {
-            Namespace = defaultNamespace;
             ConnectionString = connectionString;
-
-            //Verify();
-            //AnalyzeDatabase();
         }
 
         public void Verify()
@@ -185,9 +176,25 @@ namespace ChristianHelle.DatabaseTools.SqlCe
                 adapter.Update(TableData);
         }
 
-        public string Namespace { get; set; }
         public List<Table> Tables { get; set; }
-        public string ConnectionString { get; private set; }
+        public string ConnectionString { get; set; }
+
+        public bool VerifyConnectionStringPassword()
+        {
+            try
+            {
+                using (var conn = new SqlCeConnection(ConnectionString))
+                    conn.Open();
+                return true;
+            }
+            catch (SqlCeException e)
+            {
+                // SSCE_M_INVALIDPASSWORD - The specified password does not match the database password
+                if (e.NativeError == 25028)
+                    return false;
+                throw;
+            }
+        }
 
         public void AnalyzeDatabase()
         {

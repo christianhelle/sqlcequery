@@ -9,9 +9,9 @@ namespace ChristianHelle.DatabaseTools.SqlCe
 {
     public interface ISqlCeDatabase
     {
-        string ConnectionString { get; }
-        string Namespace { get; set; }
+        string ConnectionString { get; set; }
         List<Table> Tables { get; set; }
+        bool VerifyConnectionStringPassword();
         void AnalyzeDatabase();
         void Verify();
         void Shrink();

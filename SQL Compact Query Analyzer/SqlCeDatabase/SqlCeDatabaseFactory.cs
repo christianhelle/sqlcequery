@@ -11,22 +11,13 @@ namespace ChristianHelle.DatabaseTools.SqlCe
         public static ISqlCeDatabase Create(string connectionString)
         {
             var type = GetImplementation(connectionString);
-            var database = Activator.CreateInstance(type, connectionString) as ISqlCeDatabase;
-            return AnalyzeDatabase(database);
+            return Activator.CreateInstance(type, connectionString) as ISqlCeDatabase;
         }
 
         public static ISqlCeDatabase Create(string defaultNamespace, string connectionString)
         {
             var type = GetImplementation(connectionString);
-            var database = Activator.CreateInstance(type, defaultNamespace, connectionString) as ISqlCeDatabase;
-            return AnalyzeDatabase(database);
-        }
-
-        private static ISqlCeDatabase AnalyzeDatabase(ISqlCeDatabase database)
-        {
-            if (database != null)
-                database.AnalyzeDatabase();
-            return database;
+            return  Activator.CreateInstance(type, defaultNamespace, connectionString) as ISqlCeDatabase;
         }
 
         private static Type GetImplementation(string connectionString)
