@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Security.Policy;
+﻿using System.Collections.Generic;
 using System.Data;
 using System.Text;
 
@@ -21,6 +18,7 @@ namespace ChristianHelle.DatabaseTools.SqlCe
         void Rename(Column column, string newName);
         object GetTableData(Table table);
         object GetTableData(string tableName, string columnName);
+        object GetTableProperties(Table table);
         void SaveTableDataChanges(DataTable TableData);
         object ExecuteQuery(string query, StringBuilder errors, StringBuilder messages);
     }

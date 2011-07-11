@@ -54,6 +54,7 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
         private bool tableDataIsBusy;
         private bool queryStringIsBusy;
         private bool analyzingTablesIsBusy;
+        private bool tablePropertiesIsBusy;
         private int currentResultsTabIndex;
         private int currentMainTabIndex;
         private int tableDataCount;
@@ -63,21 +64,11 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
         private string resultSetMessages;
         private TextDocument query;
         private IHighlightingDefinition sqlSyntaxHighlighting;
-        //private ObservableCollection<Table> tables;
+        private TimeSpan? tableDataExecutionTime;
         private bool displayResultsInGrid;
         private bool displayResultsAsXml;
 
         public ObservableCollection<TreeViewItem> Tree { get; private set; }
-
-        //public ObservableCollection<Table> Tables
-        //{
-        //    get { return tables; }
-        //    set
-        //    {
-        //        tables = value;
-        //        RaisePropertyChanged("Tables");
-        //    }
-        //}
 
         public TextDocument Query
         {
@@ -201,6 +192,16 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
             }
         }
 
+        public bool TablePropertiesIsBusy
+        {
+            get { return tablePropertiesIsBusy; }
+            set
+            {
+                tablePropertiesIsBusy = value;
+                RaisePropertyChanged("TablePropertiesIsBusy ");
+            }
+        }
+
         public bool DatabaseIsBusy
         {
             get { return databaseIsBusy; }
@@ -243,7 +244,6 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
             }
         }
 
-        private TimeSpan? tableDataExecutionTime;
         public TimeSpan? TableDataExecutionTime
         {
             get { return tableDataExecutionTime; }
@@ -258,6 +258,8 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
         public ResultsContainer ResultsContainer { get; set; }
 
         public DataGridViewEx TableDataGrid { get; set; }
+
+        public DataGridViewEx TablePropertiesGrid { get; set; }
 
         #endregion
 
@@ -299,8 +301,15 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
         private void ResetTableData()
         {
             var table = TableDataGrid.DataSource as DataTable;
+            TableDataGrid.DataSource = null;
             if (table != null)
                 table.Dispose();
+
+            table = TablePropertiesGrid.DataSource as DataTable;
+            TablePropertiesGrid.DataSource = null;
+            if (table != null)
+                table.Dispose();
+
             TableDataCount = 0;
             TableDataExecutionTime = null;
         }
@@ -359,12 +368,13 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
         public void PopulateTables()
         {
             var tablesNode = new TreeViewItem { Header = "Tables" };
+            tablesNode.Selected += OnTreeViewItemSelected;
             tablesNode.ExpandSubtree();
 
             foreach (var item in database.Tables)
             {
                 var table = new TreeViewItem { Header = item.DisplayName, Tag = item /*, FontWeight = FontWeights.Bold*/ };
-                table.Selected += (sender, e) => LoadTableData(((TreeViewItem)sender).Tag as Table);
+                table.Selected += OnTreeViewItemSelected;
                 //table.ExpandSubtree();
                 tablesNode.Items.Add(table);
 
@@ -375,8 +385,9 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
                 foreach (var column in item.Columns)
                 {
                     var columnNode = new TreeViewItem();
+                    columnNode.Selected += OnTreeViewItemSelected;
                     columnNode.Header = column.Value.DisplayName;
-                    columnNode.Tag = new KeyValuePair<string, string>(item.Name, column.Value.Name);
+                    //columnNode.Tag = new KeyValuePair<string, string>(item.Name, column.Value.Name);
                     if (column.Value.IsPrimaryKey)
                         columnNode.Items.Add("Primary Key");
                     if (column.Value.AutoIncrement.HasValue)
@@ -402,6 +413,20 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
             RaisePropertyChanged("Tree");
         }
 
+        void OnTreeViewItemSelected(object sender, RoutedEventArgs e)
+        {
+            var item = (TreeViewItem) sender;
+            if (item.Tag == null)
+            {
+                lastSelectedTable = null;
+                ResetTableData();
+                return;
+            }
+
+            var table = item.Tag as Table;
+            LoadTableDataAndProperties(table);
+        }
+
         private TreeViewItem GetDatabaseInformationTree()
         {
             try
@@ -409,6 +434,7 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
                 var fileInfo = new FileInfo(dataSource);
 
                 var propertiesNode = new TreeViewItem { Header = "Database Information" };
+                propertiesNode.Selected += OnTreeViewItemSelected;
                 propertiesNode.Items.Add(new TreeViewItem { Header = "File name:  " + fileInfo.Name });
                 propertiesNode.Items.Add(new TreeViewItem { Header = "Created on:  " + fileInfo.CreationTime });
                 propertiesNode.Items.Add(new TreeViewItem { Header = "Version:  " + SqlCeDatabaseFactory.GetRuntimeVersion(dataSource) });
@@ -417,6 +443,7 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
                 propertiesNode.ExpandSubtree();
 
                 var schemaSummaryNode = new TreeViewItem { Header = "Schema Summary" };
+                schemaSummaryNode.Selected += OnTreeViewItemSelected;
                 schemaSummaryNode.Items.Add(new TreeViewItem { Header = "Tables:  " + database.Tables.Count });
                 schemaSummaryNode.Items.Add(new TreeViewItem { Header = "Columns:  " + database.Tables.Sum(c => c.Columns.Count) });
                 schemaSummaryNode.Items.Add(new TreeViewItem { Header = "Primary keys:  " + database.Tables.Where(c => !string.IsNullOrEmpty(c.PrimaryKeyColumnName)).Count() });
@@ -512,7 +539,7 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
             });
         }
 
-        public void LoadTableData(Table table)
+        public void LoadTableDataAndProperties(Table table)
         {
             if (database == null || table == null || lastSelectedTable == table) return;
             lastSelectedTable = table;
@@ -529,6 +556,9 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
                     Application.Current.Dispatcher.Invoke((Action)delegate { TableDataGrid.DataSource = dataTable; });
                     TableDataCount = dataTable != null ? dataTable.Rows.Count : 0;
                     TableDataExecutionTime = sw.Elapsed;
+
+                    var propertiesTable = database.GetTableProperties(table) as DataTable;
+                    Application.Current.Dispatcher.Invoke((Action)delegate { TablePropertiesGrid.DataSource = propertiesTable; });
                 }
                 catch (Exception e)
                 {

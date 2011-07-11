@@ -162,6 +162,16 @@
                                     </Grid>
                                 </extToolkit:BusyIndicator>
                             </TabItem>
+                            <TabItem Header="Table Properties">
+                                <extToolkit:BusyIndicator Name="tablePropertiesBusyIndicator"
+                                                          DisplayAfter="00:00:00.0000001"
+                                                          IsBusy="{Binding TablePropertiesIsBusy}">
+                                    <WindowsFormsHost>
+                                        <Controls:DataGridViewEx x:Name="tablePropertiesGrid"
+                                                                 ReadOnly="True" />
+                                    </WindowsFormsHost>
+                                </extToolkit:BusyIndicator>
+                            </TabItem>
                         </TabControl>
                     </extToolkit:BusyIndicator>
                 </Grid>

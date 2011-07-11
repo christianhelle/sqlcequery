@@ -364,7 +364,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:SqlCeDatabase, Version=1.2.4209.12954, Culture=neutral, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:SqlCeDatabase, Version=1.3.4209.27246, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
                     "_33D20DD623470F1E9CB730CD07A0ED51"
@@ -690,7 +690,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:SQL Compact Query Analyzer"
         "ProductCode" = "8:{AB82AD54-7AC7-43B6-8032-2FB1DF8EA2B0}"
-        "PackageCode" = "8:{832012CB-5B2B-4C5B-A7AE-595D11053475}"
+        "PackageCode" = "8:{F3922CDD-C027-428F-9FB7-9CA0A7C5E556}"
         "UpgradeCode" = "8:{7955E1B9-D626-41AD-BB40-60483A2E7086}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"

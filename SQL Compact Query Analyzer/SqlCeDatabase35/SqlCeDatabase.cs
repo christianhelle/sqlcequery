@@ -93,6 +93,17 @@ namespace ChristianHelle.DatabaseTools.SqlCe
             }
         }
 
+        public object GetTableProperties(Table table)
+        {
+            using (var conn = new SqlCeConnection(ConnectionString))
+            using (var adapter = new SqlCeDataAdapter(string.Format("SELECT COLUMN_NAME AS Name, IS_NULLABLE AS [Allows Null], DATA_TYPE AS [Data Type], CHARACTER_MAXIMUM_LENGTH AS [Max Length] FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME='{0}'", table.DisplayName), conn))
+            {
+                var dataTable = new DataTable(table.DisplayName);
+                adapter.Fill(dataTable);
+                return dataTable;
+            }
+        }
+
         public object ExecuteQuery(string query, StringBuilder errors, StringBuilder messages)
         {
             var stopwatch = Stopwatch.StartNew();

@@ -51,6 +51,7 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.View
                 ViewModel.Load();
                 ViewModel.ResultsContainer = resultsContainer;
                 ViewModel.TableDataGrid = tableDataGrid;
+                ViewModel.TablePropertiesGrid = tablePropertiesGrid;
 
                 if (!ViewModel.LaunchedWithArgument)
                     ViewModel.OpenDatabase();
@@ -127,7 +128,7 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.View
 
         private void TreeView_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
-            SafeOperation(() => ViewModel.LoadTableData(((TreeView)sender).SelectedItem as Table));
+            SafeOperation(() => ViewModel.LoadTableDataAndProperties(((TreeView)sender).SelectedItem as Table));
         }
 
         private void ScriptSchema_Click(object sender, RoutedEventArgs e)
