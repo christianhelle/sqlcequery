@@ -124,12 +124,6 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_33D20DD623470F1E9CB730CD07A0ED51"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_01AA8979E2E847E85DFDCC19C552A8D6"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -191,6 +185,12 @@
         {
         "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_2088C3B3CD9D43A9BE641A24A809E292"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_33D20DD623470F1E9CB730CD07A0ED51"
         "MsmSig" = "8:_UNDEFINED"
         }
     }
@@ -364,7 +364,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:SqlCeDatabase, Version=1.2.4198.19642, Culture=neutral, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:SqlCeDatabase, Version=1.2.4209.12954, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
                     "_33D20DD623470F1E9CB730CD07A0ED51"
@@ -690,7 +690,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:SQL Compact Query Analyzer"
         "ProductCode" = "8:{AB82AD54-7AC7-43B6-8032-2FB1DF8EA2B0}"
-        "PackageCode" = "8:{5F4403CB-E7AE-48F5-9B09-A0F4952A8EA2}"
+        "PackageCode" = "8:{832012CB-5B2B-4C5B-A7AE-595D11053475}"
         "UpgradeCode" = "8:{7955E1B9-D626-41AD-BB40-60483A2E7086}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"

@@ -259,9 +259,8 @@ namespace ChristianHelle.DatabaseTools.SqlCe
             {
                 string table = tableName;
                 Trace.WriteLine("Analyazing " + table);
-
-                if (table.Contains(" "))
-                    table = string.Format("[{0}]", table);
+                                
+                table = string.Format("[{0}]", table);
                 var schema = new DataTable(table);
 
                 using (var connection = new SqlCeConnection(connectionString))
