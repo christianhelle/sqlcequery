@@ -402,6 +402,18 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
                         columnNode.Items.Add("Max Length:  " + column.Value.MaxLength);
                     columns.Items.Add(columnNode);
                 }
+
+                var indexes = new TreeViewItem { Header = "Indexes", FontWeight = FontWeights.Normal };
+                table.Items.Add(indexes);
+
+                foreach (var index in item.Indexes)
+                {
+                    var indexNode = new TreeViewItem { Header = index.Name };
+                    indexNode.Items.Add(new TreeViewItem { Header = "Column:  " + index.Column.DisplayName });
+                    indexNode.Items.Add(new TreeViewItem { Header = "Unique:  " + index.Unique });
+                    indexNode.Items.Add(new TreeViewItem { Header = "Clustered:  " + index.Clustered });
+                    indexes.Items.Add(indexNode);
+                }
             }
 
             if (Tree == null)
