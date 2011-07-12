@@ -168,7 +168,8 @@
                                                           IsBusy="{Binding TablePropertiesIsBusy}">
                                     <WindowsFormsHost>
                                         <Controls:DataGridViewEx x:Name="tablePropertiesGrid"
-                                                                 ReadOnly="True" />
+                                                                 ReadOnly="True"
+                                                                 AutoSizeColumnsMode="AllCells" />
                                     </WindowsFormsHost>
                                 </extToolkit:BusyIndicator>
                             </TabItem>

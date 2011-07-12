@@ -415,7 +415,7 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
 
         void OnTreeViewItemSelected(object sender, RoutedEventArgs e)
         {
-            var item = (TreeViewItem) sender;
+            var item = (TreeViewItem)sender;
             if (item.Tag == null)
             {
                 lastSelectedTable = null;
@@ -452,6 +452,16 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
                 schemaSummaryNode.Items.Add(new TreeViewItem { Header = "Nullable fields:  " + database.Tables.Sum(c => c.Columns.Where(x => x.Value.AllowsNull).Count()) });
                 propertiesNode.Items.Add(schemaSummaryNode);
 
+                var schemaInformationNode = new TreeViewItem { Header = "Schema Information" };
+                schemaInformationNode.Items.Add(CreateSchemaInformationNode("Columns", "INFORMATION_SCHEMA.COLUMNS"));
+                schemaInformationNode.Items.Add(CreateSchemaInformationNode("Indexes", "INFORMATION_SCHEMA.INDEXES"));
+                schemaInformationNode.Items.Add(CreateSchemaInformationNode("Key Column Usage", "INFORMATION_SCHEMA.KEY_COLUMN_USAGE"));
+                schemaInformationNode.Items.Add(CreateSchemaInformationNode("Tables", "INFORMATION_SCHEMA.TABLES"));
+                schemaInformationNode.Items.Add(CreateSchemaInformationNode("Table Constraints", "INFORMATION_SCHEMA.TABLE_CONSTRAINTS"));
+                schemaInformationNode.Items.Add(CreateSchemaInformationNode("Provider Types", "INFORMATION_SCHEMA.PROVIDER_TYPES"));
+                schemaInformationNode.Items.Add(CreateSchemaInformationNode("Referential Constraints", "INFORMATION_SCHEMA.REFERENTIAL_CONSTRAINTS"));
+                propertiesNode.Items.Add(schemaInformationNode);
+
                 return propertiesNode;
             }
             catch (Exception e)
@@ -464,6 +474,13 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
                     FontStyle = FontStyles.Italic
                 };
             }
+        }
+
+        private TreeViewItem CreateSchemaInformationNode(string header, string viewName)
+        {
+            var item = new TreeViewItem { Header = header, Tag = new Table { Name = viewName } };
+            item.Selected += (sender, e) => LoadTableDataAndProperties(((TreeViewItem)sender).Tag as Table, true, true, false);
+            return item;
         }
 
         public void ExecuteQuery(string sql = null)
@@ -539,7 +556,7 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
             });
         }
 
-        public void LoadTableDataAndProperties(Table table)
+        public void LoadTableDataAndProperties(Table table, bool readOnly = false, bool resizeColumns = false, bool displaySchemaInfo = true)
         {
             if (database == null || table == null || lastSelectedTable == table) return;
             lastSelectedTable = table;
@@ -553,12 +570,22 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
                     TableDataIsBusy = true;
                     var sw = Stopwatch.StartNew();
                     var dataTable = database.GetTableData(table) as DataTable;
-                    Application.Current.Dispatcher.Invoke((Action)delegate { TableDataGrid.DataSource = dataTable; });
+                    Application.Current.Dispatcher.Invoke((Action)delegate
+                    {
+                        TableDataGrid.DataSource = dataTable;
+                        TableDataGrid.ReadOnly = readOnly;
+                        if (resizeColumns)
+                            TableDataGrid.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.AllCells);
+                    });
+                    CurrentMainTabIndex = 1;
                     TableDataCount = dataTable != null ? dataTable.Rows.Count : 0;
                     TableDataExecutionTime = sw.Elapsed;
 
-                    var propertiesTable = database.GetTableProperties(table) as DataTable;
-                    Application.Current.Dispatcher.Invoke((Action)delegate { TablePropertiesGrid.DataSource = propertiesTable; });
+                    if (displaySchemaInfo)
+                    {
+                        var propertiesTable = database.GetTableProperties(table) as DataTable;
+                        Application.Current.Dispatcher.Invoke((Action)delegate { TablePropertiesGrid.DataSource = propertiesTable; });
+                    }
                 }
                 catch (Exception e)
                 {
