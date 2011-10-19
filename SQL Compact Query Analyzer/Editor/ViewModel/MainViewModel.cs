@@ -362,7 +362,7 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
 
         private string GetConnectionString()
         {
-            return string.Format("Data Source={0}; Password={1}", dataSource, password);
+            return string.Format("Data Source={0}; Password={1};", dataSource, password);
         }
 
         public void PopulateTables()
