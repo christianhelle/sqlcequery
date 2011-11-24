@@ -589,7 +589,7 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
                         if (resizeColumns)
                             TableDataGrid.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.AllCells);
                     });
-                    CurrentMainTabIndex = 1;
+                    //CurrentMainTabIndex = 1;
                     TableDataCount = dataTable != null ? dataTable.Rows.Count : 0;
                     TableDataExecutionTime = sw.Elapsed;
 

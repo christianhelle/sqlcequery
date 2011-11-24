@@ -22,7 +22,7 @@ namespace ChristianHelle.DatabaseTools.SqlCe
                 builder.Append(column.Value.Name);
                 builder.Append(" ");
                 builder.Append(column.Value.DatabaseType.ToUpper());
-                if (column.Value.ManagedType == typeof(string))
+                if (column.Value.ManagedType == typeof(string) && !column.Value.DatabaseType.ToUpper().Contains("TEXT"))
                     builder.AppendFormat("({0})", column.Value.MaxLength);
                 builder.Append(" ");
                 if (column.Value.IsPrimaryKey)
