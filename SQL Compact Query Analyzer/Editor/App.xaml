@@ -1,13 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Application x:Class="ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.App"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              StartupUri="View/MainWindow.xaml"
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:vm="clr-namespace:ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel"
-             mc:Ignorable="d">
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:ViewModel="clr-namespace:ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel">
     <Application.Resources>
-        <vm:MainViewModel x:Key="MainViewModel" />
+        <ViewModel:MainViewModel x:Key="MainViewModel" />
+        <ViewModel:ViewModelLocator x:Key="ViewModelLocator" />
     </Application.Resources>
 </Application>

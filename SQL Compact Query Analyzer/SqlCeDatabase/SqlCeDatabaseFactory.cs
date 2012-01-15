@@ -20,11 +20,22 @@ namespace ChristianHelle.DatabaseTools.SqlCe
             return  Activator.CreateInstance(type, defaultNamespace, connectionString) as ISqlCeDatabase;
         }
 
+        public static ISqlCeDatabase Create(SupportedVersions version)
+        {
+            var type = GetImplementation(version);
+            return Activator.CreateInstance(type) as ISqlCeDatabase;
+        }
+
         private static Type GetImplementation(string connectionString)
         {
             var file = new SqlConnectionStringBuilder(connectionString).DataSource;
             var version = GetVersion(file);
 
+            return GetImplementation(version);
+        }
+
+        private static Type GetImplementation(SupportedVersions version)
+        {
             switch (version)
             {
                 case SupportedVersions.SqlCe31:
@@ -114,14 +125,14 @@ namespace ChristianHelle.DatabaseTools.SqlCe
                 }
             }
         }
+    }
 
-        public enum SupportedVersions
-        {
-            Unsupported,
-            SqlCe20,
-            SqlCe31,
-            SqlCe35,
-            SqlCe40
-        }
+    public enum SupportedVersions
+    {
+        Unsupported,
+        SqlCe20,
+        SqlCe31,
+        SqlCe35,
+        SqlCe40
     }
 }

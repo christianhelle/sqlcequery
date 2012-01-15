@@ -14,6 +14,11 @@ namespace ChristianHelle.DatabaseTools.SqlCe
 {
     public class SqlCeDatabase : ISqlCeDatabase
     {
+        public SqlCeDatabase()
+        {
+            
+        }
+
         public SqlCeDatabase(string connectionString)
         {
             ConnectionString = connectionString + " Max Database Size=4091;";
@@ -175,6 +180,12 @@ namespace ChristianHelle.DatabaseTools.SqlCe
             }
 
             return null;
+        }
+
+        public void CreateDatabase(string filename, string password)
+        {
+            using (var engine = new SqlCeEngine("Data Source=" + filename + "; Password=" + password))
+                engine.CreateDatabase();
         }
 
         public void SaveTableDataChanges(DataTable TableData)
