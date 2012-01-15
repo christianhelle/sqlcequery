@@ -81,14 +81,33 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Controls\FileSelector.xaml.cs">
+      <DependentUpon>FileSelector.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewModel\CreateDatabaseViewModel.cs" />
+    <Compile Include="ViewModel\PasswordBoxAssistant.cs" />
     <Compile Include="ViewModel\RenameObjectViewModel.cs" />
+    <Compile Include="ViewModel\SafeRelayCommand.cs" />
+    <Compile Include="ViewModel\ViewModelBase.cs" />
+    <Compile Include="ViewModel\ViewModelLocator.cs" />
+    <Compile Include="View\CreateDatabaseWindow.xaml.cs">
+      <DependentUpon>CreateDatabaseWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\PasswordWindow.xaml.cs">
       <DependentUpon>PasswordWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\RenameObjectWindow.xaml.cs">
       <DependentUpon>RenameObjectWindow.xaml</DependentUpon>
     </Compile>
+    <Page Include="Controls\FileSelector.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="View\AboutBox.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\CreateDatabaseWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -154,6 +173,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\Database.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Browse.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

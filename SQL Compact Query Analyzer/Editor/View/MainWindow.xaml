@@ -4,7 +4,7 @@
         xmlns:avalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit"
         xmlns:extToolkit="clr-namespace:Microsoft.Windows.Controls;assembly=WPFToolkit.Extended"
         xmlns:Controls="clr-namespace:ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.Controls"
-        DataContext="{StaticResource MainViewModel}"
+        DataContext="{Binding MainViewModel, Source={StaticResource ViewModelLocator}}"
         Title="{Binding Text, FallbackValue='SQL Compact Query Analyzer'}"
         Loaded="Window_Loaded"
         KeyUp="Window_KeyUp"
@@ -17,16 +17,18 @@
             <Menu IsMainMenu="True"
                   DockPanel.Dock="Top">
                 <MenuItem Header="File">
+                    <MenuItem Header="New Database"
+                              Command="{Binding NewDatabaseCommand}" />                              
                     <MenuItem Header="Open Database"
-                              Click="Open_Click" />
+                              Command="{Binding OpenDatabaseCommand}" />
                     <Separator />
                     <MenuItem Header="Exit"
-                              Click="Exit_Click" />
+                              Command="{Binding ExitCommand}" />
                 </MenuItem>
                 <MenuItem Header="Query">
                     <MenuItem Header="Execute Query"
                               InputGestureText="F5"
-                              Click="ExecuteQuery_Click" />
+                              Command="{Binding ExecuteQueryCommand}" />
                     <MenuItem Header="Results">
                         <MenuItem Header="Display in Grid"
                                   IsCheckable="True"
@@ -38,20 +40,20 @@
                 </MenuItem>
                 <MenuItem Header="Database">
                     <MenuItem Header="Shrink"
-                              Click="Shrink_Click" />
+                              Command="{Binding ShrinkCommand}" />
                     <MenuItem Header="Compact"
-                              Click="Compact_Click" />
+                              Command="{Binding CompactCommand}" />
                     <MenuItem Header="Script Schema"
-                              Click="ScriptSchema_Click" />
+                              Command="{Binding ScriptSchemaCommand}" />
                     <MenuItem Header="Script Data"
-                              Click="ScriptData_Click" />
+                              Command="{Binding ScriptDataCommand}" />
                     <MenuItem Header="Script Schema and Data"
                               Click="ScriptSchemaAndData_Click" />
                 </MenuItem>
                 <MenuItem Header="Help">
                     <MenuItem Header="About"
                               InputGestureText="F1"
-                              Click="About_Click" />
+                              Command="{Binding AboutCommand}" />
                 </MenuItem>
             </Menu>
             <Grid>
@@ -69,7 +71,8 @@
                     <TreeView Grid.Column="0"
                               BorderThickness="0"
                               AllowDrop="True"
-                              ItemsSource="{Binding Tree}" />
+                              ItemsSource="{Binding Tree}">
+                    </TreeView>
                 </extToolkit:BusyIndicator>
                 <Grid Grid.Column="2">
                     <extToolkit:BusyIndicator IsBusy="{Binding DatabaseIsBusy}"

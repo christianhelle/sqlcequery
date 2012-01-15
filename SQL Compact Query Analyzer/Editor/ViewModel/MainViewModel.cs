@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data;
 using System.Diagnostics;
@@ -11,11 +10,11 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Forms;
+using System.Windows.Input;
 using System.Xml;
 using ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.Controls;
 using ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.Properties;
 using ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.View;
-using GalaSoft.MvvmLight;
 using ICSharpCode.AvalonEdit.Document;
 using ICSharpCode.AvalonEdit.Highlighting;
 using ICSharpCode.AvalonEdit.Highlighting.Xshd;
@@ -254,12 +253,61 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
             }
         }
 
-
         public ResultsContainer ResultsContainer { get; set; }
 
         public DataGridViewEx TableDataGrid { get; set; }
 
         public DataGridViewEx TablePropertiesGrid { get; set; }
+
+        public ICommand OpenDatabaseCommand
+        {
+            get { return new SafeRelayCommand(OpenDatabase); }
+        }
+
+        public ICommand ExitCommand
+        {
+            get { return new SafeRelayCommand(Application.Current.Shutdown); }
+        }
+
+        public ICommand ExecuteQueryCommand
+        {
+            get { return new SafeRelayCommand(ExecuteQuery); }
+        }
+
+        public ICommand ShrinkCommand
+        {
+            get { return new SafeRelayCommand(ShrinkDatabase); }
+        }
+
+        public ICommand CompactCommand
+        {
+            get { return new SafeRelayCommand(CompactDatabase); }
+        }
+
+        public ICommand ScriptSchemaCommand
+        {
+            get { return new SafeRelayCommand(GenerateSchemaScript); }
+        }
+
+        public ICommand ScriptDataCommand
+        {
+            get { return new SafeRelayCommand(GenerateDataScript); }
+        }
+
+        public ICommand AboutCommand
+        {
+            get { return new SafeRelayCommand(() => new AboutBox(Application.Current.MainWindow).ShowDialog()); }
+        }
+
+        public ICommand AnalyzeDatabaseCommand
+        {
+            get { return new SafeRelayCommand(AnalyzeDatabase); }
+        }
+
+        public ICommand NewDatabaseCommand
+        {
+            get { return new SafeRelayCommand(CreateNewDatabase); }
+        }
 
         #endregion
 
@@ -495,7 +543,12 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
             return item;
         }
 
-        public void ExecuteQuery(string sql = null)
+        public void ExecuteQuery()
+        {
+            ExecuteQuery(null);
+        }
+
+        public void ExecuteQuery(string sql)
         {
             if (database == null || queryExecuting)
                 return;
@@ -620,8 +673,8 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
 
         public void LoadSqlSyntaxHighlighter()
         {
-            const string NAME = "ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.Resources.SQL-Mode.xshd";
-            using (var stream = Assembly.GetAssembly(GetType()).GetManifestResourceStream(NAME))
+            const string name = "ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.Resources.SQL-Mode.xshd";
+            using (var stream = Assembly.GetAssembly(GetType()).GetManifestResourceStream(name))
                 if (stream != null)
                     using (var reader = new XmlTextReader(stream))
                     {
@@ -839,6 +892,34 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
 
             if (window.ViewModel != null)
                 window.ShowDialog();
+        }
+
+        private void CreateNewDatabase()
+        {
+            var window = new CreateDatabaseWindow();
+            var dialogResult = window.ShowDialog();
+            if (!dialogResult.GetValueOrDefault())
+                return;
+
+            var viewModel = window.DataContext as CreateDatabaseViewModel;
+            if (viewModel == null)
+                return;
+
+            Text = "SQL Compact Query Analyzer";
+            Tree = null;
+            ResetTableData();
+            ResultsContainer.Clear();
+            ResultSetMessages = ResultSetErrors = ResultSetXml.Text = Query.Text = string.Empty;
+            RaisePropertyChanged("Tree");
+            RaisePropertyChanged("Query");
+            RaisePropertyChanged("ResultSetXml");
+            CurrentMainTabIndex = 0;
+            lastSelectedTable = null;
+            database = null;
+            
+            dataSource = viewModel.Filename;
+            password = viewModel.Password;
+            AnalyzeDatabase();
         }
     }
 }
