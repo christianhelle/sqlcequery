@@ -14,30 +14,6 @@ EndProject
 Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "Setup", "Setup\Setup.vdproj", "{A1EF5B2D-95D9-44DD-9355-10E61E860849}"
 EndProject
 Global
-	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 7
-		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
-		SccTeamFoundationServer = https://tfs.codeplex.com/tfs/tfs02
-		SccLocalPath0 = .
-		SccProjectUniqueName1 = Editor\\Editor.csproj
-		SccProjectName1 = Editor
-		SccLocalPath1 = Editor
-		SccProjectUniqueName2 = SqlCeDatabase\\SqlCeDatabase.csproj
-		SccProjectName2 = SqlCeDatabase
-		SccLocalPath2 = SqlCeDatabase
-		SccProjectUniqueName3 = SqlCeDatabase35\\SqlCeDatabase35.csproj
-		SccProjectName3 = SqlCeDatabase35
-		SccLocalPath3 = SqlCeDatabase35
-		SccProjectUniqueName4 = SqlCeDatabase40\\SqlCeDatabase40.csproj
-		SccProjectName4 = SqlCeDatabase40
-		SccLocalPath4 = SqlCeDatabase40
-		SccProjectUniqueName5 = SqlCeDatabase31\\SqlCeDatabase31.csproj
-		SccProjectName5 = SqlCeDatabase31
-		SccLocalPath5 = SqlCeDatabase31
-		SccProjectUniqueName6 = Setup\\Setup.vdproj
-		SccProjectName6 = Setup
-		SccLocalPath6 = Setup
-	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Debug|Mixed Platforms = Debug|Mixed Platforms
