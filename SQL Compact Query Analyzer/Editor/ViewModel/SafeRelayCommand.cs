@@ -37,6 +37,12 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
 
         public event EventHandler CanExecuteChanged;
 
+        public void OnCanExecuteChanged(EventArgs e)
+        {
+            var handler = CanExecuteChanged;
+            if (handler != null) handler(this, e);
+        }
+
         #endregion
 
         private static void SafeOperation(Action annonymousMethod)
