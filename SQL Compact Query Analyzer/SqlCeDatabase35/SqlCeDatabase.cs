@@ -7,7 +7,6 @@ using System.Text;
 using System.Diagnostics;
 using System.Data.SqlClient;
 using System.IO;
-using System.Windows;
 using System.Windows.Forms;
 
 namespace ChristianHelle.DatabaseTools.SqlCe
@@ -16,7 +15,7 @@ namespace ChristianHelle.DatabaseTools.SqlCe
     {
         public SqlCeDatabase()
         {
-            
+
         }
 
         public SqlCeDatabase(string connectionString)
@@ -55,16 +54,15 @@ namespace ChristianHelle.DatabaseTools.SqlCe
         public void Upgrade()
         {
             var file = new FileInfo(new SqlConnectionStringBuilder(ConnectionString).DataSource);
-            var appData = Path.Combine(Environment.GetFolderPath(System.Environment.SpecialFolder.LocalApplicationData), "SQLCE Code Generator");
+            var appData = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "SQLCE Code Generator");
             if (!Directory.Exists(appData))
                 Directory.CreateDirectory(appData);
             var newFile = file.CopyTo(Path.Combine(appData, file.Name), true);
 
-            var newConnString = new SqlConnectionStringBuilder(ConnectionString);
-            newConnString.DataSource = newFile.FullName;
+            var newConnString = new SqlConnectionStringBuilder(ConnectionString) { DataSource = newFile.FullName };
 
-            var firstIdx = newConnString.ToString().IndexOf("\"", 0);
-            var lastIdx = newConnString.ToString().LastIndexOf("\"");
+            var firstIdx = newConnString.ToString().IndexOf("\"", 0, StringComparison.Ordinal);
+            var lastIdx = newConnString.ToString().LastIndexOf("\"", StringComparison.Ordinal);
             var connStr = new StringBuilder(newConnString.ToString());
             connStr[firstIdx] = '\'';
             connStr[lastIdx] = '\'';
@@ -195,8 +193,7 @@ namespace ChristianHelle.DatabaseTools.SqlCe
 
             using (var conn = new SqlCeConnection(ConnectionString))
             using (var adapter = new SqlCeDataAdapter("SELECT * FROM " + TableData.TableName, conn))
-            using (var commands = new SqlCeCommandBuilder(adapter))
-                adapter.Update(TableData);
+            using (new SqlCeCommandBuilder(adapter)) adapter.Update(TableData);
         }
 
         public List<Table> Tables { get; set; }
@@ -283,7 +280,7 @@ namespace ChristianHelle.DatabaseTools.SqlCe
             {
                 string table = tableName;
                 Trace.WriteLine("Analyazing " + table);
-                                
+
                 table = string.Format("[{0}]", table);
                 var schema = new DataTable(table);
 
@@ -323,7 +320,7 @@ namespace ChristianHelle.DatabaseTools.SqlCe
                             DatabaseType = row.Field<string>("DATA_TYPE"),
                             MaxLength = row.Field<int?>("CHARACTER_MAXIMUM_LENGTH"),
                             ManagedType = columnDescriptions.Columns[displayName].DataType,
-                            AllowsNull = (string.Compare(row.Field<string>("IS_NULLABLE"), "YES", true) == 0),
+                            AllowsNull = (String.Compare(row.Field<string>("IS_NULLABLE"), "YES", StringComparison.OrdinalIgnoreCase) == 0),
                             AutoIncrement = row.Field<long?>("AUTOINC_INCREMENT"),
                             AutoIncrementSeed = row.Field<long?>("AUTOINC_SEED"),
                             Ordinal = row.Field<int>("ORDINAL_POSITION")
@@ -362,14 +359,14 @@ namespace ChristianHelle.DatabaseTools.SqlCe
                             Name = row.Field<string>("INDEX_NAME"),
                             Unique = row.Field<bool>("UNIQUE"),
                             Clustered = row.Field<bool>("CLUSTERED"),
-                            Column = table.Columns.Values.Where(c => c.DisplayName == row.Field<string>("COLUMN_NAME")).FirstOrDefault()
+                            Column = table.Columns.Values.FirstOrDefault(c => c.DisplayName == row.Field<string>("COLUMN_NAME"))
                         };
                         table.Indexes.Add(index);
                     }
                 }
             }
         }
-        
+
         public void Rename(Table table, string newName)
         {
             throw new NotImplementedException();
