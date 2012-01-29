@@ -52,20 +52,12 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
-    <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Windows.Interactivity, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\MvvmLight.3.0.2\lib\net40\System.Windows.Interactivity.dll</HintPath>
-    </Reference>
     <Reference Include="System.Xml" />
-    <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Xaml">
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
     </Reference>
-    <Reference Include="UIAutomationProvider" />
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
@@ -79,9 +71,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Controls\FileSelector.xaml.cs">
-      <DependentUpon>FileSelector.xaml</DependentUpon>
-    </Compile>
     <Compile Include="ViewModel\CreateDatabaseViewModel.cs" />
     <Compile Include="ViewModel\PasswordBoxAssistant.cs" />
     <Compile Include="ViewModel\RenameObjectViewModel.cs" />
@@ -97,10 +86,6 @@
     <Compile Include="View\RenameObjectWindow.xaml.cs">
       <DependentUpon>RenameObjectWindow.xaml</DependentUpon>
     </Compile>
-    <Page Include="Controls\FileSelector.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Page Include="View\AboutBox.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -171,9 +156,6 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\Database.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\Browse.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
