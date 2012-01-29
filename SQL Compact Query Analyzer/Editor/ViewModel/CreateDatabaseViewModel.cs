@@ -1,7 +1,5 @@
 ﻿using System.Windows.Input;
-using System.Windows;
-using System.Linq;
-using System.Windows.Controls;
+using System.Windows.Forms;
 
 namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
 {
@@ -10,15 +8,44 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
         public CreateDatabaseViewModel()
         {
             CreateDatabaseCommand = new SafeRelayCommand(CreateDatabase);
+            OpenFileCommand = new SafeRelayCommand(OpenFile);
         }
 
-        public ICommand CreateDatabaseCommand { get; set; }
+        public ICommand CreateDatabaseCommand { get; private set; }
+        public ICommand OpenFileCommand { get; private set; }
 
-        public int SelectedIndex { get; set; }
+        private int selectedIndex;
+        public int SelectedIndex
+        {
+            get { return selectedIndex; }
+            set
+            {
+                selectedIndex = value;
+                RaisePropertyChanged("SelectedIndex");
+            }
+        }
 
-        public string Filename { get; set; }
+        private string filename;
+        public string Filename
+        {
+            get { return filename; }
+            set
+            {
+                filename = value;
+                RaisePropertyChanged("Filename");
+            }
+        }
 
-        public string Password { get; set; }
+        private string password;
+        public string Password
+        {
+            get { return password; }
+            set
+            {
+                password = value;
+                RaisePropertyChanged("Password");
+            }
+        }
 
         public void CreateDatabase()
         {
@@ -38,6 +65,17 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
 
             if (database != null)
                 database.CreateDatabase(Filename, Password);
+        }
+
+        public void OpenFile()
+        {
+            using (var dialog = new SaveFileDialog())
+            {
+                dialog.Filter = "SQL Compact Databases|*.sdf";
+                var result = dialog.ShowDialog();
+                if (result == DialogResult.OK)
+                    Filename = dialog.FileName;
+            }
         }
     }
 }

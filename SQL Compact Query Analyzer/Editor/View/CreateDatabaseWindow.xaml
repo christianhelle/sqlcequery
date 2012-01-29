@@ -1,12 +1,11 @@
 ﻿<Window x:Class="ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.View.CreateDatabaseWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:Files="clr-namespace:Hardcodet.Wpf.Toolbox.Controls.Files"
         xmlns:ViewModel="clr-namespace:ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel"
         Title="Create Database"
         Height="228"
-        Width="300"
-        SizeToContent="WidthAndHeight"
+        Width="500"
+        SizeToContent="Height"
         ResizeMode="NoResize"
         Topmost="True"
         DataContext="{Binding CreateDatabaseViewModel, Source={StaticResource ViewModelLocator}}">
@@ -16,19 +15,20 @@
                HorizontalAlignment="Left"
                Margin="21,101,0,0"
                VerticalAlignment="Top" />
-        <PasswordBox Height="28"
-                     Margin="91,101,23,0"
+        <PasswordBox Margin="91,101,23,60"
                      Name="passwordBox"
+                     Height="28"
                      VerticalContentAlignment="Center"
-                     VerticalAlignment="Top"
                      ViewModel:PasswordBoxAssistant.BindPassword="True"
                      ViewModel:PasswordBoxAssistant.BoundPassword="{Binding Password, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
         <Button Content="OK"
                 IsDefault="True"
-                Margin="91,143,112,23"
+                Margin="0,143,112,23"
                 Name="btnOk"
                 Click="btnOk_Click"
-                Command="{Binding CreateDatabaseCommand}" />
+                Command="{Binding CreateDatabaseCommand}"
+                HorizontalAlignment="Right"
+                Width="75" />
         <Button Content="Cancel"
                 IsCancel="True"
                 Margin="0,143,31,23"
@@ -41,25 +41,25 @@
                HorizontalAlignment="Left"
                Margin="21,59,0,0"
                VerticalAlignment="Top" />
-        <Files:FileSelector Height="28"
-                            Margin="91,59,23,0"
-                            x:Name="filename"
-                            Mode="Save"
-                            MaxDisplayLength="50"
-                            VerticalAlignment="Top"
-                            VerticalContentAlignment="Center"
-                            FileName="{Binding Filename, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+        <TextBox Text="{Binding Filename, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                 Margin="91,59,54,102"
+                 Height="28" />
+        <Button Content="..."
+                Command="{Binding OpenFileCommand}"
+                Margin="0,59,23,102"
+                HorizontalAlignment="Right"
+                Width="25" />
         <Label Content="Version:"
                Height="28"
                HorizontalAlignment="Left"
                Margin="21,18,0,0"
                VerticalAlignment="Top" />
-        <ComboBox Height="28"
-                  Margin="91,18,23,0"
+        <ComboBox Margin="91,18,23,0"
                   Name="version"
-                  VerticalAlignment="Top"
                   VerticalContentAlignment="Center"
-                  SelectedIndex="{Binding SelectedIndex, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                  SelectedIndex="{Binding SelectedIndex, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                  Height="28"
+                  VerticalAlignment="Top">
             <ComboBoxItem Content="SQL Compact Edition v3.1" />
             <ComboBoxItem Content="SQL Compact Edition v3.5"
                           IsSelected="True" />

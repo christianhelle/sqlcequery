@@ -446,7 +446,7 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
                     columnNode.Items.Add(new TreeViewItem { Header = "Database Type:  " + column.Value.DatabaseType });
                     columnNode.Items.Add(new TreeViewItem { Header = ".NET CLR Type:  " + column.Value.ManagedType });
                     columnNode.Items.Add(new TreeViewItem { Header = "Allows Null:  " + column.Value.AllowsNull });
-                    if (column.Value.ManagedType.Equals(typeof(string)))
+                    if (column.Value.ManagedType == typeof(string))
                         columnNode.Items.Add("Max Length:  " + column.Value.MaxLength);
                     columns.Items.Add(columnNode);
                 }
@@ -454,13 +454,16 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
                 var indexes = new TreeViewItem { Header = "Indexes", FontWeight = FontWeights.Normal };
                 table.Items.Add(indexes);
 
-                foreach (var index in item.Indexes)
+                if (item.Indexes != null)
                 {
-                    var indexNode = new TreeViewItem { Header = index.Name };
-                    indexNode.Items.Add(new TreeViewItem { Header = "Column:  " + index.Column.DisplayName });
-                    indexNode.Items.Add(new TreeViewItem { Header = "Unique:  " + index.Unique });
-                    indexNode.Items.Add(new TreeViewItem { Header = "Clustered:  " + index.Clustered });
-                    indexes.Items.Add(indexNode);
+                    foreach (var index in item.Indexes)
+                    {
+                        var indexNode = new TreeViewItem { Header = index.Name };
+                        indexNode.Items.Add(new TreeViewItem { Header = "Column:  " + index.Column.DisplayName });
+                        indexNode.Items.Add(new TreeViewItem { Header = "Unique:  " + index.Unique });
+                        indexNode.Items.Add(new TreeViewItem { Header = "Clustered:  " + index.Clustered });
+                        indexes.Items.Add(indexNode);
+                    }
                 }
             }
 
@@ -506,10 +509,10 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
                 schemaSummaryNode.Selected += OnTreeViewItemSelected;
                 schemaSummaryNode.Items.Add(new TreeViewItem { Header = "Tables:  " + database.Tables.Count });
                 schemaSummaryNode.Items.Add(new TreeViewItem { Header = "Columns:  " + database.Tables.Sum(c => c.Columns.Count) });
-                schemaSummaryNode.Items.Add(new TreeViewItem { Header = "Primary keys:  " + database.Tables.Where(c => !string.IsNullOrEmpty(c.PrimaryKeyColumnName)).Count() });
+                schemaSummaryNode.Items.Add(new TreeViewItem { Header = "Primary keys:  " + database.Tables.Count(c => !string.IsNullOrEmpty(c.PrimaryKeyColumnName)) });
                 //schemaSummaryNode.Items.Add(new TreeViewItem { Header = "Foreign keys:  " + database.Tables.Sum(c => c.Columns.Where(x => x.Value.IsForeignKey).Count()) });
-                schemaSummaryNode.Items.Add(new TreeViewItem { Header = "Identity fields:  " + database.Tables.Sum(c => c.Columns.Where(x => x.Value.AutoIncrement.HasValue).Count()) });
-                schemaSummaryNode.Items.Add(new TreeViewItem { Header = "Nullable fields:  " + database.Tables.Sum(c => c.Columns.Where(x => x.Value.AllowsNull).Count()) });
+                schemaSummaryNode.Items.Add(new TreeViewItem { Header = "Identity fields:  " + database.Tables.Sum(c => c.Columns.Count(x => x.Value.AutoIncrement.HasValue)) });
+                schemaSummaryNode.Items.Add(new TreeViewItem { Header = "Nullable fields:  " + database.Tables.Sum(c => c.Columns.Count(x => x.Value.AllowsNull)) });
                 propertiesNode.Items.Add(schemaSummaryNode);
 
                 var schemaInformationNode = new TreeViewItem { Header = "Schema Information" };
@@ -617,6 +620,10 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
 
                     if (!string.IsNullOrEmpty(ResultSetErrors))
                         CurrentResultsTabIndex = 3;
+
+                    sql = sql.ToLower();
+                    if (sql.Contains("create") || sql.Contains("alter") || sql.Contains("drop"))
+                        AnalyzeDatabase();
                 }
             });
         }
@@ -692,7 +699,7 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
                 dataSource = args[1];
 
                 var ext = Path.GetExtension(dataSource);
-                if (string.Compare(ext, ".sdf", true) == 0)
+                if (String.Compare(ext, ".sdf", StringComparison.OrdinalIgnoreCase) == 0)
                     AnalyzeDatabase();
             }
         }
@@ -712,7 +719,7 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
             var ext = Path.GetExtension(filePath);
             if (ext != null)
                 ext = ext.ToLower();
-            if (string.Compare(ext, ".sdf", true) != 0)
+            if (String.Compare(ext, ".sdf", StringComparison.OrdinalIgnoreCase) != 0)
                 return;
 
             dataSource = filePaths[0];
@@ -881,18 +888,20 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
             });
         }
 
-        public void RenameObject(object treeViewItem)
-        {
-            var window = new RenameObjectWindow();
+        /*
+                public void RenameObject(object treeViewItem)
+                {
+                    var window = new RenameObjectWindow();
 
-            if (treeViewItem is Table)
-                window.ViewModel = new RenameObjectViewModel(database, treeViewItem as Table);
-            else if (treeViewItem is Column)
-                window.ViewModel = new RenameObjectViewModel(database, treeViewItem as Column);
+                    if (treeViewItem is Table)
+                        window.ViewModel = new RenameObjectViewModel(database, treeViewItem as Table);
+                    else if (treeViewItem is Column)
+                        window.ViewModel = new RenameObjectViewModel(database, treeViewItem as Column);
 
-            if (window.ViewModel != null)
-                window.ShowDialog();
-        }
+                    if (window.ViewModel != null)
+                        window.ShowDialog();
+                }
+        */
 
         private void CreateNewDatabase()
         {
@@ -916,7 +925,7 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
             CurrentMainTabIndex = 0;
             lastSelectedTable = null;
             database = null;
-            
+
             dataSource = viewModel.Filename;
             password = viewModel.Password;
             AnalyzeDatabase();
