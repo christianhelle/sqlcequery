@@ -7,8 +7,6 @@ using System.Text;
 using System.Diagnostics;
 using System.Data.SqlClient;
 using System.IO;
-using System.Windows;
-using System.Windows.Forms;
 
 namespace ChristianHelle.DatabaseTools.SqlCe
 {
