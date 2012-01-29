@@ -171,9 +171,11 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.View
             SafeOperation(() => ViewModel.SaveTableDataChanges());
         }
 
-        private void Rename_Click(object sender, RoutedEventArgs e)
-        {
-            SafeOperation(() => ViewModel.RenameObject(((System.Windows.Controls.MenuItem)sender).Tag));
-        }
+        /*
+                private void Rename_Click(object sender, RoutedEventArgs e)
+                {
+                    SafeOperation(() => ViewModel.RenameObject(((System.Windows.Controls.MenuItem)sender).Tag));
+                }
+        */
     }
 }
