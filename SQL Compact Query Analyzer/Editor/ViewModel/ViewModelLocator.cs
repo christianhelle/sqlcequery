@@ -7,13 +7,14 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
 {
     public class ViewModelLocator
     {
-        public ViewModelLocator()
+        public MainViewModel MainViewModel
         {
-            MainViewModel = new MainViewModel();
-            CreateDatabaseViewModel = new CreateDatabaseViewModel();
+            get { return new MainViewModel(); }
         }
 
-        public MainViewModel MainViewModel { get; private set; }
-        public CreateDatabaseViewModel CreateDatabaseViewModel { get; private set; }
+        public CreateDatabaseViewModel CreateDatabaseViewModel
+        {
+            get { return new CreateDatabaseViewModel(); }
+        }
     }
 }
