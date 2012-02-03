@@ -32,6 +32,7 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.Controls
         protected override void OnCellFormatting(DataGridViewCellFormattingEventArgs e)
         {
             e.CellStyle.Font = e.Value == DBNull.Value ? italicFont : normalFont;
+            e.CellStyle.ForeColor = e.Value == DBNull.Value ? SystemColors.GrayText : SystemColors.WindowText;
             base.OnCellFormatting(e);
         }
     }
