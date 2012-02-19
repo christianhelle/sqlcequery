@@ -237,7 +237,7 @@ namespace ChristianHelle.DatabaseTools.SqlCe
                 {
                     conn.Open();
                     cmd.CommandText = @"SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.INDEXES WHERE TABLE_NAME=@Name AND PRIMARY_KEY=1";
-                    cmd.Parameters.AddWithValue("@Name", table.Name);
+                    cmd.Parameters.AddWithValue("@Name", table.DisplayName);
                     var primaryKeyColumnName = cmd.ExecuteScalar() as string;
                     if (primaryKeyColumnName != null)
                     {
