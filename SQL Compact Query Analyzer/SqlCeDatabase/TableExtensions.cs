@@ -25,7 +25,7 @@ namespace ChristianHelle.DatabaseTools.SqlCe
                 if (column.Value.ManagedType == typeof(string) && !column.Value.DatabaseType.ToUpper().Contains("TEXT"))
                     builder.AppendFormat("({0})", column.Value.MaxLength);
                 builder.Append(" ");
-                if (column.Value.IsPrimaryKey)
+                if (column.Value.IsPrimaryKey || table.PrimaryKeyColumnName == column.Value.Name)
                     builder.Append("PRIMARY KEY ");
                 builder.Append(column.Value.AllowsNull ? "NULL" : "NOT NULL");
                 builder.Append(",");
@@ -64,7 +64,7 @@ namespace ChristianHelle.DatabaseTools.SqlCe
                         continue;
                     }
 
-                    if (column.Value.ManagedType == typeof(string))
+                    if (column.Value.ManagedType == typeof(string) || column.Value.ManagedType == typeof(DateTime))
                         builder.AppendFormat("'{0}',", value.ToString().Replace("'", "''"));
                     else
                         builder.Append(value + ",");
