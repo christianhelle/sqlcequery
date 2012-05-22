@@ -499,7 +499,8 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
                 var propertiesNode = new TreeViewItem { Header = "Database Information" };
                 propertiesNode.Selected += OnTreeViewItemSelected;
                 propertiesNode.Items.Add(new TreeViewItem { Header = "File name:  " + fileInfo.Name });
-                propertiesNode.Items.Add(new TreeViewItem { Header = "Created on:  " + fileInfo.CreationTime });
+                propertiesNode.Items.Add(new TreeViewItem { Header = "Date Created:  " + fileInfo.CreationTime });
+                propertiesNode.Items.Add(new TreeViewItem { Header = "Last Modified:  " + fileInfo.LastWriteTime });
                 propertiesNode.Items.Add(new TreeViewItem { Header = "Version:  " + SqlCeDatabaseFactory.GetRuntimeVersion(dataSource) });
                 propertiesNode.Items.Add(new TreeViewItem { Header = "Password Protected:  " + !string.IsNullOrEmpty(password) });
                 propertiesNode.Items.Add(new TreeViewItem { Header = string.Format(new FileSizeFormatProvider(), "File size:  {0:fs}", fileInfo.Length) });
@@ -622,7 +623,8 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
                         CurrentResultsTabIndex = 3;
 
                     sql = sql.ToLower();
-                    if (sql.Contains("create") || sql.Contains("alter") || sql.Contains("drop"))
+                    if (sql.Contains("create") || sql.Contains("alter") || sql.Contains("drop") ||
+                        sql.Contains("insert") || sql.Contains("update") || sql.Contains("delete"))
                         AnalyzeDatabase();
                 }
             });
