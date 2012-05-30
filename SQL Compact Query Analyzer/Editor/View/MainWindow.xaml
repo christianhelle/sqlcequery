@@ -12,14 +12,24 @@
         Width="800"
         AllowDrop="True"
         Drop="Window_Drop">
+    <Window.InputBindings>
+        <KeyBinding Modifiers="Control"
+                    Key="N"
+                    Command="{Binding NewDatabaseCommand}" />
+        <KeyBinding Modifiers="Control"
+                    Key="O"
+                    Command="{Binding OpenDatabaseCommand}" />
+    </Window.InputBindings>
     <Grid>
         <DockPanel>
             <Menu IsMainMenu="True"
                   DockPanel.Dock="Top">
                 <MenuItem Header="File">
                     <MenuItem Header="New Database"
-                              Command="{Binding NewDatabaseCommand}" />                              
+                              InputGestureText="Ctrl+N"
+                              Command="{Binding NewDatabaseCommand}" />
                     <MenuItem Header="Open Database"
+                              InputGestureText="Ctrl+O"
                               Command="{Binding OpenDatabaseCommand}" />
                     <Separator />
                     <MenuItem Header="Exit"
