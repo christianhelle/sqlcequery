@@ -32,7 +32,12 @@
                               InputGestureText="Ctrl+O"
                               Command="{Binding OpenDatabaseCommand}" />
                     <Separator />
+                    <MenuItem Header="Recent Files"
+                              ItemsSource="{Binding RecentFiles}">
+                    </MenuItem>
+                    <Separator />
                     <MenuItem Header="Exit"
+                              InputGestureText="Alt+F4"
                               Command="{Binding ExitCommand}" />
                 </MenuItem>
                 <MenuItem Header="Query">
