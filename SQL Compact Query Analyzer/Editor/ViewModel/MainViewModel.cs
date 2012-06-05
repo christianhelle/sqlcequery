@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Collections.ObjectModel;
 using System.Data;
@@ -12,6 +13,7 @@ using System.Windows.Controls;
 using System.Windows.Forms;
 using System.Windows.Input;
 using System.Xml;
+using System.Xml.Serialization;
 using ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.Controls;
 using ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.Properties;
 using ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.View;
@@ -21,6 +23,7 @@ using ICSharpCode.AvalonEdit.Highlighting.Xshd;
 using Application = System.Windows.Application;
 using DataFormats = System.Windows.DataFormats;
 using IDataObject = System.Windows.IDataObject;
+using MenuItem = System.Windows.Controls.MenuItem;
 
 namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
 {
@@ -37,6 +40,7 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
         {
             Query = new TextDocument();
             ResultSetXml = new TextDocument();
+            RecentFiles = new ObservableCollection<System.Windows.Controls.Control>();
 
             var args = Environment.GetCommandLineArgs();
             LaunchedWithArgument = args.Length == 2;
@@ -68,6 +72,8 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
         private bool displayResultsAsXml;
 
         public ObservableCollection<TreeViewItem> Tree { get; private set; }
+
+        public ObservableCollection<System.Windows.Controls.Control> RecentFiles { get; set; }
 
         public TextDocument Query
         {
@@ -309,12 +315,19 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
             get { return new SafeRelayCommand(CreateNewDatabase); }
         }
 
+        public ICommand ClearRecentFilesCommand
+        {
+            get { return new SafeRelayCommand(ClearRecentFiles); }
+        }
+
         #endregion
 
         public void Load()
         {
             DisplayResultsInGrid = Settings.Default.DisplayResultsInGrid;
             DisplayResultsAsXml = Settings.Default.DisplayResultsAsXml;
+
+            LoadRecentFiles();
         }
 
         public void OpenDatabase()
@@ -328,22 +341,27 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
                 if (dialog.ShowDialog() == DialogResult.Cancel)
                     return;
 
-                Tree = null;
-                ResetTableData();
-                ResultsContainer.Clear();
-                ResultSetMessages = ResultSetErrors = ResultSetXml.Text = Query.Text = string.Empty;
-                RaisePropertyChanged("Tree");
-                RaisePropertyChanged("Query");
-                RaisePropertyChanged("ResultSetXml");
-                CurrentMainTabIndex = 0;
-                lastSelectedTable = null;
-                dataSource = null;
-                database = null;
-                password = null;
+                ResetFields();
 
                 dataSource = dialog.FileName;
                 AnalyzeDatabase();
             }
+        }
+
+        private void ResetFields()
+        {
+            Tree = null;
+            ResetTableData();
+            ResultsContainer.Clear();
+            ResultSetMessages = ResultSetErrors = ResultSetXml.Text = Query.Text = string.Empty;
+            RaisePropertyChanged("Tree");
+            RaisePropertyChanged("Query");
+            RaisePropertyChanged("ResultSetXml");
+            CurrentMainTabIndex = 0;
+            lastSelectedTable = null;
+            dataSource = null;
+            database = null;
+            password = null;
         }
 
         private void ResetTableData()
@@ -395,6 +413,8 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
                     AnalyzingTablesIsBusy = true;
                     database.AnalyzeDatabase();
                     Application.Current.Dispatcher.Invoke((Action)PopulateTables);
+
+                    AddRecentFile(dataSource);
                 }
                 catch (Exception e)
                 {
@@ -932,5 +952,110 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
             password = viewModel.Password;
             AnalyzeDatabase();
         }
+
+        #region Recent Files
+
+        private void LoadRecentFiles()
+        {
+            List<string> recentFiles = null;
+            
+            var filename = GetRecentsXmlFile();
+            if (File.Exists(filename))
+            {
+                using (var stream = new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+                {
+                    var serializer = new XmlSerializer(typeof(List<string>));
+                    recentFiles = serializer.Deserialize(stream) as List<string>;
+                }
+            }
+
+            PopulateRecentFiles(recentFiles);
+        }
+
+        private void PopulateRecentFiles(IEnumerable<string> recentFiles)
+        {
+            Application.Current.Dispatcher.Invoke(new Action(() => PopulateRecentFilesMethod(recentFiles)));
+        }
+
+        private void PopulateRecentFilesMethod(IEnumerable<string> recentFiles)
+        {
+            RecentFiles.Clear();
+
+            if (recentFiles != null)
+            {
+                foreach (var file in recentFiles)
+                {
+                    var fileInfo = new FileInfo(file);
+                    var menuItem = new MenuItem { Header = fileInfo.Name, Tag = file };
+                    menuItem.Click += OnRecentFileClick;
+                    RecentFiles.Add(menuItem);
+                }
+            }
+
+            RecentFiles.Add(new Separator());
+            var clearListMenuItem = new MenuItem { Header = "Clear Recent File List" };
+            clearListMenuItem.Click += (sender, args) => ClearRecentFiles();
+            RecentFiles.Add(clearListMenuItem);
+
+            RaisePropertyChanged("RecentFiles");
+        }
+
+        private static string GetRecentsXmlFile()
+        {
+            var path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "SQL Compact Query Analyzer");
+            if (!Directory.Exists(path))
+                Directory.CreateDirectory(path);
+
+            var filename = Path.Combine(path, "Recent.xml");
+            return filename;
+        }
+
+        private void OnRecentFileClick(object sender, RoutedEventArgs args)
+        {
+            ResetFields();
+            dataSource = ((MenuItem)sender).Tag.ToString();
+            AnalyzeDatabase();
+        }
+
+        private void ClearRecentFiles()
+        {
+            var filename = GetRecentsXmlFile();
+            if (File.Exists(filename))
+                File.Delete(filename);
+            LoadRecentFiles();
+        }
+
+        private void AddRecentFile(string file)
+        {
+            var filename = GetRecentsXmlFile();
+            if (!File.Exists(filename))
+            {
+                using (var stream = new FileStream(filename, FileMode.Create, FileAccess.ReadWrite, FileShare.ReadWrite))
+                {
+                    var serializer = new XmlSerializer(typeof(List<string>));
+                    serializer.Serialize(stream, new List<string> { file });
+                }
+            }
+            else
+            {
+                List<string> recentFiles;
+                using (var stream = new FileStream(filename, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite))
+                {
+                    var serializer = new XmlSerializer(typeof(List<string>));
+                    recentFiles = serializer.Deserialize(stream) as List<string>;
+                    if (recentFiles == null) return;
+                }
+                using (var stream = new FileStream(filename, FileMode.Create, FileAccess.ReadWrite, FileShare.ReadWrite))
+                {
+                    var serializer = new XmlSerializer(typeof(List<string>));
+                    if (recentFiles.Contains(file)) recentFiles.Remove(file);
+                    recentFiles.Insert(0, file);
+                    serializer.Serialize(stream, recentFiles);
+                    PopulateRecentFiles(recentFiles);
+                }
+            }
+        }
+
+        #endregion
     }
 }
