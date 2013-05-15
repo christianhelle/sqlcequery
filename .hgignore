@@ -5,3 +5,4 @@ syntax: glob
 */Binaries/*
 *.exe
 *.msi
+*.suo
