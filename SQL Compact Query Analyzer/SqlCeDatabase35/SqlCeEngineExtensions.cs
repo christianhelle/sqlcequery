@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlServerCe;
 
 namespace ChristianHelle.DatabaseTools.SqlCe
@@ -69,6 +70,24 @@ namespace ChristianHelle.DatabaseTools.SqlCe
                     list.Add(reader.GetString(0));
 
             return list.ToArray();
+        }
+
+        public static DataSet GetSchemaInformationViews(this SqlCeEngine source)
+        {
+            var dataSet = new DataSet();
+            using (var conn = new SqlCeConnection(source.LocalConnectionString))
+            {
+                var views = new[] { "TABLES", "TABLE_CONSTRAINTS", "INDEXES", "KEY_COLUMN_USAGE", "COLUMNS" };
+                foreach (var view in views)
+                {
+                    var table = new DataTable("INFORMATION_SCHEMA." + view);
+                    using (var adapter = new SqlCeDataAdapter("SELECT * FROM INFORMATION_SCHEMA." + view, conn))
+                        adapter.Fill(table);
+                    
+                    dataSet.Tables.Add(table);
+                }
+            }
+            return dataSet;
         }
     }
 }
