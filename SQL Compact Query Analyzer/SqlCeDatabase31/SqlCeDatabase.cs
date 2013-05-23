@@ -189,24 +189,89 @@ namespace ChristianHelle.DatabaseTools.SqlCe
 
         public void AnalyzeDatabase()
         {
-            var engine = new SqlCeEngine(ConnectionString);
-            var tables = engine.GetTables();
-            if (tables == null) return;
+            using (var engine = new SqlCeEngine(ConnectionString))
+            {
+                var schema = engine.GetSchemaInformationViews();
 
-            var tableList = GetTableInformation(ConnectionString, tables);
-            Tables = new List<Table>(tableList.Values);
-            FetchPrimaryKeys();
-            FetchIndexes();
+                var tables = schema.Tables["INFORMATION_SCHEMA.TABLES"].AsEnumerable().Select(c => c.Field<string>("TABLE_NAME")).ToList();
+                if (tables.Count == 0) return;
+
+                var tableList = GetTableInformation(ConnectionString, tables, schema);
+                Tables = new List<Table>(tableList.Values);
+
+                FetchPrimaryKeys();
+                FetchIndexes();
+            }
+        }
+
+        private static Dictionary<string, Table> GetTableInformation(string connectionString, ICollection<string> tables, DataSet schema)
+        {
+            var tableList = new Dictionary<string, Table>(tables.Count);
+            foreach (var tableName in tables)
+            {
+                string table = tableName;
+                Trace.WriteLine("Analyazing " + table);
+
+                table = string.Format("[{0}]", table);
+                var columns = schema.Tables["INFORMATION_SCHEMA.COLUMNS"]
+                    .AsEnumerable()
+                    .Where(c => c.Field<string>("TABLE_NAME") == tableName)
+                    .CopyToDataTable();
+
+                using (var connection = new SqlCeConnection(connectionString))
+                {
+                    var columnDescriptions = new DataTable();
+                    using (var adapter = new SqlCeDataAdapter("SELECT * FROM " + table, connection))
+                        adapter.Fill(0, 1, columnDescriptions);
+
+                    var item = new Table
+                    {
+                        Name = table,
+                        DisplayName = tableName,
+                        ClassName = tableName.Replace(" ", string.Empty),
+                        Columns = new Dictionary<string, Column>(columns.Rows.Count)
+                    };
+
+                    foreach (DataRow row in columns.Rows)
+                    {
+                        var displayName = row.Field<string>("COLUMN_NAME");
+                        var name = displayName;
+                        if (name.Contains(" "))
+                            name = string.Format("[{0}]", name);
+                        var column = new Column
+                        {
+                            Name = name,
+                            DisplayName = displayName,
+                            FieldName = displayName.Replace(" ", string.Empty),
+                            DatabaseType = row.Field<string>("DATA_TYPE"),
+                            MaxLength = row.Field<int?>("CHARACTER_MAXIMUM_LENGTH"),
+                            ManagedType = columnDescriptions.Columns[displayName].DataType,
+                            AllowsNull = (String.Compare(row.Field<string>("IS_NULLABLE"), "YES", StringComparison.OrdinalIgnoreCase) == 0),
+                            AutoIncrement = row.Field<long?>("AUTOINC_INCREMENT"),
+                            AutoIncrementSeed = row.Field<long?>("AUTOINC_SEED"),
+                            Ordinal = row.Field<int>("ORDINAL_POSITION")
+                        };
+                        item.Columns.Add(name, column);
+                    }
+
+                    tableList.Add(table, item);
+                }
+            }
+
+            return tableList;
         }
 
         private void FetchPrimaryKeys()
         {
             foreach (var table in Tables)
             {
+                Trace.WriteLine("Analyzing primary keys for " + table);
+
                 using (var conn = new SqlCeConnection(ConnectionString))
                 using (var cmd = conn.CreateCommand())
                 {
                     conn.Open();
+
                     cmd.CommandText = @"SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.INDEXES WHERE TABLE_NAME=@Name AND PRIMARY_KEY=1";
                     cmd.Parameters.AddWithValue("@Name", table.DisplayName);
                     var primaryKeyColumnName = cmd.ExecuteScalar() as string;
@@ -244,71 +309,12 @@ namespace ChristianHelle.DatabaseTools.SqlCe
             }
         }
 
-        private static Dictionary<string, Table> GetTableInformation(string connectionString, ICollection<string> tables)
-        {
-            var tableList = new Dictionary<string, Table>(tables.Count);
-            foreach (var tableName in tables)
-            {
-                string table = tableName;
-                Trace.WriteLine("Analyazing " + table);
-
-                table = string.Format("[{0}]", table);
-                var schema = new DataTable(table);
-
-                using (var connection = new SqlCeConnection(connectionString))
-                using (var command = connection.CreateCommand())
-                {
-                    connection.Open();
-
-                    command.CommandText = "SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME='" + tableName + "'";
-                    using (var adapter = new SqlCeDataAdapter(command))
-                        adapter.Fill(schema);
-
-                    var columnDescriptions = new DataTable();
-                    command.CommandText = @"SELECT * FROM " + table;
-                    using (var adapter = new SqlCeDataAdapter(command))
-                        adapter.Fill(0, 1, columnDescriptions);
-
-                    var item = new Table
-                    {
-                        Name = table,
-                        DisplayName = tableName,
-                        ClassName = tableName.Replace(" ", string.Empty),
-                        Columns = new Dictionary<string, Column>(schema.Rows.Count)
-                    };
-
-                    foreach (DataRow row in schema.Rows)
-                    {
-                        var displayName = row.Field<string>("COLUMN_NAME");
-                        var name = displayName;
-                        if (name.Contains(" "))
-                            name = string.Format("[{0}]", name);
-                        var column = new Column
-                        {
-                            Name = name,
-                            DisplayName = displayName,
-                            FieldName = displayName.Replace(" ", string.Empty),
-                            DatabaseType = row.Field<string>("DATA_TYPE"),
-                            MaxLength = row.Field<int?>("CHARACTER_MAXIMUM_LENGTH"),
-                            ManagedType = columnDescriptions.Columns[displayName].DataType,
-                            AllowsNull = (string.Compare(row.Field<string>("IS_NULLABLE"), "YES", true) == 0),
-                            AutoIncrement = row.Field<long?>("AUTOINC_INCREMENT"),
-                            AutoIncrementSeed = row.Field<long?>("AUTOINC_SEED"),
-                            Ordinal = row.Field<int>("ORDINAL_POSITION")
-                        };
-                        item.Columns.Add(name, column);
-                    }
-
-                    tableList.Add(table, item);
-                }
-            }
-            return tableList;
-        }
-
         private void FetchIndexes()
         {
             foreach (var table in Tables)
             {
+                Trace.WriteLine("Analyazing index information for " + table);
+
                 using (var conn = new SqlCeConnection(ConnectionString))
                 using (var cmd = conn.CreateCommand())
                 {
