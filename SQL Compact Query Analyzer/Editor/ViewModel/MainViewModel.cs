@@ -411,7 +411,14 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
                     }
 
                     AnalyzingTablesIsBusy = true;
+
+                    var stopwatch = Stopwatch.StartNew();
+
                     database.AnalyzeDatabase();
+                    
+                    ResultSetMessages = "Analyzed database in " + stopwatch.Elapsed;
+                    stopwatch.Stop();
+
                     Application.Current.Dispatcher.Invoke((Action)PopulateTables);
 
                     AddRecentFile(dataSource);
@@ -958,7 +965,7 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
         private void LoadRecentFiles()
         {
             List<string> recentFiles = null;
-            
+
             var filename = GetRecentsXmlFile();
             if (File.Exists(filename))
             {
