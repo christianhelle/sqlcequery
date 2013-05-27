@@ -70,7 +70,7 @@
         "Entry"
         {
         "MsmKey" = "8:_CAAB59A00C3D23D4E6A41D07C2A534D7"
-        "OwnerKey" = "8:_928ADA725F0945DDA2628E9D521DA1B3"
+        "OwnerKey" = "8:_460F523DCAC24D96804E5BCD6D43EA3E"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -82,7 +82,7 @@
         "Entry"
         {
         "MsmKey" = "8:_CAAB59A00C3D23D4E6A41D07C2A534D7"
-        "OwnerKey" = "8:_460F523DCAC24D96804E5BCD6D43EA3E"
+        "OwnerKey" = "8:_928ADA725F0945DDA2628E9D521DA1B3"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -100,43 +100,7 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_CAAB59A00C3D23D4E6A41D07C2A534D7"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_AE561BB6FB9C6F421D5FC052BE5FF740"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_27FD9DA02D144F9BBA00AE2CA6F3B19E"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_460F523DCAC24D96804E5BCD6D43EA3E"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_9311FF55FCD963F14A7344E38D93C897"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_928ADA725F0945DDA2628E9D521DA1B3"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_A8DECAD57DA894051048971186C31946"
+        "OwnerKey" = "8:_71ECF5F883644991BB65FC7CAA93B64B"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -148,7 +112,43 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_71ECF5F883644991BB65FC7CAA93B64B"
+        "OwnerKey" = "8:_A8DECAD57DA894051048971186C31946"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_928ADA725F0945DDA2628E9D521DA1B3"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_9311FF55FCD963F14A7344E38D93C897"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_460F523DCAC24D96804E5BCD6D43EA3E"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_27FD9DA02D144F9BBA00AE2CA6F3B19E"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_AE561BB6FB9C6F421D5FC052BE5FF740"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_CAAB59A00C3D23D4E6A41D07C2A534D7"
         "MsmSig" = "8:_UNDEFINED"
         }
     }
@@ -524,15 +524,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:SQL Compact Query Analyzer"
-        "ProductCode" = "8:{AB82AD54-7AC7-43B6-8032-2FB1DF8EA2B0}"
-        "PackageCode" = "8:{AB9C7B5C-DF65-4540-BD76-D0A7CEF5BAEB}"
+        "ProductCode" = "8:{7E35B039-8DAD-41C6-B2DE-644D7AF75E32}"
+        "PackageCode" = "8:{07887CEA-EDDF-44B0-8400-D29A608CBF42}"
         "UpgradeCode" = "8:{7955E1B9-D626-41AD-BB40-60483A2E7086}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:FALSE"
         "DetectNewerInstalledVersion" = "11:FALSE"
         "InstallAllUsers" = "11:FALSE"
-        "ProductVersion" = "8:1.0.0"
+        "ProductVersion" = "8:1.0.1"
         "Manufacturer" = "8:Christian Resma Helle"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:http://sqlcequery.codeplex.com"
@@ -1102,7 +1102,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_27FD9DA02D144F9BBA00AE2CA6F3B19E"
             {
-            "SourcePath" = "8:..\\SqlCeDatabase40\\obj\\Debug\\SqlCeDatabase40.dll"
+            "SourcePath" = "8:..\\SqlCeDatabase40\\obj\\Release\\SqlCeDatabase40.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_79BB22BAAF6442959A55D7ABE32D8744"
@@ -1130,7 +1130,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_460F523DCAC24D96804E5BCD6D43EA3E"
             {
-            "SourcePath" = "8:..\\SqlCeDatabase31\\obj\\Debug\\SqlCeDatabase31.dll"
+            "SourcePath" = "8:..\\SqlCeDatabase31\\obj\\Release\\SqlCeDatabase31.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_381E486FA61647469891D7A61A2CF629"
@@ -1186,7 +1186,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_928ADA725F0945DDA2628E9D521DA1B3"
             {
-            "SourcePath" = "8:..\\SqlCeDatabase35\\obj\\Debug\\SqlCeDatabase35.dll"
+            "SourcePath" = "8:..\\SqlCeDatabase35\\obj\\Release\\SqlCeDatabase35.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_4C02D64297D94829BF9CD2763302CDC7"
@@ -1214,7 +1214,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_AC3EF5EC977446BD9B6FC630FA4CC679"
             {
-            "SourcePath" = "8:..\\Editor\\obj\\x86\\Debug\\QueryAnalyzer.exe"
+            "SourcePath" = "8:..\\Editor\\obj\\x86\\Release\\QueryAnalyzer.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_DE98AAC9375741DCB29C17160E6BF7F3"
