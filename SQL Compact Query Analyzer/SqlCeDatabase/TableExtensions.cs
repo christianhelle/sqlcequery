@@ -14,7 +14,7 @@ namespace ChristianHelle.DatabaseTools.SqlCe
 
             builder.Append("CREATE TABLE ");
             builder.Append(table.Name);
-            builder.Append(" (");
+            builder.AppendLine(" (");
             foreach (var column in table.Columns)
             {
                 builder.AppendLine();
@@ -25,6 +25,8 @@ namespace ChristianHelle.DatabaseTools.SqlCe
                 if (column.Value.ManagedType == typeof(string) && !column.Value.DatabaseType.ToUpper().Contains("TEXT"))
                     builder.AppendFormat("({0})", column.Value.MaxLength);
                 builder.Append(" ");
+                if (column.Value.IdentityIncrement.HasValue && column.Value.IdentitySeed.HasValue)
+                    builder.AppendFormat("IDENTITY({0},{1}) ", column.Value.IdentitySeed, column.Value.IdentityIncrement);
                 if (column.Value.IsPrimaryKey || table.PrimaryKeyColumnName == column.Value.Name)
                     builder.Append("PRIMARY KEY ");
                 builder.Append(column.Value.AllowsNull ? "NULL" : "NOT NULL");

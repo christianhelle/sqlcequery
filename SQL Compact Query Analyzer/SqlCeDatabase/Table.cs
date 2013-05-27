@@ -29,8 +29,8 @@ namespace ChristianHelle.DatabaseTools.SqlCe
         public string DatabaseType { get; set; }
         public bool AllowsNull { get; set; }
         public bool IsPrimaryKey { get; set; }
-        public long? AutoIncrement { get; set; }
-        public long? AutoIncrementSeed { get; set; }
+        public long? IdentityIncrement { get; set; }
+        public long? IdentitySeed { get; set; }
         public bool IsForeignKey { get; set; }
         public int Ordinal { get; set; }
 

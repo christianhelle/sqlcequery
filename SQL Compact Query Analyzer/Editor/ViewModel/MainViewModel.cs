@@ -465,8 +465,10 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
                     //columnNode.Tag = new KeyValuePair<string, string>(item.Name, column.Value.Name);
                     if (column.Value.IsPrimaryKey)
                         columnNode.Items.Add("Primary Key");
-                    if (column.Value.AutoIncrement.HasValue)
-                        columnNode.Items.Add("Auto Increment");
+                    if (column.Value.IdentitySeed.HasValue)
+                        columnNode.Items.Add("Identity Seed: " + column.Value.IdentitySeed.GetValueOrDefault(1));
+                    if (column.Value.IdentityIncrement.HasValue)
+                        columnNode.Items.Add("Identity Increment: " + column.Value.IdentityIncrement.GetValueOrDefault(1));
                     if (column.Value.IsForeignKey)
                         columnNode.Items.Add("Foreign Key");
                     columnNode.Items.Add("Ordinal Position:  " + column.Value.Ordinal);
@@ -539,7 +541,7 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
                 schemaSummaryNode.Items.Add(new TreeViewItem { Header = "Columns:  " + database.Tables.Sum(c => c.Columns.Count) });
                 schemaSummaryNode.Items.Add(new TreeViewItem { Header = "Primary keys:  " + database.Tables.Count(c => !string.IsNullOrEmpty(c.PrimaryKeyColumnName)) });
                 //schemaSummaryNode.Items.Add(new TreeViewItem { Header = "Foreign keys:  " + database.Tables.Sum(c => c.Columns.Where(x => x.Value.IsForeignKey).Count()) });
-                schemaSummaryNode.Items.Add(new TreeViewItem { Header = "Identity fields:  " + database.Tables.Sum(c => c.Columns.Count(x => x.Value.AutoIncrement.HasValue)) });
+                schemaSummaryNode.Items.Add(new TreeViewItem { Header = "Identity fields:  " + database.Tables.Sum(c => c.Columns.Count(x => x.Value.IdentityIncrement.HasValue)) });
                 schemaSummaryNode.Items.Add(new TreeViewItem { Header = "Nullable fields:  " + database.Tables.Sum(c => c.Columns.Count(x => x.Value.AllowsNull)) });
                 propertiesNode.Items.Add(schemaSummaryNode);
 

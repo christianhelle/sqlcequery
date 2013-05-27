@@ -68,7 +68,7 @@ namespace ChristianHelle.DatabaseTools.SqlCe
         public object GetTableProperties(Table table)
         {
             using (var conn = new SqlCeConnection(ConnectionString))
-            using (var adapter = new SqlCeDataAdapter(string.Format("SELECT COLUMN_NAME AS Name, IS_NULLABLE AS [Allows Null], DATA_TYPE AS [Data Type], CHARACTER_MAXIMUM_LENGTH AS [Max Length] FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME='{0}'", table.DisplayName), conn))
+            using (var adapter = new SqlCeDataAdapter(string.Format("SELECT COLUMN_NAME AS Name, IS_NULLABLE AS [Allows Null], DATA_TYPE AS [Data Type], CHARACTER_MAXIMUM_LENGTH AS [Max Length], AUTOINC_SEED AS [Identity Seed], AUTOINC_INCREMENT AS [Identity Increment] FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME='{0}'", table.DisplayName), conn))
             {
                 var dataTable = new DataTable(table.DisplayName);
                 adapter.Fill(dataTable);
@@ -239,8 +239,8 @@ namespace ChristianHelle.DatabaseTools.SqlCe
                         MaxLength = row.Field<int?>("CHARACTER_MAXIMUM_LENGTH"),
                         ManagedType = GetManagedType(row.Field<string>("DATA_TYPE")),
                         AllowsNull = (String.Compare(row.Field<string>("IS_NULLABLE"), "YES", StringComparison.OrdinalIgnoreCase) == 0),
-                        AutoIncrement = row.Field<long?>("AUTOINC_INCREMENT"),
-                        AutoIncrementSeed = row.Field<long?>("AUTOINC_SEED"),
+                        IdentityIncrement = row.Field<long?>("AUTOINC_INCREMENT"),
+                        IdentitySeed = row.Field<long?>("AUTOINC_SEED"),
                         Ordinal = row.Field<int>("ORDINAL_POSITION")
                     };
                     item.Columns.Add(name, column);
