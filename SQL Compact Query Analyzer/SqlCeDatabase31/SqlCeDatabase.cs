@@ -12,10 +12,11 @@ namespace ChristianHelle.DatabaseTools.SqlCe
     {
         public SqlCeDatabase()
         {
-
+            Tables = new List<Table>();
         }
 
         public SqlCeDatabase(string connectionString)
+            : this()
         {
             ConnectionString = connectionString + " Max Database Size=4091;";
         }
@@ -195,7 +196,7 @@ namespace ChristianHelle.DatabaseTools.SqlCe
                 if (tables.Count == 0) return;
 
                 var tableList = GetTableInformation(tables, schema);
-                Tables = new List<Table>(tableList.Values);
+                Tables.AddRange(tableList.Values);
 
                 FetchPrimaryKeys(schema);
                 FetchIndexes(schema);
