@@ -162,8 +162,7 @@ namespace ChristianHelle.DatabaseTools.SqlCe
 
             using (var conn = new SqlCeConnection(ConnectionString))
             using (var adapter = new SqlCeDataAdapter("SELECT * FROM " + tableData.TableName, conn))
-            using (var commands = new SqlCeCommandBuilder(adapter))
-                adapter.Update(tableData);
+            using (new SqlCeCommandBuilder(adapter)) adapter.Update(tableData);
         }
 
         public List<Table> Tables { get; set; }
@@ -301,11 +300,14 @@ namespace ChristianHelle.DatabaseTools.SqlCe
             {
                 Trace.WriteLine("Analyzing primary keys for " + table);
 
-                var primaryKeyColumnName = schema.Tables["INFORMATION_SCHEMA.INDEXES"]
+                var primaryKey = schema.Tables["INFORMATION_SCHEMA.INDEXES"]
                     .AsEnumerable()
-                    .First(c => c.Field<string>("TABLE_NAME") == table.DisplayName && c.Field<bool>("PRIMARY_KEY"))
-                    .Field<string>("COLUMN_NAME");
+                    .FirstOrDefault(c => c.Field<string>("TABLE_NAME") == table.DisplayName && c.Field<bool>("PRIMARY_KEY"));
 
+                if (primaryKey == null)
+                    continue;
+
+                var primaryKeyColumnName = primaryKey.Field<string>("COLUMN_NAME");
                 if (primaryKeyColumnName != null)
                 {
                     table.PrimaryKeyColumnName = primaryKeyColumnName;
