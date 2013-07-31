@@ -33,6 +33,30 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_8DE9F088D59D9FAB28E2BB6F2FA32724"
+        "OwnerKey" = "8:_27FD9DA02D144F9BBA00AE2CA6F3B19E"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_8DE9F088D59D9FAB28E2BB6F2FA32724"
+        "OwnerKey" = "8:_AC3EF5EC977446BD9B6FC630FA4CC679"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_8DE9F088D59D9FAB28E2BB6F2FA32724"
+        "OwnerKey" = "8:_928ADA725F0945DDA2628E9D521DA1B3"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_8DE9F088D59D9FAB28E2BB6F2FA32724"
+        "OwnerKey" = "8:_460F523DCAC24D96804E5BCD6D43EA3E"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_928ADA725F0945DDA2628E9D521DA1B3"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -63,30 +87,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_CAAB59A00C3D23D4E6A41D07C2A534D7"
-        "OwnerKey" = "8:_27FD9DA02D144F9BBA00AE2CA6F3B19E"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_CAAB59A00C3D23D4E6A41D07C2A534D7"
-        "OwnerKey" = "8:_460F523DCAC24D96804E5BCD6D43EA3E"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_CAAB59A00C3D23D4E6A41D07C2A534D7"
-        "OwnerKey" = "8:_AC3EF5EC977446BD9B6FC630FA4CC679"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_CAAB59A00C3D23D4E6A41D07C2A534D7"
-        "OwnerKey" = "8:_928ADA725F0945DDA2628E9D521DA1B3"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_ED392BCE248BBD2EAC9C204147877E88"
         "OwnerKey" = "8:_AC3EF5EC977446BD9B6FC630FA4CC679"
         "MsmSig" = "8:_UNDEFINED"
@@ -95,12 +95,6 @@
         {
         "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_AC3EF5EC977446BD9B6FC630FA4CC679"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_71ECF5F883644991BB65FC7CAA93B64B"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -136,6 +130,12 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_71ECF5F883644991BB65FC7CAA93B64B"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_27FD9DA02D144F9BBA00AE2CA6F3B19E"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -148,7 +148,7 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_CAAB59A00C3D23D4E6A41D07C2A534D7"
+        "OwnerKey" = "8:_8DE9F088D59D9FAB28E2BB6F2FA32724"
         "MsmSig" = "8:_UNDEFINED"
         }
     }
@@ -263,11 +263,47 @@
             "AssemblyAsmDisplayName" = "8:System.Data.SqlServerCe, Version=9.0.242.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
+                    "_71ECF5F883644991BB65FC7CAA93B64B"
+                    {
+                    "Name" = "8:System.Data.SqlServerCe.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:System.Data.SqlServerCe.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_381E486FA61647469891D7A61A2CF629"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_8DE9F088D59D9FAB28E2BB6F2FA32724"
+            {
+            "AssemblyRegister" = "3:1"
+            "AssemblyIsInGAC" = "11:FALSE"
+            "AssemblyAsmDisplayName" = "8:SqlCeDatabase, Version=2.0.1.24991, Culture=neutral, processorArchitecture=MSIL"
+                "ScatterAssemblies"
+                {
+                    "_8DE9F088D59D9FAB28E2BB6F2FA32724"
+                    {
+                    "Name" = "8:SqlCeDatabase.dll"
+                    "Attributes" = "3:512"
+                    }
+                }
+            "SourcePath" = "8:SqlCeDatabase.dll"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_DE98AAC9375741DCB29C17160E6BF7F3"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -289,6 +325,11 @@
             "AssemblyAsmDisplayName" = "8:System.Data.SqlServerCe, Version=3.5.1.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
+                    "_9311FF55FCD963F14A7344E38D93C897"
+                    {
+                    "Name" = "8:System.Data.SqlServerCe.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:System.Data.SqlServerCe.dll"
             "TargetName" = "8:"
@@ -315,6 +356,11 @@
             "AssemblyAsmDisplayName" = "8:ICSharpCode.AvalonEdit, Version=4.0.0.7070, Culture=neutral, PublicKeyToken=9cc39be672370310, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
+                    "_A8DECAD57DA894051048971186C31946"
+                    {
+                    "Name" = "8:ICSharpCode.AvalonEdit.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:ICSharpCode.AvalonEdit.dll"
             "TargetName" = "8:"
@@ -341,37 +387,16 @@
             "AssemblyAsmDisplayName" = "8:System.Data.SqlServerCe, Version=4.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
+                    "_AE561BB6FB9C6F421D5FC052BE5FF740"
+                    {
+                    "Name" = "8:System.Data.SqlServerCe.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:System.Data.SqlServerCe.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_79BB22BAAF6442959A55D7ABE32D8744"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:TRUE"
-            "IsolateTo" = "8:"
-            }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_CAAB59A00C3D23D4E6A41D07C2A534D7"
-            {
-            "AssemblyRegister" = "3:1"
-            "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:SqlCeDatabase, Version=1.4.4644.23951, Culture=neutral, processorArchitecture=MSIL"
-                "ScatterAssemblies"
-                {
-                }
-            "SourcePath" = "8:SqlCeDatabase.dll"
-            "TargetName" = "8:"
-            "Tag" = "8:"
-            "Folder" = "8:_DE98AAC9375741DCB29C17160E6BF7F3"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -393,6 +418,11 @@
             "AssemblyAsmDisplayName" = "8:WPFToolkit.Extended, Version=1.4.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
+                    "_ED392BCE248BBD2EAC9C204147877E88"
+                    {
+                    "Name" = "8:WPFToolkit.Extended.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:WPFToolkit.Extended.dll"
             "TargetName" = "8:"
@@ -524,15 +554,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:SQL Compact Query Analyzer"
-        "ProductCode" = "8:{7E35B039-8DAD-41C6-B2DE-644D7AF75E32}"
-        "PackageCode" = "8:{07887CEA-EDDF-44B0-8400-D29A608CBF42}"
+        "ProductCode" = "8:{5F82BCB8-E2D2-4195-B82D-49BF163EB367}"
+        "PackageCode" = "8:{7008AC07-35E3-4455-885B-D67B2EC842C5}"
         "UpgradeCode" = "8:{7955E1B9-D626-41AD-BB40-60483A2E7086}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:FALSE"
         "DetectNewerInstalledVersion" = "11:FALSE"
         "InstallAllUsers" = "11:FALSE"
-        "ProductVersion" = "8:1.0.1"
+        "ProductVersion" = "8:1.0.2"
         "Manufacturer" = "8:Christian Resma Helle"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:http://sqlcequery.codeplex.com"
@@ -1102,7 +1132,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_27FD9DA02D144F9BBA00AE2CA6F3B19E"
             {
-            "SourcePath" = "8:..\\SqlCeDatabase40\\obj\\Release\\SqlCeDatabase40.dll"
+            "SourcePath" = "8:..\\SqlCeDatabase40\\obj\\Debug\\SqlCeDatabase40.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_79BB22BAAF6442959A55D7ABE32D8744"
@@ -1130,7 +1160,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_460F523DCAC24D96804E5BCD6D43EA3E"
             {
-            "SourcePath" = "8:..\\SqlCeDatabase31\\obj\\Release\\SqlCeDatabase31.dll"
+            "SourcePath" = "8:..\\SqlCeDatabase31\\obj\\Debug\\SqlCeDatabase31.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_381E486FA61647469891D7A61A2CF629"
@@ -1186,7 +1216,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_928ADA725F0945DDA2628E9D521DA1B3"
             {
-            "SourcePath" = "8:..\\SqlCeDatabase35\\obj\\Release\\SqlCeDatabase35.dll"
+            "SourcePath" = "8:..\\SqlCeDatabase35\\obj\\Debug\\SqlCeDatabase35.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_4C02D64297D94829BF9CD2763302CDC7"
@@ -1214,7 +1244,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_AC3EF5EC977446BD9B6FC630FA4CC679"
             {
-            "SourcePath" = "8:..\\Editor\\obj\\x86\\Release\\QueryAnalyzer.exe"
+            "SourcePath" = "8:..\\Editor\\obj\\x86\\Debug\\QueryAnalyzer.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_DE98AAC9375741DCB29C17160E6BF7F3"
