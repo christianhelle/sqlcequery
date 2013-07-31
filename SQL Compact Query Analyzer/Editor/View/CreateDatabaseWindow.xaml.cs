@@ -22,5 +22,10 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.View
             DialogResult = true;
             Close();
         }
+
+        private void CreateDatabaseWindow_OnLoaded(object sender, RoutedEventArgs e)
+        {
+            tbFilename.Focus();
+        }
     }
 }
