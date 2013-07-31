@@ -407,7 +407,7 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
                         if (result != true)
                             return;
                         password = window.Password;
-                        database.ConnectionString = GetConnectionString();
+                        database.ConnectionString = GetConnectionString(4091);
                     }
 
                     AnalyzingTablesIsBusy = true;
@@ -415,7 +415,7 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
                     var stopwatch = Stopwatch.StartNew();
 
                     database.AnalyzeDatabase();
-                    
+
                     ResultSetMessages = "Analyzed database in " + stopwatch.Elapsed;
                     stopwatch.Stop();
 
@@ -435,9 +435,12 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
             });
         }
 
-        private string GetConnectionString()
+        private string GetConnectionString(int? maxDatabaseSize = null)
         {
-            return string.Format("Data Source={0}; Password={1};", dataSource, password);
+            var connstr = string.Format("Data Source={0}; Password={1};", dataSource, password);
+            if (maxDatabaseSize.HasValue)
+                connstr += string.Format(" Max Database Size={0};", maxDatabaseSize.Value);
+            return connstr;
         }
 
         public void PopulateTables()
