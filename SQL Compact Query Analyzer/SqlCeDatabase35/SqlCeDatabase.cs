@@ -181,9 +181,18 @@ namespace ChristianHelle.DatabaseTools.SqlCe
             return null;
         }
 
-        public void CreateDatabase(string filename, string password)
+        public void CreateDatabase(string filename, string password, int? maxDatabaseSize)
         {
-            using (var engine = new SqlCeEngine("Data Source=" + filename + "; Password=" + password))
+            if (filename == null) 
+                throw new ArgumentNullException("filename");
+
+            var connStr = "Data Source=" + filename;
+            if (!string.IsNullOrEmpty(password))
+                connStr += "; Password=" + password;
+            if (maxDatabaseSize.HasValue)
+                connStr += "; Max Database Size=" + maxDatabaseSize.Value;
+
+            using (var engine = new SqlCeEngine(connStr))
                 engine.CreateDatabase();
         }
 

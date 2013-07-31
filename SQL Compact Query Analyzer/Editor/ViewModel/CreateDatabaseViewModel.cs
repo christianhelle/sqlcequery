@@ -47,6 +47,17 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
             }
         }
 
+        private int? maxDatabaseSize;
+        public int? MaxDatabaseSize
+        {
+            get { return maxDatabaseSize; }
+            set
+            {
+                maxDatabaseSize = value;
+                RaisePropertyChanged("MaxDatabaseSize");
+            }
+        }
+
         public void CreateDatabase()
         {
             ISqlCeDatabase database = null;
@@ -64,7 +75,7 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
             }
 
             if (database != null)
-                database.CreateDatabase(Filename, Password);
+                database.CreateDatabase(Filename, Password, MaxDatabaseSize);
         }
 
         public void OpenFile()
