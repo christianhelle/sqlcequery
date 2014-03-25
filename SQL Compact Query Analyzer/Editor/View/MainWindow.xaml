@@ -119,10 +119,25 @@
                                             <TabItem Header="Results Grid">
                                                 <extToolkit:BusyIndicator IsBusy="{Binding QueryIsBusy}"
                                                                           DisplayAfter="00:00:00.0000001">
-                                                    <WindowsFormsHost>
-                                                        <Controls:ResultsContainer x:Name="resultsContainer"
-                                                                                   AutoScroll="True" />
-                                                    </WindowsFormsHost>
+                                                    <Grid>
+                                                        <Grid.RowDefinitions>
+                                                            <RowDefinition />
+                                                            <RowDefinition Height="Auto" />
+                                                        </Grid.RowDefinitions>
+                                                        <WindowsFormsHost Grid.Row="0">
+                                                            <Controls:ResultsContainer x:Name="resultsContainer"
+                                                                                       AutoScroll="True" />
+                                                        </WindowsFormsHost>
+                                                        <StackPanel Grid.Row="1"
+                                                                    Margin="5"
+                                                                    Orientation="Horizontal">
+                                                            <TextBlock Text="{Binding QueryResultCount, FallbackValue='0'}"
+                                                                       Margin="5,0,4,0" />
+                                                            <TextBlock Text="row(s) retrieved in" />
+                                                            <TextBlock Text="{Binding QueryExecutionTime, FallbackValue='00:00:00.000'}"
+                                                                       Margin="5,0,4,0" />
+                                                        </StackPanel>
+                                                    </Grid>
                                                 </extToolkit:BusyIndicator>
                                             </TabItem>
                                             <TabItem Header="Results XML">
