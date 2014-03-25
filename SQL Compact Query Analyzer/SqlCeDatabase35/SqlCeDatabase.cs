@@ -109,7 +109,7 @@ namespace ChristianHelle.DatabaseTools.SqlCe
             }
         }
 
-        public object ExecuteQuery(string query, StringBuilder errors, StringBuilder messages)
+        public object ExecuteQuery(string query, StringBuilder errors, StringBuilder messages, out int resultCount)
         {
             var stopwatch = Stopwatch.StartNew();
 
@@ -159,6 +159,8 @@ namespace ChristianHelle.DatabaseTools.SqlCe
                         }
                         messages.AppendLine();
                         messages.AppendLine(string.Format("Total affected row(s): {0}", affectedRows));
+
+                        resultCount = affectedRows;
                         return tables;
                     }
                 }
@@ -178,6 +180,7 @@ namespace ChristianHelle.DatabaseTools.SqlCe
                 messages.AppendLine("Executed in " + stopwatch.Elapsed);
             }
 
+            resultCount = 0;
             return null;
         }
 

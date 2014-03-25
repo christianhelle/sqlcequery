@@ -20,7 +20,7 @@ namespace ChristianHelle.DatabaseTools.SqlCe
         object GetTableData(string tableName, string columnName);
         object GetTableProperties(Table table);
         void SaveTableDataChanges(DataTable tableData);
-        object ExecuteQuery(string query, StringBuilder errors, StringBuilder messages);
+        object ExecuteQuery(string query, StringBuilder errors, StringBuilder messages, out int resultCount);
         void CreateDatabase(string filename, string password, int? maxDatabaseSize);
     }
 }

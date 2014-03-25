@@ -70,6 +70,8 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
         private TimeSpan? tableDataExecutionTime;
         private bool displayResultsInGrid;
         private bool displayResultsAsXml;
+        private int queryResultCount;
+        private TimeSpan? queryExecutionTime;
 
         public ObservableCollection<TreeViewItem> Tree { get; private set; }
 
@@ -246,6 +248,26 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
             {
                 tableDataCount = value;
                 RaisePropertyChanged("TableDataCount");
+            }
+        }
+
+        public int QueryResultCount
+        {
+            get { return queryResultCount; }
+            set
+            {
+                queryResultCount = value;
+                RaisePropertyChanged("QueryResultCount");
+            }
+        }
+
+        public TimeSpan? QueryExecutionTime
+        {
+            get { return queryExecutionTime; }
+            set
+            {
+                queryExecutionTime = value;
+                RaisePropertyChanged("QueryExecutionTime");
             }
         }
 
@@ -593,6 +615,7 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
             {
                 var errors = new StringBuilder();
                 var messages = new StringBuilder();
+                var stopwatch = Stopwatch.StartNew();
 
                 try
                 {
@@ -610,7 +633,10 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
                         ResultsContainer.Clear();
                     });
 
-                    var result = database.ExecuteQuery(sql, errors, messages) as DataSet;
+                    int resultCount;
+                    var result = database.ExecuteQuery(sql, errors, messages, out resultCount) as DataSet;
+                    QueryResultCount = resultCount;
+
                     if (result == null)
                         return;
 
@@ -646,6 +672,7 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
                 }
                 finally
                 {
+                    QueryExecutionTime = stopwatch.Elapsed;
                     ResultSetMessages = messages.ToString();
                     ResultSetErrors = errors.ToString();
                     QueryStringIsBusy = QueryIsBusy = false;
@@ -751,8 +778,7 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
                 return;
 
             var ext = Path.GetExtension(filePath);
-            if (ext != null)
-                ext = ext.ToLower();
+            ext = ext.ToLower();
             if (String.Compare(ext, ".sdf", StringComparison.OrdinalIgnoreCase) != 0)
                 return;
 
