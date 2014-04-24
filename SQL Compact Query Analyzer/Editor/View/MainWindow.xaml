@@ -63,7 +63,9 @@
                     <MenuItem Header="Script Data"
                               Command="{Binding ScriptDataCommand}" />
                     <MenuItem Header="Script Schema and Data"
-                              Click="ScriptSchemaAndData_Click" />
+                              Command="{Binding ScriptSchemaAndDataCommand}" />
+                    <MenuItem Header="Export Data"
+                              Command="{Binding ExportDataCommand}" />
                 </MenuItem>
                 <MenuItem Header="Help">
                     <MenuItem Header="About"
@@ -104,6 +106,9 @@
                                                               IsBusy="{Binding QueryStringIsBusy}"
                                                               DisplayAfter="00:00:00.0000001">
                                         <avalonEdit:TextEditor Name="editor"
+                                                               AllowDrop="True"
+                                                               DragEnter="Editor_OnDragEnter"
+                                                               Drop="Editor_OnDrop"
                                                                FontFamily="Consolas"
                                                                FontSize="10pt"
                                                                SyntaxHighlighting="{Binding SqlSyntaxHighlighting}"

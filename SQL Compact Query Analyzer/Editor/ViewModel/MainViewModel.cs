@@ -24,6 +24,7 @@ using Application = System.Windows.Application;
 using DataFormats = System.Windows.DataFormats;
 using IDataObject = System.Windows.IDataObject;
 using MenuItem = System.Windows.Controls.MenuItem;
+using MessageBox = Microsoft.Windows.Controls.MessageBox;
 
 namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
 {
@@ -340,6 +341,16 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
         public ICommand ClearRecentFilesCommand
         {
             get { return new SafeRelayCommand(ClearRecentFiles); }
+        }
+
+        public ICommand ScriptSchemaAndDataCommand
+        {
+            get { return new SafeRelayCommand(GenerateSchemaAndDataScript); }
+        }
+
+        public ICommand ExportDataCommand
+        {
+            get { return new SafeRelayCommand(ExportData); }
         }
 
         #endregion
@@ -946,6 +957,11 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
                     QueryStringIsBusy = false;
                 }
             });
+        }
+
+        private void ExportData()
+        {
+            MessageBox.Show("This feature is yet to be implemented...", "Coming soon");
         }
 
         /*
