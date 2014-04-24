@@ -1,9 +1,12 @@
 ﻿using System;
+using System.IO;
+using System.Text;
 using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Input;
 using ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel;
 using Application = System.Windows.Application;
+using DragDropEffects = System.Windows.DragDropEffects;
 using DragEventArgs = System.Windows.DragEventArgs;
 using KeyEventArgs = System.Windows.Input.KeyEventArgs;
 using MessageBox = System.Windows.MessageBox;
@@ -177,5 +180,24 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.View
                     SafeOperation(() => ViewModel.RenameObject(((System.Windows.Controls.MenuItem)sender).Tag));
                 }
         */
+
+        private void Editor_OnDragEnter(object sender, DragEventArgs e)
+        {
+            if (!e.Data.GetDataPresent("FileDrop") || sender == e.Source)
+                e.Effects = DragDropEffects.None;
+        }
+
+        private void Editor_OnDrop(object sender, DragEventArgs e)
+        {
+            var files = e.Data.GetData("FileDrop") as string[];
+            if (files == null)
+                return;
+
+            var contents = new StringBuilder();
+            foreach (var file in files)
+                contents.AppendLine(File.ReadAllText(file));
+
+            editor.AppendText(contents.ToString());
+        }
     }
 }
