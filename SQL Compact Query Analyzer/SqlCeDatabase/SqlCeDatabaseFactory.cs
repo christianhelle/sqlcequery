@@ -99,7 +99,8 @@ namespace ChristianHelle.DatabaseTools.SqlCe
                     throw new NotSupportedException();
             }
 
-            var assembly = Assembly.LoadFrom(Path.Combine(GetExecutingAssemblyPath(), path));
+            string assemblyFile = Path.Combine(GetExecutingAssemblyPath(), path);
+            var assembly = Assembly.LoadFrom(assemblyFile);
             var assemblyFileVersionAttribute = assembly.GetCustomAttributes(true).OfType<AssemblyFileVersionAttribute>().FirstOrDefault();
             if (assemblyFileVersionAttribute != null)
                 assemblyFileVersion = assemblyFileVersionAttribute.Version;
