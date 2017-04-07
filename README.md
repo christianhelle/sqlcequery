@@ -1,12 +1,5 @@
-# sqlcequery
-SQL Server Compact Edition Database Query Analyzer
-
-! Migrated to GitHub
-*[url:http://github.com/christianhelle/sqlcequery]*
-
-
-*Project Description*
-{project:description}
+# SQL Compact Query Analyzer
+A SQL Server Compact Edition Database Query Analyzer
 
 *Features:*
 
@@ -37,28 +30,28 @@ SQL Server Compact Edition Database Query Analyzer
 
 *Screenshots*
 
-[image:http://download.codeplex.com/Download?ProjectName=sqlcequery&DownloadId=335445]
+![alt text](http://download.codeplex.com/Download?ProjectName=sqlcequery&DownloadId=335445)
 - Displays database and schema information and executes multiple SQL queries directly
 
-[image:http://download.codeplex.com/Download?ProjectName=sqlcequery&DownloadId=335447]
+![alt text](http://download.codeplex.com/Download?ProjectName=sqlcequery&DownloadId=335447)
 - Edit the table data directly
 
-[image:http://download.codeplex.com/Download?ProjectName=sqlcequery&DownloadId=335444]
+![alt text](http://download.codeplex.com/Download?ProjectName=sqlcequery&DownloadId=335444)
 - Display the contents of IMAGE fields
 
-[image:http://download.codeplex.com/Download?ProjectName=sqlcequery&DownloadId=335456]
+![alt text](http://download.codeplex.com/Download?ProjectName=sqlcequery&DownloadId=335456)
 - Performance numbers for queries
 
-[image:http://download.codeplex.com/Download?ProjectName=sqlcequery&DownloadId=335461]
+![alt text](http://download.codeplex.com/Download?ProjectName=sqlcequery&DownloadId=335461)
 - Query errors
 
-[image:http://download.codeplex.com/Download?ProjectName=sqlcequery&DownloadId=335464]
+![alt text](http://download.codeplex.com/Download?ProjectName=sqlcequery&DownloadId=335464)
 - Output result set as XML
 
-[image:http://download.codeplex.com/Download?ProjectName=sqlcequery&DownloadId=335465]
+![alt text](http://download.codeplex.com/Download?ProjectName=sqlcequery&DownloadId=335465)
 - Create new database
 
-[image:http://download.codeplex.com/Download?ProjectName=sqlcequery&DownloadId=335466]
+![alt text](http://download.codeplex.com/Download?ProjectName=sqlcequery&DownloadId=335466)
 - Shrink, compact, script database
 
 *Prerequisites:*
@@ -66,9 +59,9 @@ SQL Server Compact Edition Database Query Analyzer
 
 
 For tips and tricks on mobile development, check out my blog
-[url:http://christian-helle.blogspot.com]
+http://christian-helle.blogspot.com
 
 Follow me on Twitter
-[url:http://twitter.com/christianhelle]
+http://twitter.com/christianhelle
 
 
