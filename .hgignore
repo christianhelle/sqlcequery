@@ -1,8 +1,0 @@
-syntax: glob
-*/bin/*
-*/obj/*
-*/TestResults/*
-*/Binaries/*
-*.exe
-*.msi
-*.suo
