@@ -1,0 +1,220 @@
+﻿<Window x:Class="ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.View.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:avalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit"
+        xmlns:extToolkit="clr-namespace:Microsoft.Windows.Controls;assembly=WPFToolkit.Extended"
+        xmlns:Controls="clr-namespace:ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.Controls"
+        DataContext="{Binding MainViewModel, Source={StaticResource ViewModelLocator}}"
+        Title="{Binding Text, FallbackValue='SQL Compact Query Analyzer'}"
+        Loaded="Window_Loaded"
+        KeyUp="Window_KeyUp"
+        Height="600"
+        Width="800"
+        AllowDrop="True"
+        Drop="Window_Drop">
+    <Window.InputBindings>
+        <KeyBinding Modifiers="Control"
+                    Key="N"
+                    Command="{Binding NewDatabaseCommand}" />
+        <KeyBinding Modifiers="Control"
+                    Key="O"
+                    Command="{Binding OpenDatabaseCommand}" />
+    </Window.InputBindings>
+    <Grid>
+        <DockPanel>
+            <Menu IsMainMenu="True"
+                  DockPanel.Dock="Top">
+                <MenuItem Header="File">
+                    <MenuItem Header="New Database"
+                              InputGestureText="Ctrl+N"
+                              Command="{Binding NewDatabaseCommand}" />
+                    <MenuItem Header="Open Database"
+                              InputGestureText="Ctrl+O"
+                              Command="{Binding OpenDatabaseCommand}" />
+                    <Separator />
+                    <MenuItem Header="Recent Files"
+                              ItemsSource="{Binding RecentFiles}">
+                    </MenuItem>
+                    <Separator />
+                    <MenuItem Header="Exit"
+                              InputGestureText="Alt+F4"
+                              Command="{Binding ExitCommand}" />
+                </MenuItem>
+                <MenuItem Header="Query">
+                    <MenuItem Header="Execute Query"
+                              InputGestureText="F5"
+                              Command="{Binding ExecuteQueryCommand}" />
+                    <MenuItem Header="Results">
+                        <MenuItem Header="Display in Grid"
+                                  IsCheckable="True"
+                                  IsChecked="{Binding DisplayResultsInGrid, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        <MenuItem Header="Display as XML"
+                                  IsCheckable="True"
+                                  IsChecked="{Binding DisplayResultsAsXml, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                    </MenuItem>
+                </MenuItem>
+                <MenuItem Header="Database">
+                    <MenuItem Header="Shrink"
+                              Command="{Binding ShrinkCommand}" />
+                    <MenuItem Header="Compact"
+                              Command="{Binding CompactCommand}" />
+                    <MenuItem Header="Script Schema"
+                              Command="{Binding ScriptSchemaCommand}" />
+                    <MenuItem Header="Script Data"
+                              Command="{Binding ScriptDataCommand}" />
+                    <MenuItem Header="Script Schema and Data"
+                              Command="{Binding ScriptSchemaAndDataCommand}" />
+                    <MenuItem Header="Export Data"
+                              Command="{Binding ExportDataCommand}" />
+                </MenuItem>
+                <MenuItem Header="Help">
+                    <MenuItem Header="About"
+                              InputGestureText="F1"
+                              Command="{Binding AboutCommand}" />
+                </MenuItem>
+            </Menu>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="240" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="443*" />
+                </Grid.ColumnDefinitions>
+                <GridSplitter Grid.Column="1"
+                              Width="5"
+                              HorizontalAlignment="Stretch"
+                              VerticalAlignment="Stretch" />
+                <extToolkit:BusyIndicator IsBusy="{Binding AnalyzingTablesIsBusy}"
+                                          BusyContent="Analyzing database...">
+                    <TreeView Grid.Column="0"
+                              BorderThickness="0"
+                              AllowDrop="True"
+                              ItemsSource="{Binding Tree}">
+                    </TreeView>
+                </extToolkit:BusyIndicator>
+                <Grid Grid.Column="2">
+                    <extToolkit:BusyIndicator IsBusy="{Binding DatabaseIsBusy}"
+                                              DisplayAfter="00:00:00.0000001">
+                        <TabControl SelectedIndex="{Binding CurrentMainTabIndex}">
+                            <TabItem Header="Query">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="*" />
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="*" />
+                                    </Grid.RowDefinitions>
+                                    <extToolkit:BusyIndicator Grid.Row="0"
+                                                              IsBusy="{Binding QueryStringIsBusy}"
+                                                              DisplayAfter="00:00:00.0000001">
+                                        <avalonEdit:TextEditor Name="editor"
+                                                               AllowDrop="True"
+                                                               DragEnter="Editor_OnDragEnter"
+                                                               Drop="Editor_OnDrop"
+                                                               FontFamily="Consolas"
+                                                               FontSize="10pt"
+                                                               SyntaxHighlighting="{Binding SqlSyntaxHighlighting}"
+                                                               ShowLineNumbers="True"
+                                                               Document="{Binding Query, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                    </extToolkit:BusyIndicator>
+                                    <GridSplitter Grid.Row="1"
+                                                  Height="5"
+                                                  HorizontalAlignment="Stretch"
+                                                  VerticalAlignment="Stretch" />
+                                    <Grid Grid.Row="2">
+                                        <TabControl SelectedIndex="{Binding CurrentResultsTabIndex}">
+                                            <TabItem Header="Results Grid">
+                                                <extToolkit:BusyIndicator IsBusy="{Binding QueryIsBusy}"
+                                                                          DisplayAfter="00:00:00.0000001">
+                                                    <Grid>
+                                                        <Grid.RowDefinitions>
+                                                            <RowDefinition />
+                                                            <RowDefinition Height="Auto" />
+                                                        </Grid.RowDefinitions>
+                                                        <WindowsFormsHost Grid.Row="0">
+                                                            <Controls:ResultsContainer x:Name="resultsContainer"
+                                                                                       AutoScroll="True" />
+                                                        </WindowsFormsHost>
+                                                        <StackPanel Grid.Row="1"
+                                                                    Margin="5"
+                                                                    Orientation="Horizontal">
+                                                            <TextBlock Text="{Binding QueryResultCount, FallbackValue='0'}"
+                                                                       Margin="5,0,4,0" />
+                                                            <TextBlock Text="row(s) retrieved in" />
+                                                            <TextBlock Text="{Binding QueryExecutionTime, FallbackValue='00:00:00.000'}"
+                                                                       Margin="5,0,4,0" />
+                                                        </StackPanel>
+                                                    </Grid>
+                                                </extToolkit:BusyIndicator>
+                                            </TabItem>
+                                            <TabItem Header="Results XML">
+                                                <extToolkit:BusyIndicator IsBusy="{Binding QueryIsBusy}"
+                                                                          DisplayAfter="00:00:00.0000001">
+                                                    <avalonEdit:TextEditor Name="resultSetXml"
+                                                                           Grid.Row="0"
+                                                                           FontFamily="Consolas"
+                                                                           FontSize="10pt"
+                                                                           SyntaxHighlighting="XML"
+                                                                           ShowLineNumbers="True"
+                                                                           Document="{Binding ResultSetXml, IsAsync=True}" />
+                                                </extToolkit:BusyIndicator>
+                                            </TabItem>
+                                            <TabItem Header="Messages">
+                                                <TextBox Text="{Binding ResultSetMessages}"
+                                                         FontFamily="Courier New"
+                                                         TextWrapping="Wrap"
+                                                         VerticalScrollBarVisibility="Auto" />
+                                            </TabItem>
+                                            <TabItem Header="Errors">
+                                                <TextBox Text="{Binding ResultSetErrors}"
+                                                         TextWrapping="Wrap"
+                                                         VerticalScrollBarVisibility="Auto" />
+                                            </TabItem>
+                                        </TabControl>
+                                    </Grid>
+                                </Grid>
+                            </TabItem>
+                            <TabItem Header="Table Data">
+                                <extToolkit:BusyIndicator Name="tableDataBusyIndicator"
+                                                          DisplayAfter="00:00:00.0000001"
+                                                          IsBusy="{Binding TableDataIsBusy}">
+                                    <Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition />
+                                            <RowDefinition Height="Auto" />
+                                        </Grid.RowDefinitions>
+                                        <WindowsFormsHost Grid.Row="0">
+                                            <Controls:DataGridViewEx x:Name="tableDataGrid"
+                                                                     DataError="tableDataGrid_DataError"
+                                                                     RowsRemoved="tableDataGrid_RowsRemoved"
+                                                                     CellBeginEdit="tableDataGrid_CellBeginEdit"
+                                                                     SelectionChanged="tableDataGrid_SelectionChanged" />
+                                        </WindowsFormsHost>
+                                        <StackPanel Grid.Row="1"
+                                                    Margin="5"
+                                                    Orientation="Horizontal">
+                                            <TextBlock Text="{Binding TableDataCount, FallbackValue='0'}"
+                                                       Margin="5,0,4,0" />
+                                            <TextBlock Text="row(s) retrieved in" />
+                                            <TextBlock Text="{Binding TableDataExecutionTime, FallbackValue='00:00:00.000'}"
+                                                       Margin="5,0,4,0" />
+                                        </StackPanel>
+                                    </Grid>
+                                </extToolkit:BusyIndicator>
+                            </TabItem>
+                            <TabItem Header="Table Properties">
+                                <extToolkit:BusyIndicator Name="tablePropertiesBusyIndicator"
+                                                          DisplayAfter="00:00:00.0000001"
+                                                          IsBusy="{Binding TablePropertiesIsBusy}">
+                                    <WindowsFormsHost>
+                                        <Controls:DataGridViewEx x:Name="tablePropertiesGrid"
+                                                                 ReadOnly="True"
+                                                                 AutoSizeColumnsMode="AllCells" />
+                                    </WindowsFormsHost>
+                                </extToolkit:BusyIndicator>
+                            </TabItem>
+                        </TabControl>
+                    </extToolkit:BusyIndicator>
+                </Grid>
+            </Grid>
+        </DockPanel>
+    </Grid>
+</Window>
