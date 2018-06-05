@@ -3,6 +3,7 @@ A SQL Server Compact Edition Database Query Analyzer
 
 ##### Latest Release (v1.0.2.25483)
 [SQL Compact Query Analyzer (Installer)](https://github.com/christianhelle/sqlcequery/releases/download/1.0.2/SQL.Compact.Query.Analyzer.1.0.2.25483.msi)
+
 [SQL Compact Query Analyzer (Portable)](https://github.com/christianhelle/sqlcequery/releases/download/1.0.2/SQL.Compact.Query.Analyzer.1.0.2.25483.zip)
 
 
@@ -35,28 +36,28 @@ A SQL Server Compact Edition Database Query Analyzer
 
 *Screenshots*
 
-![alt text](http://download.codeplex.com/Download?ProjectName=sqlcequery&DownloadId=335445)
+![alt text](https://github.com/christianhelle/sqlcequery/raw/master/Screenshots/QueryResultMessages.png)
 - Displays database and schema information and executes multiple SQL queries directly
 
-![alt text](http://download.codeplex.com/Download?ProjectName=sqlcequery&DownloadId=335447)
+![alt text](https://github.com/christianhelle/sqlcequery/raw/master/Screenshots/EditTable.png)
 - Edit the table data directly
 
-![alt text](http://download.codeplex.com/Download?ProjectName=sqlcequery&DownloadId=335444)
+![alt text](https://github.com/christianhelle/sqlcequery/raw/master/Screenshots/ContentWithImages.png)
 - Display the contents of IMAGE fields
 
-![alt text](http://download.codeplex.com/Download?ProjectName=sqlcequery&DownloadId=335456)
+![alt text](https://github.com/christianhelle/sqlcequery/raw/master/Screenshots/QueryResultMessages.png)
 - Performance numbers for queries
 
-![alt text](http://download.codeplex.com/Download?ProjectName=sqlcequery&DownloadId=335461)
+![alt text](https://github.com/christianhelle/sqlcequery/raw/master/Screenshots/QueryResultErrors.png)
 - Query errors
 
-![alt text](http://download.codeplex.com/Download?ProjectName=sqlcequery&DownloadId=335464)
+![alt text](https://github.com/christianhelle/sqlcequery/raw/master/Screenshots/ResultsAsXml.png)
 - Output result set as XML
 
-![alt text](http://download.codeplex.com/Download?ProjectName=sqlcequery&DownloadId=335465)
+![alt text](https://github.com/christianhelle/sqlcequery/raw/master/Screenshots/CreateDatabase.png)
 - Create new database
 
-![alt text](http://download.codeplex.com/Download?ProjectName=sqlcequery&DownloadId=335466)
+![alt text](https://github.com/christianhelle/sqlcequery/raw/master/Screenshots/Shrink.png)
 - Shrink, compact, script database
 
 *Prerequisites:*
