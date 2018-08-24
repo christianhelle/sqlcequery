@@ -35,5 +35,11 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.Controls
             e.CellStyle.ForeColor = e.Value == DBNull.Value ? SystemColors.GrayText : SystemColors.WindowText;
             base.OnCellFormatting(e);
         }
+
+        protected override void OnDataBindingComplete(DataGridViewBindingCompleteEventArgs e)
+        {
+            base.OnDataBindingComplete(e);
+            AutoResizeColumnHeadersHeight();
+        }
     }
 }
