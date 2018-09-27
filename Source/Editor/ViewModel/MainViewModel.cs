@@ -700,7 +700,7 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
             });
         }
 
-        public void LoadTableDataAndProperties(Table table, bool readOnly = false, bool resizeColumns = false, bool displaySchemaInfo = true)
+        public void LoadTableDataAndProperties(Table table, bool readOnly = false, bool resizeColumns = true, bool displaySchemaInfo = true)
         {
             if (database == null || table == null || lastSelectedTable == table) return;
             lastSelectedTable = table;
@@ -719,7 +719,7 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
                         TableDataGrid.DataSource = dataTable;
                         TableDataGrid.ReadOnly = readOnly;
                         if (resizeColumns)
-                            TableDataGrid.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.AllCells);
+                            TableDataGrid.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.DisplayedCells);
                     });
                     //CurrentMainTabIndex = 1;
                     TableDataCount = dataTable != null ? dataTable.Rows.Count : 0;
