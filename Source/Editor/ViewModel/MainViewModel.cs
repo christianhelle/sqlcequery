@@ -24,7 +24,7 @@ using Application = System.Windows.Application;
 using DataFormats = System.Windows.DataFormats;
 using IDataObject = System.Windows.IDataObject;
 using MenuItem = System.Windows.Controls.MenuItem;
-using MessageBox = Microsoft.Windows.Controls.MessageBox;
+using MessageBox = Xceed.Wpf.Toolkit.MessageBox;
 
 namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
 {
