@@ -30,6 +30,7 @@ OutputBaseFilename=SQLCEQueryAnalyzer-Setup
 SetupIconFile={#MyAppIcon}
 Compression=lzma
 SolidCompression=yes
+ChangesAssociations=yes
 
 [Languages]
 Name: "english"; MessagesFile: "compiler:Default.isl"
@@ -44,3 +45,9 @@ Name: "{commondesktop}\SQL Compact Query Analyzer"; Filename: "{app}\{#MyAppExeN
 
 [Tasks]
 Name: "DesktopIcon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"
+
+[Registry]
+Root: HKLM; Subkey: "Software\Classes\.sdf"; ValueType: string; ValueName: ""; ValueData: "SQL Compact Database"; Flags: uninsdeletevalue
+Root: HKLM; Subkey: "Software\Classes\SQL Compact Database"; ValueType: string; ValueName: ""; ValueData: "SQL Compact Database"; Flags: uninsdeletekey
+Root: HKLM; Subkey: "Software\Classes\SQL Compact Database\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\{#MyAppExeName},0"
+Root: HKLM; Subkey: "Software\Classes\SQL Compact Database\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\{#MyAppExeName}"" ""%1"""
