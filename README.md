@@ -1,3 +1,5 @@
+[![Build Status](https://christianhelle.visualstudio.com/SQL%20Compact%20Query%20Analyzer/_apis/build/status/CI%20Build?branchName=master)](https://christianhelle.visualstudio.com/SQL%20Compact%20Query%20Analyzer/_build/latest?definitionId=17&branchName=master)
+
 # SQL Compact Query Analyzer
 A SQL Server Compact Edition Database Query Analyzer
 
