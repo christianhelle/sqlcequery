@@ -13,8 +13,8 @@ var configurationName = releaseConfiguration;
 var target = Argument("target", "Default");
 var configuration = Argument("configuration", configurationName);
 
-var gitver = GitVersion().SemVer + "." + GitVersion().Sha.ToString().Substring(0, 7);
-var artifactFolder = "./Artifacts/" + DateTime.UtcNow.ToString("yyyy-MM-dd_v") + gitver + "/";
+var commit = GitVersion().Sha.ToString().Substring(0, 7);
+var artifactFolder = "./Artifacts/" + DateTime.UtcNow.ToString("yyyy-MM-dd_") + commit + "/";
 Information("Output folder is: " + artifactFolder);
 
 var desktopClientApp = "Editor";
@@ -93,7 +93,7 @@ Task("Compress-Artifacts")
     .Does(() =>
 {    
     var folder = "./Binaries/Release";
-    Zip(folder, artifactFolder + desktopClient + "-Binaries_v" + gitver + ".zip");
+    Zip(folder, artifactFolder + desktopClient + "-Binaries.zip");
     DeleteDirectory(folder, new DeleteDirectorySettings { Recursive = true, Force = true });
 });
 
@@ -102,7 +102,7 @@ Task("Setup-Client-Package")
     .Does(() => 
 {
     var setupFile = "./Setup.iss";
-    var outputFile = artifactFolder + "SQLCEQueryAnalyzer-Setup_v" + gitver + ".exe";
+    var outputFile = artifactFolder + "SQLCEQueryAnalyzer-Setup.exe";
     ReplaceTextInFiles(setupFile, "1.0.0", GitVersion().MajorMinorPatch);
     var exitCodeWithArgument = StartProcess(innoSetup, setupFile);
     Information("Exit code: {0}", exitCodeWithArgument);
