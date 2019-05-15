@@ -88,13 +88,25 @@ Task("Build-Release")
     }
 });
 
-Task("Compress-Artifacts")
+Task("CleanUp-Release")
     .IsDependentOn("Build-Release")
+    .Does(() => 
+{
+    var folder = "./Binaries/Release";
+    DeleteFiles(folder + "/**/*.pdb");
+    DeleteFiles(folder + "/**/*.xml");
+    DeleteFiles(folder + "/**/*.resources.dll");
+    DeleteDirectory(folder + "/amd64", new DeleteDirectorySettings { Recursive = true, Force = true });
+    DeleteDirectory(folder + "/x86", new DeleteDirectorySettings { Recursive = true, Force = true });    
+});
+
+Task("Compress-Artifacts")
+    .IsDependentOn("CleanUp-Release")
     .Does(() =>
-{    
+{   
     var folder = "./Binaries/Release";
     Zip(folder, artifactFolder + desktopClient + "-Binaries.zip");
-    DeleteDirectory(folder, new DeleteDirectorySettings { Recursive = true, Force = true });
+    DeleteDirectory(folder, new DeleteDirectorySettings { Recursive = true, Force = true });    
 });
 
 Task("Setup-Client-Package")
