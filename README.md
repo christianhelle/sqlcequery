@@ -3,10 +3,7 @@
 # SQL Compact Query Analyzer
 A SQL Server Compact Edition Database Query Analyzer
 
-##### Latest Release (v1.0.2.25483)
-[SQL Compact Query Analyzer (Installer)](https://github.com/christianhelle/sqlcequery/releases/download/1.0.2/SQL.Compact.Query.Analyzer.1.0.2.25483.msi)
-
-[SQL Compact Query Analyzer (Portable)](https://github.com/christianhelle/sqlcequery/releases/download/1.0.2/SQL.Compact.Query.Analyzer.1.0.2.25483.zip)
+#### Download latest release [here](https://github.com/christianhelle/sqlcequery/releases/latest)
 
 
 *Features:*
