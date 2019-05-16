@@ -5,10 +5,8 @@
 // ARGUMENTS
 //////////////////////////////////////////////////////////////////////
 
-var debugConfiguration = "Debug";
-var releaseConfiguration = "Release";
 var solutionName   = "./SQL Compact Query Analyzer.sln";
-var configurationName = releaseConfiguration;
+var configurationName = "Release";
 
 var target = Argument("target", "Default");
 var configuration = Argument("configuration", configurationName);
@@ -52,24 +50,6 @@ Task("Restore-NuGet-Packages")
     DotNetCoreRestore(solutionName);
 });
 
-Task("Build-Debug")
-    .IsDependentOn("Restore-NuGet-Packages")
-    .Does(() => 
-{
-    if (IsRunningOnWindows()) 
-    {
-        MSBuild(solutionName, settings => 
-            settings.SetConfiguration(debugConfiguration)
-                    .WithProperty("DeployOnBuild", "true")
-                    .WithTarget("Build")
-                    .SetMaxCpuCount(0));
-    }
-    else 
-    {
-        XBuild(solutionName, settings => settings.SetConfiguration(debugConfiguration));
-    }
-});
-
 Task("Build-Release")
     .IsDependentOn("Restore-NuGet-Packages")
     .Does(() => 
@@ -77,14 +57,14 @@ Task("Build-Release")
     if (IsRunningOnWindows()) 
     {
         MSBuild(solutionName, settings => 
-            settings.SetConfiguration(releaseConfiguration)
+            settings.SetConfiguration(configurationName)
                     .WithProperty("DeployOnBuild", "true")
                     .WithTarget("Build")
                     .SetMaxCpuCount(0));
     }
     else 
     {
-        XBuild(solutionName, settings => settings.SetConfiguration(releaseConfiguration));
+        XBuild(solutionName, settings => settings.SetConfiguration(configurationName));
     }
 });
 
