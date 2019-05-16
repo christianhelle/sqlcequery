@@ -95,18 +95,25 @@ Task("CleanUp-Release")
     var folder = "./Binaries/Release";
     DeleteFiles(folder + "/**/*.pdb");
     DeleteFiles(folder + "/**/*.xml");
-    DeleteFiles(folder + "/**/*.resources.dll");
     DeleteDirectory(folder + "/amd64", new DeleteDirectorySettings { Recursive = true, Force = true });
-    DeleteDirectory(folder + "/x86", new DeleteDirectorySettings { Recursive = true, Force = true });    
+    DeleteDirectory(folder + "/x86", new DeleteDirectorySettings { Recursive = true, Force = true });
+    DeleteDirectory(folder + "/de", new DeleteDirectorySettings { Recursive = true, Force = true });
+    DeleteDirectory(folder + "/es", new DeleteDirectorySettings { Recursive = true, Force = true });
+    DeleteDirectory(folder + "/fr", new DeleteDirectorySettings { Recursive = true, Force = true });
+    DeleteDirectory(folder + "/hu", new DeleteDirectorySettings { Recursive = true, Force = true });
+    DeleteDirectory(folder + "/it", new DeleteDirectorySettings { Recursive = true, Force = true });
+    DeleteDirectory(folder + "/pt-BR", new DeleteDirectorySettings { Recursive = true, Force = true });
+    DeleteDirectory(folder + "/ro", new DeleteDirectorySettings { Recursive = true, Force = true });
+    DeleteDirectory(folder + "/ru", new DeleteDirectorySettings { Recursive = true, Force = true });
+    DeleteDirectory(folder + "/sv", new DeleteDirectorySettings { Recursive = true, Force = true });
+    DeleteDirectory(folder + "/zh-Hans", new DeleteDirectorySettings { Recursive = true, Force = true });    
 });
 
 Task("Compress-Artifacts")
     .IsDependentOn("CleanUp-Release")
     .Does(() =>
 {   
-    var folder = "./Binaries/Release";
-    Zip(folder, artifactFolder + desktopClient + "-Binaries.zip");
-    DeleteDirectory(folder, new DeleteDirectorySettings { Recursive = true, Force = true });    
+    Zip("./Binaries/Release", artifactFolder + desktopClient + "-Binaries.zip");  
 });
 
 Task("Setup-Client-Package")
