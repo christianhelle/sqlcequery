@@ -1,14 +1,12 @@
 #tool nuget:?package=GitVersion.CommandLine&version=4.0.0
-#addin "Cake.FileHelpers&version=3.1.0"
+#addin "Cake.FileHelpers&version=3.2.0"
 
 //////////////////////////////////////////////////////////////////////
 // ARGUMENTS
 //////////////////////////////////////////////////////////////////////
 
-var debugConfiguration = "Debug";
-var releaseConfiguration = "Release";
 var solutionName   = "./SQL Compact Query Analyzer.sln";
-var configurationName = releaseConfiguration;
+var configurationName = "Release";
 
 var target = Argument("target", "Default");
 var configuration = Argument("configuration", configurationName);
@@ -52,24 +50,6 @@ Task("Restore-NuGet-Packages")
     DotNetCoreRestore(solutionName);
 });
 
-Task("Build-Debug")
-    .IsDependentOn("Restore-NuGet-Packages")
-    .Does(() => 
-{
-    if (IsRunningOnWindows()) 
-    {
-        MSBuild(solutionName, settings => 
-            settings.SetConfiguration(debugConfiguration)
-                    .WithProperty("DeployOnBuild", "true")
-                    .WithTarget("Build")
-                    .SetMaxCpuCount(0));
-    }
-    else 
-    {
-        XBuild(solutionName, settings => settings.SetConfiguration(debugConfiguration));
-    }
-});
-
 Task("Build-Release")
     .IsDependentOn("Restore-NuGet-Packages")
     .Does(() => 
@@ -77,24 +57,43 @@ Task("Build-Release")
     if (IsRunningOnWindows()) 
     {
         MSBuild(solutionName, settings => 
-            settings.SetConfiguration(releaseConfiguration)
+            settings.SetConfiguration(configurationName)
                     .WithProperty("DeployOnBuild", "true")
                     .WithTarget("Build")
                     .SetMaxCpuCount(0));
     }
     else 
     {
-        XBuild(solutionName, settings => settings.SetConfiguration(releaseConfiguration));
+        XBuild(solutionName, settings => settings.SetConfiguration(configurationName));
     }
 });
 
-Task("Compress-Artifacts")
+Task("CleanUp-Release")
     .IsDependentOn("Build-Release")
-    .Does(() =>
-{    
+    .Does(() => 
+{
     var folder = "./Binaries/Release";
-    Zip(folder, artifactFolder + desktopClient + "-Binaries.zip");
-    DeleteDirectory(folder, new DeleteDirectorySettings { Recursive = true, Force = true });
+    DeleteFiles(folder + "/**/*.pdb");
+    DeleteFiles(folder + "/**/*.xml");
+    DeleteDirectory(folder + "/amd64", new DeleteDirectorySettings { Recursive = true, Force = true });
+    DeleteDirectory(folder + "/x86", new DeleteDirectorySettings { Recursive = true, Force = true });
+    DeleteDirectory(folder + "/de", new DeleteDirectorySettings { Recursive = true, Force = true });
+    DeleteDirectory(folder + "/es", new DeleteDirectorySettings { Recursive = true, Force = true });
+    DeleteDirectory(folder + "/fr", new DeleteDirectorySettings { Recursive = true, Force = true });
+    DeleteDirectory(folder + "/hu", new DeleteDirectorySettings { Recursive = true, Force = true });
+    DeleteDirectory(folder + "/it", new DeleteDirectorySettings { Recursive = true, Force = true });
+    DeleteDirectory(folder + "/pt-BR", new DeleteDirectorySettings { Recursive = true, Force = true });
+    DeleteDirectory(folder + "/ro", new DeleteDirectorySettings { Recursive = true, Force = true });
+    DeleteDirectory(folder + "/ru", new DeleteDirectorySettings { Recursive = true, Force = true });
+    DeleteDirectory(folder + "/sv", new DeleteDirectorySettings { Recursive = true, Force = true });
+    DeleteDirectory(folder + "/zh-Hans", new DeleteDirectorySettings { Recursive = true, Force = true });    
+});
+
+Task("Compress-Artifacts")
+    .IsDependentOn("CleanUp-Release")
+    .Does(() =>
+{   
+    Zip("./Binaries/Release", artifactFolder + desktopClient + "-Binaries.zip");  
 });
 
 Task("Setup-Client-Package")
