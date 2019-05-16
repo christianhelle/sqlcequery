@@ -1,5 +1,5 @@
 #tool nuget:?package=GitVersion.CommandLine&version=4.0.0
-#addin "Cake.FileHelpers&version=3.1.0"
+#addin "Cake.FileHelpers&version=3.2.0"
 
 //////////////////////////////////////////////////////////////////////
 // ARGUMENTS
