@@ -62,7 +62,7 @@ A SQL Server Compact Edition Database Query Analyzer
 - Shrink, compact, script database
 
 *Prerequisites:*
-- .NET Framework 4.0
+- .NET Framework 4.7.2
 
 
 For tips and tricks on mobile development, check out my blog
