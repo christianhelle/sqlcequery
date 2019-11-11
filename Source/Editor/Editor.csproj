@@ -129,6 +129,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Misc\SavedFileInfo.cs" />
+    <Compile Include="Misc\StringEncryptionHelper.cs" />
     <Compile Include="ViewModel\CreateDatabaseViewModel.cs" />
     <Compile Include="ViewModel\PasswordBoxAssistant.cs" />
     <Compile Include="ViewModel\RenameObjectViewModel.cs" />
@@ -237,6 +239,7 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>
