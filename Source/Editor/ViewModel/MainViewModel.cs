@@ -15,6 +15,7 @@ using System.Windows.Input;
 using System.Xml;
 using System.Xml.Serialization;
 using ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.Controls;
+using ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.Misc;
 using ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.Properties;
 using ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.View;
 using ICSharpCode.AvalonEdit.Document;
@@ -24,7 +25,7 @@ using Application = System.Windows.Application;
 using DataFormats = System.Windows.DataFormats;
 using IDataObject = System.Windows.IDataObject;
 using MenuItem = System.Windows.Controls.MenuItem;
-using MessageBox = Xceed.Wpf.Toolkit.MessageBox;
+using MessageBox = System.Windows.Forms.MessageBox;
 
 namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
 {
@@ -369,7 +370,7 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
 
             using (var dialog = new OpenFileDialog())
             {
-                dialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+                //dialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
                 dialog.Filter = "Database files (*.sdf)|*.sdf";
                 if (dialog.ShowDialog() == DialogResult.Cancel)
                     return;
@@ -430,16 +431,26 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
                     database = SqlCeDatabaseFactory.Create(GetConnectionString());
                     while (!database.VerifyConnectionStringPassword())
                     {
-                        bool? result = null;
-                        PasswordWindow window = null;
-                        Application.Current.Dispatcher.Invoke((Action)delegate
+                        var recentFiles = GetRecentFiles();
+                        var savedFileInfo = recentFiles?.FirstOrDefault(x =>
+                            x.FilePath.ToLowerInvariant() == dataSource.ToLowerInvariant());
+                        if (savedFileInfo != null)
                         {
-                            window = new PasswordWindow();
-                            result = window.ShowDialog();
-                        });
-                        if (result != true)
-                            return;
-                        password = window.Password;
+                            password = savedFileInfo.Password;
+                        }
+                        else
+                        {
+                            bool? result = null;
+                            PasswordWindow window = null;
+                            Application.Current.Dispatcher.Invoke((Action) delegate
+                            {
+                                window = new PasswordWindow();
+                                result = window.ShowDialog();
+                            });
+                            if (result != true)
+                                return;
+                            password = window.Password;
+                        }                        
                         database.ConnectionString = GetConnectionString(4091);
                     }
 
@@ -454,7 +465,7 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
 
                     Application.Current.Dispatcher.Invoke((Action)PopulateTables);
 
-                    AddRecentFile(dataSource);
+                    AddRecentFile(dataSource, password);
                 }
                 catch (Exception e)
                 {
@@ -689,7 +700,7 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
                     QueryStringIsBusy = QueryIsBusy = false;
                     queryExecuting = false;
 
-                    if (!string.IsNullOrEmpty(ResultSetErrors))
+                    if (!string.IsNullOrEmpty(ResultSetErrors) && ResultsContainer.Count == 0)
                         CurrentResultsTabIndex = 3;
 
                     sql = sql.ToLower();
@@ -700,7 +711,7 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
             });
         }
 
-        public void LoadTableDataAndProperties(Table table, bool readOnly = false, bool resizeColumns = true, bool displaySchemaInfo = true)
+        public void LoadTableDataAndProperties(Table table, bool readOnly = false, bool resizeColumns = false, bool displaySchemaInfo = true)
         {
             if (database == null || table == null || lastSelectedTable == table) return;
             lastSelectedTable = table;
@@ -719,7 +730,7 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
                         TableDataGrid.DataSource = dataTable;
                         TableDataGrid.ReadOnly = readOnly;
                         if (resizeColumns)
-                            TableDataGrid.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.DisplayedCells);
+                            TableDataGrid.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.AllCells);
                     });
                     //CurrentMainTabIndex = 1;
                     TableDataCount = dataTable != null ? dataTable.Rows.Count : 0;
@@ -1009,29 +1020,38 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
 
         #region Recent Files
 
-        private void LoadRecentFiles()
+        private List<SavedFileInfo> GetRecentFiles()
         {
-            List<string> recentFiles = null;
+            List<SavedFileInfo> recentFiles = null;
 
             var filename = GetRecentsXmlFile();
             if (File.Exists(filename))
             {
                 using (var stream = new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
                 {
-                    var serializer = new XmlSerializer(typeof(List<string>));
-                    recentFiles = serializer.Deserialize(stream) as List<string>;
+                    //var serializer = new XmlSerializer(typeof(List<string>));
+                    var serializer = XmlSerializer.FromTypes(new[] { typeof(List<SavedFileInfo>) })[0];
+
+                    recentFiles = serializer.Deserialize(stream) as List<SavedFileInfo>;
                 }
             }
+
+            return recentFiles;
+        }
+
+        private void LoadRecentFiles()
+        {
+            var recentFiles = GetRecentFiles();
 
             PopulateRecentFiles(recentFiles);
         }
 
-        private void PopulateRecentFiles(IEnumerable<string> recentFiles)
+        private void PopulateRecentFiles(IEnumerable<SavedFileInfo> recentFiles)
         {
             Application.Current.Dispatcher.Invoke(new Action(() => PopulateRecentFilesMethod(recentFiles)));
         }
 
-        private void PopulateRecentFilesMethod(IEnumerable<string> recentFiles)
+        private void PopulateRecentFilesMethod(IEnumerable<SavedFileInfo> recentFiles)
         {
             RecentFiles.Clear();
 
@@ -1039,8 +1059,8 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
             {
                 foreach (var file in recentFiles)
                 {
-                    var fileInfo = new FileInfo(file);
-                    var menuItem = new MenuItem { Header = fileInfo.Name, Tag = file };
+                    var fileInfo = new FileInfo(file.FilePath);
+                    var menuItem = new MenuItem { Header = fileInfo.FullName, Tag = file.FilePath };
                     menuItem.Click += OnRecentFileClick;
                     RecentFiles.Add(menuItem);
                 }
@@ -1060,7 +1080,7 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
             if (!Directory.Exists(path))
                 Directory.CreateDirectory(path);
 
-            var filename = Path.Combine(path, "Recent.xml");
+            var filename = Path.Combine(path, "RecentEx.xml");
             return filename;
         }
 
@@ -1079,31 +1099,32 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
             LoadRecentFiles();
         }
 
-        private void AddRecentFile(string file)
+        private void AddRecentFile(string file, string password)
         {
             var filename = GetRecentsXmlFile();
+            var serializer = new XmlSerializer(typeof(List<SavedFileInfo>));
+            var newSavedFileInfo = new SavedFileInfo(file, password);
             if (!File.Exists(filename))
             {
                 using (var stream = new FileStream(filename, FileMode.Create, FileAccess.ReadWrite, FileShare.ReadWrite))
                 {
-                    var serializer = new XmlSerializer(typeof(List<string>));
-                    serializer.Serialize(stream, new List<string> { file });
+                    serializer.Serialize(stream, new List<SavedFileInfo>{ newSavedFileInfo });
                 }
             }
             else
             {
-                List<string> recentFiles;
+                List<SavedFileInfo> recentFiles;
                 using (var stream = new FileStream(filename, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite))
                 {
-                    var serializer = new XmlSerializer(typeof(List<string>));
-                    recentFiles = serializer.Deserialize(stream) as List<string>;
+                    recentFiles = serializer.Deserialize(stream) as List<SavedFileInfo>;
                     if (recentFiles == null) return;
                 }
                 using (var stream = new FileStream(filename, FileMode.Create, FileAccess.ReadWrite, FileShare.ReadWrite))
                 {
-                    var serializer = new XmlSerializer(typeof(List<string>));
-                    if (recentFiles.Contains(file)) recentFiles.Remove(file);
-                    recentFiles.Insert(0, file);
+                    var existingEntry = recentFiles.FirstOrDefault(x => x.FilePath.ToLowerInvariant() == file.ToLowerInvariant());
+                    if (existingEntry != null) 
+                        recentFiles.Remove(existingEntry);
+                    recentFiles.Insert(0, newSavedFileInfo);
                     serializer.Serialize(stream, recentFiles);
                     PopulateRecentFiles(recentFiles);
                 }
