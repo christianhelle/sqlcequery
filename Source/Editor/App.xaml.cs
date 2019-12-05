@@ -1,5 +1,4 @@
-﻿using System.Globalization;
-using System.Windows;
+﻿using System.Windows;
 using Microsoft.AppCenter;
 using Microsoft.AppCenter.Analytics;
 using Microsoft.AppCenter.Crashes;
@@ -15,7 +14,7 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer
         {
             System.Windows.Forms.Application.EnableVisualStyles();
 
-            AppCenter.SetCountryCode(RegionInfo.CurrentRegion.TwoLetterISORegionName);
+            AppCenter.SetCountryCode(GeoRegionHelper.GetCountryCode());
             AppCenter.Start(
                 "4994c871-2830-49da-9db7-77a9d53126eb",
                 typeof(Analytics), typeof(Crashes));

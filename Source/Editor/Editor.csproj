@@ -288,6 +288,7 @@
     </ApplicationDefinition>
     <Compile Include="Misc\SavedFileInfo.cs" />
     <Compile Include="Misc\StringEncryptionHelper.cs" />
+    <Compile Include="GeoRegionHelper.cs" />
     <Compile Include="ViewModel\CreateDatabaseViewModel.cs" />
     <Compile Include="ViewModel\PasswordBoxAssistant.cs" />
     <Compile Include="ViewModel\RenameObjectViewModel.cs" />
