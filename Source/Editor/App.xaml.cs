@@ -13,11 +13,7 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer
         public App()
         {
             System.Windows.Forms.Application.EnableVisualStyles();
-
-            AppCenter.SetCountryCode(GeoRegionHelper.GetCountryCode());
-            AppCenter.Start(
-                "4994c871-2830-49da-9db7-77a9d53126eb",
-                typeof(Analytics), typeof(Crashes));
+            AppCenterTraceListener.Initialize("4994c871-2830-49da-9db7-77a9d53126eb");
         }
     }
 }

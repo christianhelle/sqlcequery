@@ -286,6 +286,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="AppCenterTraceListener.cs" />
     <Compile Include="Misc\SavedFileInfo.cs" />
     <Compile Include="Misc\StringEncryptionHelper.cs" />
     <Compile Include="GeoRegionHelper.cs" />
