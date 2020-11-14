@@ -1,0 +1,35 @@
+name: Cake Build
+
+on:
+  push:
+    branches:
+      - '*'
+  pull_request:
+    branches:
+      - '*'
+  schedule:
+    - cron:  '0 8 * * *'
+
+jobs:
+  build:
+
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: '0'
+
+    - run: npm install -g autorest
+    - run: npm install -g nswag
+
+    - name: Cake Build
+      run: ./build.ps1
+      working-directory: Source
+
+    - name: Publish artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: Artifacts
+        path: |
+          Source/Artifacts/*
