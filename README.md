@@ -1,3 +1,4 @@
+![Build](https://github.com/christianhelle/sqlcequery/workflows/Build/badge.svg)
 [![Build Status](https://christianhelle.visualstudio.com/SQL%20Compact%20Query%20Analyzer/_apis/build/status/CI%20Build?branchName=master)](https://christianhelle.visualstudio.com/SQL%20Compact%20Query%20Analyzer/_build/latest?definitionId=17&branchName=master)
 ![GitHub All Releases](https://img.shields.io/github/downloads/christianhelle/sqlcequery/total)
 
