@@ -1,4 +1,4 @@
-name: Cake Build
+name: Build
 
 on:
   push:
