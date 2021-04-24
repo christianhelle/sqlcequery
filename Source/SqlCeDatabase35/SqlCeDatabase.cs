@@ -9,6 +9,8 @@ using System.Data.SqlClient;
 using System.IO;
 using System.Windows.Forms;
 
+using ChristianHelle.DatabaseTools.SqlCe.TSqlParser;
+
 namespace ChristianHelle.DatabaseTools.SqlCe
 {
     public class SqlCeDatabase : ISqlCeDatabase
@@ -125,17 +127,17 @@ namespace ChristianHelle.DatabaseTools.SqlCe
                     };
 
                     int affectedRows = 0;
-                    var split = query.Split(new[] { ";" + Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
+                    var queries = TSqlParser.TSqlParser.statements_from_str(query);
 
                     var tables = new DataSet();
                     using (var command = conn.CreateCommand())
                     {
                         conn.Open();
-                        foreach (var sql in split)
+                        foreach (var sql in queries)
                         {
                             try
                             {
-                                if (sql.Trim().StartsWith("select", StringComparison.InvariantCultureIgnoreCase))
+                                if (sql.StartsWith("select", StringComparison.InvariantCultureIgnoreCase))
                                 {
                                     using (var adapter = new SqlCeDataAdapter(sql, conn))
                                     {
