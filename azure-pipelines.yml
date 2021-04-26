@@ -10,7 +10,10 @@ steps:
 
 - task: PowerShell@2
   inputs:
-    filePath: 'Source/build.ps1'
+    targetType: 'inline'
+    script: |
+      cd Source
+      ./build.ps1
 
 - task: CopyFiles@2
   inputs:
