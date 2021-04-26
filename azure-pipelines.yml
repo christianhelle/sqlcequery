@@ -1,0 +1,25 @@
+trigger:
+- master
+
+pool:
+  vmImage: 'windows-latest'
+
+steps:
+
+- task: PowerShell@2
+  inputs:
+    filePath: 'build.ps1'
+    workingDirectory: 'Source'
+
+- task: CopyFiles@2
+  inputs:
+    SourceFolder: 'Source/Artifacts'
+    Contents: '**'
+    TargetFolder: '$(Build.ArtifactStagingDirectory)'
+    flattenFolders: true
+
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    ArtifactName: 'drop'
+    publishLocation: 'Container'
