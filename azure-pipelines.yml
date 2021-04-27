@@ -36,6 +36,11 @@ steps:
     TargetFolder: '$(Build.ArtifactStagingDirectory)'
     flattenFolders: true
 
+- powershell: |
+   mv $(build.artifactstagingdirectory)/SQLCEQueryAnalyzer-Binaries.zip $(build.artifactstagingdirectory)/SQL.Compact.Query.Analyzer.v$(build.buildNumber).zip
+   mv $(build.artifactstagingdirectory)/SQLCEQueryAnalyzer-Setup.exe $(build.artifactstagingdirectory)/SQL.Compact.Query.Analyzer.Setup.v$(build.buildNumber).exe
+  displayName: 'Rename Artifacts'
+
 - task: PublishBuildArtifacts@1
   inputs:
     PathtoPublish: '$(Build.ArtifactStagingDirectory)'
