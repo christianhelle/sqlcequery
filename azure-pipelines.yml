@@ -8,7 +8,21 @@ pool:
 
 steps:
 
+- task: bleddynrichards.Assembly-Info-Task.Assembly-Info-Task.Assembly-Info-NetFramework@2
+  displayName: 'Set Assembly Manifest Data'
+  inputs:
+    Path: Source
+    FileNames: '**\AssemblyInfo.cs'
+    Title: 'SQL Compact Query Analyzer'
+    Product: 'SQL Compact Query Analyzer'
+    Description: 'Database management and query analyzer tool for SQL Server Compact Edition'
+    Company: 'Christian Resma Helle'
+    Copyright: 'Copyright © Christian Resma Helle 2010'
+    VersionNumber: '$(build.buildNumber).*'
+    FileVersionNumber: '$(build.buildNumber)'
+
 - task: PowerShell@2
+  displayName: 'Build'
   inputs:
     targetType: 'inline'
     script: |
