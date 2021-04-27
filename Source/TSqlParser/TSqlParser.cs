@@ -21,18 +21,26 @@ namespace ChristianHelle.DatabaseTools.SqlCe.TSqlParser {
             //parser.BuildParseTree = true;
 
             if (parser.tsql_file() is var ctxt) {
+                bool b_error = false;
                 foreach (var batch in ctxt?.children) {
-                    for (int i = 0; i < batch.ChildCount; i++) {
-                        var stmt = batch.GetChild(i);
+                    for (int i = 0; i < batch.ChildCount && !b_error; i++) {
+                        var stmt_tree = batch.GetChild(i);
+                        var stmt = stmt_tree.Payload as TSqlParserCore.Sql_clausesContext;
 
-                        var stmt_s = "";
-                        var prefix = "";
-                        for (int j = stmt.SourceInterval.a; j <= stmt.SourceInterval.b; j++) {
-                            stmt_s += $"{prefix}{tokens.Get(j).Text}";
-                            prefix = " ";
+                        var start_idx = stmt.Start.StartIndex;
+
+                        int stop_idx;
+                        if (stmt.Stop is null) {
+                            b_error = true;
+                            stop_idx = s.Length - 1;
+                        } else {
+                            stop_idx = stmt.Stop.StopIndex;
                         }
-
+                        var stmt_s = s.Substring(start_idx, stop_idx - start_idx + 1);
                         stmts.Add(stmt_s);
+                    }
+                    if (b_error) {
+                        break;
                     }
                 }
             }
