@@ -1,0 +1,16 @@
+version: 2
+updates:
+- package-ecosystem: nuget
+  directory: "/Source"
+  schedule:
+    interval: daily
+    time: "04:00"
+  open-pull-requests-limit: 10
+  ignore:
+  - dependency-name: AvalonEdit
+    versions:
+    - 6.0.1
+    - 6.1.0
+  - dependency-name: Extended.Wpf.Toolkit
+    versions:
+    - 4.0.2
