@@ -66,7 +66,7 @@ A SQL Server Compact Edition Database Query Analyzer
 
 
 For tips and tricks on mobile development, check out my blog
-http://christianhelle.github.io
+http://christianhelle.com
 
 Follow me on Twitter
 http://twitter.com/christianhelle
