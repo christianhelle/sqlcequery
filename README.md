@@ -65,8 +65,6 @@ A SQL Server Compact Edition Database Query Analyzer
 - .NET Framework 4.0
 
 
-For tips and tricks on mobile development, check out my blog
-http://christian-helle.blogspot.com
+For tips and tricks on mobile development, check out [my blog](https://christianhelle.com)
 
-Follow me on Twitter
-http://twitter.com/christianhelle
+If you find this useful and feel a bit generous then feel free to [buy me a coffee ☕](https://www.buymeacoffee.com/christianhelle)
