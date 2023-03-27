@@ -19,7 +19,9 @@ jobs:
     - uses: actions/checkout@v2
 
     - name: Cake Build
-      run: dotnet cake
+      run: |
+        dotnet tool restore
+        dotnet cake
       working-directory: Source
 
     - name: Publish artifacts
