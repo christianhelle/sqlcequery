@@ -22,9 +22,7 @@ jobs:
       uses: microsoft/setup-msbuild@v1.1
 
     - name: Cake Build
-      run: |
-        dotnet tool restore
-        dotnet cake
+      run: ./build.ps1
       working-directory: Source
 
     - name: Publish artifacts
