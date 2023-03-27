@@ -46,8 +46,7 @@ Task("Restore-NuGet-Packages")
     .IsDependentOn("Clean")
     .Does(() => 
 {
-    NuGetRestore(solutionName);
-    // DotNetRestore(solutionName);
+    DotNetRestore(solutionName);
 });
 
 Task("Build-Release")
