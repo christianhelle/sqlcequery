@@ -5,7 +5,7 @@
 // ARGUMENTS
 //////////////////////////////////////////////////////////////////////
 
-var solutionName   = "./SQL Compact Query Analyzer.sln";
+var solutionName   = "./QueryAnalyzer.sln";
 var configurationName = "Release";
 
 var target = Argument("target", "Default");
