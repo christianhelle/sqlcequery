@@ -1,5 +1,5 @@
-#tool nuget:?package=GitVersion.CommandLine&version=4.0.0
-#addin "Cake.FileHelpers&version=3.2.0"
+#tool nuget:?package=GitVersion.CommandLine&version=5.12.0
+#addin nuget:?package=Cake.FileHelpers&version=6.1.3
 
 //////////////////////////////////////////////////////////////////////
 // ARGUMENTS
@@ -47,7 +47,7 @@ Task("Restore-NuGet-Packages")
     .Does(() => 
 {
     NuGetRestore(solutionName);
-    DotNetCoreRestore(solutionName);
+    // DotNetRestore(solutionName);
 });
 
 Task("Build-Release")
