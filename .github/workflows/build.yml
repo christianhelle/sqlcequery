@@ -19,7 +19,7 @@ jobs:
     - uses: actions/checkout@v2
 
     - name: Cake Build
-      run: ./build.ps1
+      run: ./build.ps1 -Verbosity Diagnostic
       working-directory: Source
 
     - name: Publish artifacts
