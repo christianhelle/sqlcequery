@@ -21,7 +21,7 @@ jobs:
         fetch-depth: '0'
 
     - name: Cake Build
-      run: ./build.ps1 -Verbosity Diagnostic
+      run: ./build.ps1 --verbosity Diagnostic
       working-directory: Source
 
     - name: Publish artifacts
