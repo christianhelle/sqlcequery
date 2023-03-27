@@ -20,9 +20,6 @@ jobs:
       with:
         fetch-depth: '0'
 
-    - run: npm install -g autorest
-    - run: npm install -g nswag
-
     - name: Cake Build
       run: ./build.ps1
       working-directory: Source
