@@ -25,11 +25,11 @@ jobs:
 
     - name: Update Version
       run: |
-        ((Get-Content -Path Source\Editor\Properties\AssemblyInfo.cs -Raw) -Replace "1.0.*", "${{ env.VERSION }}") | Set-Content -Path Source\Editor\Properties\AssemblyInfo.cs
-        ((Get-Content -Path Source\SqlCeDatabase\Properties\AssemblyInfo.cs -Raw) -Replace "1.0.*", "${{ env.VERSION }}") | Set-Content -Path Source\SqlCeDatabase\Properties\AssemblyInfo.cs
-        ((Get-Content -Path Source\SqlCeDatabase31\Properties\AssemblyInfo.cs -Raw) -Replace "1.0.*", "${{ env.VERSION }}") | Set-Content -Path Source\SqlCeDatabase31\Properties\AssemblyInfo.cs
-        ((Get-Content -Path Source\SqlCeDatabase35\Properties\AssemblyInfo.cs -Raw) -Replace "1.0.*", "${{ env.VERSION }}") | Set-Content -Path Source\SqlCeDatabase35\Properties\AssemblyInfo.cs
-        ((Get-Content -Path Source\SqlCeDatabase40\Properties\AssemblyInfo.cs -Raw) -Replace "1.0.*", "${{ env.VERSION }}") | Set-Content -Path Source\SqlCeDatabase40\Properties\AssemblyInfo.cs
+        ((Get-Content -Path Source\Editor\Properties\AssemblyInfo.cs -Raw) -Replace "1.0.*", "${{ env.VERSION }}"")]") | Set-Content -Path Source\Editor\Properties\AssemblyInfo.cs
+        ((Get-Content -Path Source\SqlCeDatabase\Properties\AssemblyInfo.cs -Raw) -Replace "1.0.*", "${{ env.VERSION }}"")]") | Set-Content -Path Source\SqlCeDatabase\Properties\AssemblyInfo.cs
+        ((Get-Content -Path Source\SqlCeDatabase31\Properties\AssemblyInfo.cs -Raw) -Replace "1.0.*", "${{ env.VERSION }}"")]") | Set-Content -Path Source\SqlCeDatabase31\Properties\AssemblyInfo.cs
+        ((Get-Content -Path Source\SqlCeDatabase35\Properties\AssemblyInfo.cs -Raw) -Replace "1.0.*", "${{ env.VERSION }}"")]") | Set-Content -Path Source\SqlCeDatabase35\Properties\AssemblyInfo.cs
+        ((Get-Content -Path Source\SqlCeDatabase40\Properties\AssemblyInfo.cs -Raw) -Replace "1.0.*", "${{ env.VERSION }}"")]") | Set-Content -Path Source\SqlCeDatabase40\Properties\AssemblyInfo.cs
 
     - name: Cake Build
       run: ./build.ps1 --verbosity Diagnostic
