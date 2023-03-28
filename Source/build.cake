@@ -102,11 +102,9 @@ Task("Setup-Client-Package")
 {
     var setupFile = "./Setup.iss";
     var outputFile = artifactFolder + "SQLCEQueryAnalyzer-Setup.exe";
-    ReplaceTextInFiles(setupFile, "1.0.0", GitVersion().MajorMinorPatch);
     var exitCodeWithArgument = StartProcess(innoSetup, setupFile);
     Information("Exit code: {0}", exitCodeWithArgument);
     MoveFile("./Artifacts/SQLCEQueryAnalyzer-Setup.exe", outputFile);
-    ReplaceTextInFiles(setupFile, GitVersion().MajorMinorPatch, "1.0.0");
 });
 
 //////////////////////////////////////////////////////////////////////
