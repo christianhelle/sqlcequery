@@ -1,4 +1,3 @@
-#tool nuget:?package=GitVersion.CommandLine&version=5.12.0
 #addin nuget:?package=Cake.FileHelpers&version=6.1.3
 
 //////////////////////////////////////////////////////////////////////
@@ -10,9 +9,7 @@ var configurationName = "Release";
 
 var target = Argument("target", "Default");
 var configuration = Argument("configuration", configurationName);
-
-var commit = GitVersion().Sha.ToString().Substring(0, 7);
-var artifactFolder = "./Artifacts/" + DateTime.UtcNow.ToString("yyyy-MM-dd_") + commit + "/";
+var artifactFolder = "./Artifacts/";
 Information("Output folder is: " + artifactFolder);
 
 var desktopClientApp = "Editor";
