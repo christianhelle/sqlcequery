@@ -39,6 +39,11 @@ jobs:
     - name: Publish artifacts
       uses: actions/upload-artifact@v2
       with:
-        name: Artifacts
-        path: |
-          Source/Artifacts/*
+        name: Installer
+        path: Source/Artifacts/SQLCEQueryAnalyzer-Setup.exe
+
+    - name: Publish artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: Binaries
+        path: Source/Binaries/Release/**/*
