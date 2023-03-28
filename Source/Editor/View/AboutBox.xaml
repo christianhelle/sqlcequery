@@ -8,7 +8,7 @@
         <XmlDataProvider x:Key="aboutProvider" XPath="ApplicationInfo" IsAsynchronous="False" IsInitialLoadEnabled="True">
             <x:XData>
                 <ApplicationInfo xmlns="">
-                    <Link Uri="http://sqlcequery.codeplex.com">More Info</Link>
+                    <Link Uri="https://github.com/christianhelle/sqlcequery">More Info</Link>
                 </ApplicationInfo>
             </x:XData>
         </XmlDataProvider>
