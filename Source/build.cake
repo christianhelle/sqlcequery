@@ -48,28 +48,21 @@ Task("Restore-NuGet-Packages")
 Task("Build-Release")
     .IsDependentOn("Restore-NuGet-Packages")
     .Does(() => 
-{    
+{
     MSBuild(solutionName, settings => 
         settings.SetConfiguration("Release")
-                .SetPlatformTarget("x64")
-                .WithProperty("DeployOnBuild", "true")
-                .WithTarget("Build")
-                .SetMaxCpuCount(0));
-    
-    MSBuild(solutionName, settings => 
-        settings.SetConfiguration("Release")
-                .SetPlatformTarget("ARM64")
                 .WithProperty("DeployOnBuild", "true")
                 .WithTarget("Build")
                 .SetMaxCpuCount(0));
 
     MSBuild(solutionName, settings => 
         settings.SetConfiguration("Release")
+                .SetPlatformTarget("x64")
                 .WithProperty("DeployOnBuild", "true")
                 .WithTarget("Build")
                 .SetMaxCpuCount(0));
-                
-    var folders = new[] { "./Binaries/ARM64", "./Binaries/x64", "./Binaries/x86" };
+
+    var folders = new[] { "./Binaries/x64", "./Binaries/x86" };
     foreach (var folder in folders)
     {
         CopyFiles("./Binaries/Release/SqlCeDatabase.*", folder);
@@ -83,7 +76,7 @@ Task("CleanUp-Release")
     .IsDependentOn("Build-Release")
     .Does(() => 
 {
-    var folders = new[] { "./Binaries/ARM64", "./Binaries/x64", "./Binaries/x86" };
+    var folders = new[] { "./Binaries/x64", "./Binaries/x86" };
     foreach (var folder in folders)
     {
         DeleteFiles(folder + "/**/*.pdb");
@@ -111,7 +104,7 @@ Task("Compress-Artifacts")
     .IsDependentOn("CleanUp-Release")
     .Does(() =>
 {
-     var platforms = new[] { "ARM64", "x64", "x86" };
+     var platforms = new[] { "x64", "x86" };
     foreach (var platform in platforms)
     {   
         var outputFile = artifactFolder + desktopClient + "-Binaries-" + platform + ".zip";
@@ -123,7 +116,7 @@ Task("Setup-Client-Package")
     .IsDependentOn("Build-Release")
     .Does(() => 
 {    
-     var platforms = new[] { "ARM64", "x64", "x86" };
+     var platforms = new[] { "x64", "x86" };
     foreach (var platform in platforms)
     {
         var setupFile = "./Setup" + "-" + platform + ".iss";
