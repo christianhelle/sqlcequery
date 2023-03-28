@@ -12,7 +12,7 @@
 ; NOTE: The value of AppId uniquely identifies this application.
 ; Do not use the same AppId value in installers for other applications.
 ; (To generate a new GUID, click Tools | Generate GUID inside the IDE.)
-AppId={{08CCB81F-78A8-4C63-8708-681140FF7C2A}
+AppId={{66f0c4e9-5bcf-4b2c-8ef0-746032cb027a}
 
 AppName={#MyAppName}
 AppVersion={#MyAppVersion}
@@ -22,11 +22,11 @@ AppPublisher={#MyAppPublisher}
 AppPublisherURL={#MyAppURL}
 AppSupportURL={#MyAppURL}
 AppUpdatesURL={#MyAppURL}
-DefaultDirName={pf}\SQLCE Query Analyzer
+DefaultDirName={pf}\SQLCE Query Analyzer (x64)
 DefaultGroupName={#MyAppName}
 DisableProgramGroupPage=yes
 OutputDir=.\Artifacts
-OutputBaseFilename=SQLCEQueryAnalyzer-Setup
+OutputBaseFilename=SQLCEQueryAnalyzer-Setup-x64
 SetupIconFile={#MyAppIcon}
 Compression=lzma
 SolidCompression=yes
@@ -36,12 +36,12 @@ ChangesAssociations=yes
 Name: "english"; MessagesFile: "compiler:Default.isl"
 
 [Files]
-Source: ".\Binaries\Release\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: ".\Binaries\x64\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 Source: "Icon.ico"; DestDir: "{app}"; DestName: "Icon.ico"
 
 [Icons]
-Name: "{commondesktop}\SQL Compact Query Analyzer"; Filename: "{app}\{#MyAppExeName}"; WorkingDir: "{app}"; IconFilename: "{app}\{#MyAppIcon}"; Tasks: DesktopIcon
+Name: "{commondesktop}\SQL Compact Query Analyzer (x64)"; Filename: "{app}\{#MyAppExeName}"; WorkingDir: "{app}"; IconFilename: "{app}\{#MyAppIcon}"; Tasks: DesktopIcon
 
 [Tasks]
 Name: "DesktopIcon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"
