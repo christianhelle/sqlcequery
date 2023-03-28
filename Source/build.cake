@@ -1,18 +1,15 @@
-#tool nuget:?package=GitVersion.CommandLine&version=4.0.0
-#addin "Cake.FileHelpers&version=3.2.0"
+#addin nuget:?package=Cake.FileHelpers&version=6.1.3
 
 //////////////////////////////////////////////////////////////////////
 // ARGUMENTS
 //////////////////////////////////////////////////////////////////////
 
-var solutionName   = "./SQL Compact Query Analyzer.sln";
+var solutionName   = "./QueryAnalyzer.sln";
 var configurationName = "Release";
 
 var target = Argument("target", "Default");
 var configuration = Argument("configuration", configurationName);
-
-var commit = GitVersion().Sha.ToString().Substring(0, 7);
-var artifactFolder = "./Artifacts/" + DateTime.UtcNow.ToString("yyyy-MM-dd_") + commit + "/";
+var artifactFolder = "./Artifacts/";
 Information("Output folder is: " + artifactFolder);
 
 var desktopClientApp = "Editor";
@@ -47,7 +44,7 @@ Task("Restore-NuGet-Packages")
     .Does(() => 
 {
     NuGetRestore(solutionName);
-    DotNetCoreRestore(solutionName);
+    // DotNetRestore(solutionName);
 });
 
 Task("Build-Release")
@@ -86,7 +83,9 @@ Task("CleanUp-Release")
     DeleteDirectory(folder + "/ro", new DeleteDirectorySettings { Recursive = true, Force = true });
     DeleteDirectory(folder + "/ru", new DeleteDirectorySettings { Recursive = true, Force = true });
     DeleteDirectory(folder + "/sv", new DeleteDirectorySettings { Recursive = true, Force = true });
-    DeleteDirectory(folder + "/zh-Hans", new DeleteDirectorySettings { Recursive = true, Force = true });    
+    DeleteDirectory(folder + "/zh-Hans", new DeleteDirectorySettings { Recursive = true, Force = true });
+    DeleteDirectory(folder + "/cs-CZ", new DeleteDirectorySettings { Recursive = true, Force = true });
+    DeleteDirectory(folder + "/ja-JP", new DeleteDirectorySettings { Recursive = true, Force = true });
 });
 
 Task("Compress-Artifacts")
@@ -102,11 +101,9 @@ Task("Setup-Client-Package")
 {
     var setupFile = "./Setup.iss";
     var outputFile = artifactFolder + "SQLCEQueryAnalyzer-Setup.exe";
-    ReplaceTextInFiles(setupFile, "1.0.0", GitVersion().MajorMinorPatch);
     var exitCodeWithArgument = StartProcess(innoSetup, setupFile);
     Information("Exit code: {0}", exitCodeWithArgument);
     MoveFile("./Artifacts/SQLCEQueryAnalyzer-Setup.exe", outputFile);
-    ReplaceTextInFiles(setupFile, GitVersion().MajorMinorPatch, "1.0.0");
 });
 
 //////////////////////////////////////////////////////////////////////

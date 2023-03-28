@@ -10,6 +10,9 @@ on:
   schedule:
     - cron:  '0 8 * * *'
 
+env:
+  VERSION: 1.3.${{ github.run_number }}
+
 jobs:
   build:
 
@@ -20,13 +23,27 @@ jobs:
       with:
         fetch-depth: '0'
 
+    - name: Update Version
+      run: |
+        ((Get-Content -Path Source\Editor\Properties\AssemblyInfo.cs -Raw) -Replace "1.0.*", "${{ env.VERSION }}"")]") | Set-Content -Path Source\Editor\Properties\AssemblyInfo.cs
+        ((Get-Content -Path Source\SqlCeDatabase\Properties\AssemblyInfo.cs -Raw) -Replace "1.0.*", "${{ env.VERSION }}"")]") | Set-Content -Path Source\SqlCeDatabase\Properties\AssemblyInfo.cs
+        ((Get-Content -Path Source\SqlCeDatabase31\Properties\AssemblyInfo.cs -Raw) -Replace "1.0.*", "${{ env.VERSION }}"")]") | Set-Content -Path Source\SqlCeDatabase31\Properties\AssemblyInfo.cs
+        ((Get-Content -Path Source\SqlCeDatabase35\Properties\AssemblyInfo.cs -Raw) -Replace "1.0.*", "${{ env.VERSION }}"")]") | Set-Content -Path Source\SqlCeDatabase35\Properties\AssemblyInfo.cs
+        ((Get-Content -Path Source\SqlCeDatabase40\Properties\AssemblyInfo.cs -Raw) -Replace "1.0.*", "${{ env.VERSION }}"")]") | Set-Content -Path Source\SqlCeDatabase40\Properties\AssemblyInfo.cs
+        ((Get-Content -Path Source\Setup.iss -Raw) -Replace "1.0.0", "${{ env.VERSION }}") | Set-Content -Path Source\Setup.iss
+
     - name: Cake Build
-      run: ./build.ps1
+      run: ./build.ps1 --verbosity Diagnostic
       working-directory: Source
 
     - name: Publish artifacts
       uses: actions/upload-artifact@v2
       with:
-        name: Artifacts
-        path: |
-          Source/Artifacts/*
+        name: Installer
+        path: Source/Artifacts/SQLCEQueryAnalyzer-Setup.exe
+
+    - name: Publish artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: Binaries
+        path: Source/Binaries/Release/**/*
