@@ -83,7 +83,9 @@ Task("CleanUp-Release")
     DeleteDirectory(folder + "/ro", new DeleteDirectorySettings { Recursive = true, Force = true });
     DeleteDirectory(folder + "/ru", new DeleteDirectorySettings { Recursive = true, Force = true });
     DeleteDirectory(folder + "/sv", new DeleteDirectorySettings { Recursive = true, Force = true });
-    DeleteDirectory(folder + "/zh-Hans", new DeleteDirectorySettings { Recursive = true, Force = true });    
+    DeleteDirectory(folder + "/zh-Hans", new DeleteDirectorySettings { Recursive = true, Force = true });
+    DeleteDirectory(folder + "/cs-CZ", new DeleteDirectorySettings { Recursive = true, Force = true });
+    DeleteDirectory(folder + "/ja-JP", new DeleteDirectorySettings { Recursive = true, Force = true });
 });
 
 Task("Compress-Artifacts")
