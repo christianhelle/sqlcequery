@@ -88,8 +88,6 @@ Task("CleanUp-Release")
         DeleteDirectory(folder + "/cs-CZ", new DeleteDirectorySettings { Recursive = true, Force = true });
         DeleteDirectory(folder + "/ja-JP", new DeleteDirectorySettings { Recursive = true, Force = true });
     }
-
-    DeleteDirectory("./Binaries/Release", new DeleteDirectorySettings { Recursive = true, Force = true });
 });
 
 Task("Compress-Artifacts")
