@@ -62,6 +62,14 @@ Task("Build-Release")
                 .WithProperty("DeployOnBuild", "true")
                 .WithTarget("Build")
                 .SetMaxCpuCount(0));
+
+    CopyFiles(
+        GetFiles("../Dependencies/SQLCEv3.5-x64/**/*.dll"), 
+        "./Binaries/Release/x64/SqlCe35");
+
+    CopyFiles(
+        GetFiles("../Dependencies/SQLCEv3.5-x86/**/*.dll"),
+        "./Binaries/Release/x86/SqlCe35");
 });
 
 Task("CleanUp-Release")
@@ -80,13 +88,14 @@ Task("CleanUp-Release")
         DeleteDirectory(folder + "/fr", new DeleteDirectorySettings { Recursive = true, Force = true });
         DeleteDirectory(folder + "/hu", new DeleteDirectorySettings { Recursive = true, Force = true });
         DeleteDirectory(folder + "/it", new DeleteDirectorySettings { Recursive = true, Force = true });
-        DeleteDirectory(folder + "/pt-BR", new DeleteDirectorySettings { Recursive = true, Force = true });
         DeleteDirectory(folder + "/ro", new DeleteDirectorySettings { Recursive = true, Force = true });
         DeleteDirectory(folder + "/ru", new DeleteDirectorySettings { Recursive = true, Force = true });
         DeleteDirectory(folder + "/sv", new DeleteDirectorySettings { Recursive = true, Force = true });
-        DeleteDirectory(folder + "/zh-Hans", new DeleteDirectorySettings { Recursive = true, Force = true });
+        DeleteDirectory(folder + "/pt-BR", new DeleteDirectorySettings { Recursive = true, Force = true });
         DeleteDirectory(folder + "/cs-CZ", new DeleteDirectorySettings { Recursive = true, Force = true });
         DeleteDirectory(folder + "/ja-JP", new DeleteDirectorySettings { Recursive = true, Force = true });
+        DeleteDirectory(folder + "/nl-BE", new DeleteDirectorySettings { Recursive = true, Force = true });
+        DeleteDirectory(folder + "/zh-Hans", new DeleteDirectorySettings { Recursive = true, Force = true });
     }
 });
 
