@@ -30,7 +30,8 @@ jobs:
         ((Get-Content -Path Source\SqlCeDatabase31\Properties\AssemblyInfo.cs -Raw) -Replace "1.0.*", "${{ env.VERSION }}"")]") | Set-Content -Path Source\SqlCeDatabase31\Properties\AssemblyInfo.cs
         ((Get-Content -Path Source\SqlCeDatabase35\Properties\AssemblyInfo.cs -Raw) -Replace "1.0.*", "${{ env.VERSION }}"")]") | Set-Content -Path Source\SqlCeDatabase35\Properties\AssemblyInfo.cs
         ((Get-Content -Path Source\SqlCeDatabase40\Properties\AssemblyInfo.cs -Raw) -Replace "1.0.*", "${{ env.VERSION }}"")]") | Set-Content -Path Source\SqlCeDatabase40\Properties\AssemblyInfo.cs
-        ((Get-Content -Path Source\Setup.iss -Raw) -Replace "1.0.0", "${{ env.VERSION }}") | Set-Content -Path Source\Setup.iss
+        ((Get-Content -Path Source\Setup-x86.iss -Raw) -Replace "1.0.0", "${{ env.VERSION }}") | Set-Content -Path Source\Setup.iss-x86
+        ((Get-Content -Path Source\Setup-x64.iss -Raw) -Replace "1.0.0", "${{ env.VERSION }}") | Set-Content -Path Source\Setup.iss-x64
 
     - name: Cake Build
       run: ./build.ps1 --verbosity Diagnostic
