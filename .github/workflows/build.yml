@@ -40,11 +40,23 @@ jobs:
     - name: Publish artifacts
       uses: actions/upload-artifact@v2
       with:
-        name: Installer
-        path: Source/Artifacts/SQLCEQueryAnalyzer-Setup.exe
+        name: Installer (x64)
+        path: Source/Artifacts/SQLCEQueryAnalyzer-Setup-x64.exe
 
     - name: Publish artifacts
       uses: actions/upload-artifact@v2
       with:
-        name: Binaries
-        path: Source/Binaries/Release/**/*
+        name: Binaries (x64)
+        path: Source/Binaries/Release/x64/**/*
+
+    - name: Publish artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: Installer (x86)
+        path: Source/Artifacts/SQLCEQueryAnalyzer-Setup-x86.exe
+
+    - name: Publish artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: Binaries (x86)
+        path: Source/Binaries/Release/x86/**/*
