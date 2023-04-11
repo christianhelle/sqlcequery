@@ -79,6 +79,13 @@ Task("CleanUp-Release")
     var folders = new[] { "./Binaries/Release/x64", "./Binaries/Release/x86" };
     foreach (var folder in folders)
     {
+        DeleteFiles(folder + "/sqlceca*.dll");
+        DeleteFiles(folder + "/sqlceco*.dll");
+        DeleteFiles(folder + "/sqlceer*.dll");
+        DeleteFiles(folder + "/sqlceme*.dll");
+        DeleteFiles(folder + "/sqlceqp*.dll");
+        DeleteFiles(folder + "/sqlcese*.dll");
+        DeleteFiles(folder + "/sqlceole*.dll");
         DeleteFiles(folder + "/**/*.pdb");
         DeleteFiles(folder + "/**/*.xml");
         DeleteDirectory(folder + "/amd64", new DeleteDirectorySettings { Recursive = true, Force = true });
