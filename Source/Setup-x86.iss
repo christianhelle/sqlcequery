@@ -41,7 +41,7 @@ Source: ".\Binaries\Release\x86\*"; DestDir: "{app}"; Flags: ignoreversion recur
 Source: "Icon.ico"; DestDir: "{app}"; DestName: "Icon.ico"
 
 [Icons]
-Name: "{commondesktop}\SQL Compact Query Analyzer (x86)"; Filename: "{app}\{#MyAppExeName}"; WorkingDir: "{app}"; IconFilename: "{app}\{#MyAppIcon}"; Tasks: DesktopIcon
+Name: "{commondesktop}\SQL Compact Query Analyzer (32-bit)"; Filename: "{app}\{#MyAppExeName}"; WorkingDir: "{app}"; IconFilename: "{app}\{#MyAppIcon}"; Tasks: DesktopIcon
 
 [Tasks]
 Name: "DesktopIcon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"
