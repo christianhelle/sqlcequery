@@ -468,6 +468,11 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
 
                     AddRecentFile(dataSource, password);
                 }
+                catch (NotImplementedException e)
+                {                    
+                    ResultSetErrors = e.Message;
+                    CurrentResultsTabIndex = 3;
+                }
                 catch (Exception e)
                 {
                     ResultSetErrors = e.ToString();
