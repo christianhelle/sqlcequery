@@ -15,7 +15,7 @@ jobs:
     runs-on: windows-latest
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
       with:
         fetch-depth: '0'
 
@@ -34,25 +34,25 @@ jobs:
       working-directory: Source
 
     - name: Publish artifacts
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: Installer (x64)
         path: Source/Artifacts/SQLCEQueryAnalyzer-Setup-x64.exe
 
     - name: Publish artifacts
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: Binaries (x64)
         path: Source/Binaries/Release/x64/**/*
 
     - name: Publish artifacts
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: Installer (x86)
         path: Source/Artifacts/SQLCEQueryAnalyzer-Setup-x86.exe
 
     - name: Publish artifacts
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: Binaries (x86)
         path: Source/Binaries/Release/x86/**/*
