@@ -31,6 +31,7 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
 {
     public class MainViewModel : ViewModelBase
     {
+        private readonly string platform = $"{IntPtr.Size * 8}-bit";
         private string dataSource;
         private ISqlCeDatabase database;
         private static bool queryExecuting;
@@ -366,7 +367,7 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
 
         public void OpenDatabase()
         {
-            Text = "SQL Compact Query Analyzer";
+            Text = $"SQL Compact Query Analyzer ({platform})";
 
             using (var dialog = new OpenFileDialog())
             {
@@ -423,7 +424,7 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
                     if (!File.Exists(dataSource))
                         throw new InvalidOperationException("Unable to find " + dataSource);
 
-                    Text = "SQL Compact Query Analyzer" + " - " + dataSource;
+                    Text = $"SQL Compact Query Analyzer ({platform}) - {dataSource}";
 
                     var fileInfo = new FileInfo(dataSource);
                     fileInfo.Attributes &= ~FileAttributes.ReadOnly;
@@ -466,6 +467,11 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
                     Application.Current.Dispatcher.Invoke((Action)PopulateTables);
 
                     AddRecentFile(dataSource, password);
+                }
+                catch (NotImplementedException e)
+                {                    
+                    ResultSetErrors = e.Message;
+                    CurrentResultsTabIndex = 3;
                 }
                 catch (Exception e)
                 {
@@ -1001,7 +1007,7 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
             if (viewModel == null)
                 return;
 
-            Text = "SQL Compact Query Analyzer";
+            Text = $"SQL Compact Query Analyzer ({platform})";
             Tree = null;
             ResetTableData();
             ResultsContainer.Clear();

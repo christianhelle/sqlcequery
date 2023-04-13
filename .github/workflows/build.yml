@@ -1,14 +1,10 @@
 name: Build
 
 on:
+  pull_request:
   push:
     branches:
-      - '*'
-  pull_request:
-    branches:
-      - '*'
-  schedule:
-    - cron:  '0 8 * * *'
+      - 'master'
 
 env:
   VERSION: 1.3.${{ github.run_number }}
@@ -30,7 +26,8 @@ jobs:
         ((Get-Content -Path Source\SqlCeDatabase31\Properties\AssemblyInfo.cs -Raw) -Replace "1.0.*", "${{ env.VERSION }}"")]") | Set-Content -Path Source\SqlCeDatabase31\Properties\AssemblyInfo.cs
         ((Get-Content -Path Source\SqlCeDatabase35\Properties\AssemblyInfo.cs -Raw) -Replace "1.0.*", "${{ env.VERSION }}"")]") | Set-Content -Path Source\SqlCeDatabase35\Properties\AssemblyInfo.cs
         ((Get-Content -Path Source\SqlCeDatabase40\Properties\AssemblyInfo.cs -Raw) -Replace "1.0.*", "${{ env.VERSION }}"")]") | Set-Content -Path Source\SqlCeDatabase40\Properties\AssemblyInfo.cs
-        ((Get-Content -Path Source\Setup.iss -Raw) -Replace "1.0.0", "${{ env.VERSION }}") | Set-Content -Path Source\Setup.iss
+        ((Get-Content -Path Source\Setup-x86.iss -Raw) -Replace "1.0.0", "${{ env.VERSION }}") | Set-Content -Path Source\Setup-x86.iss
+        ((Get-Content -Path Source\Setup-x64.iss -Raw) -Replace "1.0.0", "${{ env.VERSION }}") | Set-Content -Path Source\Setup-x64.iss
 
     - name: Cake Build
       run: ./build.ps1 --verbosity Diagnostic
@@ -39,11 +36,23 @@ jobs:
     - name: Publish artifacts
       uses: actions/upload-artifact@v2
       with:
-        name: Installer
-        path: Source/Artifacts/SQLCEQueryAnalyzer-Setup.exe
+        name: Installer (x64)
+        path: Source/Artifacts/SQLCEQueryAnalyzer-Setup-x64.exe
 
     - name: Publish artifacts
       uses: actions/upload-artifact@v2
       with:
-        name: Binaries
-        path: Source/Binaries/Release/**/*
+        name: Binaries (x64)
+        path: Source/Binaries/Release/x64/**/*
+
+    - name: Publish artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: Installer (x86)
+        path: Source/Artifacts/SQLCEQueryAnalyzer-Setup-x86.exe
+
+    - name: Publish artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: Binaries (x86)
+        path: Source/Binaries/Release/x86/**/*

@@ -56,6 +56,11 @@ namespace ChristianHelle.DatabaseTools.SqlCe
 
         private static Type LoadSqlCe31()
         {
+            if (IntPtr.Size * 8 >= 64) 
+            {
+                throw new NotImplementedException("SQL Server CE 3.1 does not support 64-bit applications");
+            }
+
             var file = Path.Combine(GetExecutingAssemblyPath(), "SqlCe31");
             var assembly = Assembly.LoadFrom(Path.Combine(file, "SqlCeDatabase31.dll"));
             var type = assembly.GetType("ChristianHelle.DatabaseTools.SqlCe.SqlCeDatabase");
