@@ -43,7 +43,7 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: Binaries (x64)
-        path: Source/Binaries/Release/x64/**/*
+        path: Source/Artifacts/SQLCEQueryAnalyzer-Binaries-x64.zip
 
     - name: Publish artifacts
       uses: actions/upload-artifact@v3
@@ -55,7 +55,7 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: Binaries (x86)
-        path: Source/Binaries/Release/x86/**/*
+        path: Source/Artifacts/SQLCEQueryAnalyzer-Binaries-x86.zip
   
   publish:
 
@@ -106,8 +106,8 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create-release.outputs.upload_url }}
-        asset_path: artifacts/Binaries (x64)/Binaries (x64).zip
-        asset_name: Binaries (x64).zip
+        asset_path: artifacts/Binaries (x64)/SQLCEQueryAnalyzer-Binaries-x64.zip
+        asset_name: SQLCEQueryAnalyzer-Binaries-x64.zip
         asset_content_type: application/zip
 
     - name: Upload Installer (x86) asset
@@ -126,6 +126,6 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create-release.outputs.upload_url }}
-        asset_path: artifacts/Binaries (x86)/Binaries (x86).zip
-        asset_name: Binaries (x86).zip
+        asset_path: artifacts/Binaries (x86)/SQLCEQueryAnalyzer-Binaries-x86.zip
+        asset_name: SQLCEQueryAnalyzer-Binaries-x86.zip
         asset_content_type: application/zip
