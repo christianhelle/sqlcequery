@@ -46,7 +46,7 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
             RecentFiles = new ObservableCollection<System.Windows.Controls.Control>();
 
             var args = Environment.GetCommandLineArgs();
-            LaunchedWithArgument = args.Length == 2;
+            LaunchedWithArgument = args.Length > 1;
 
             LoadSqlSyntaxHighlighter();
         }
@@ -738,7 +738,7 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
                         if (resizeColumns)
                             TableDataGrid.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.AllCells);
                     });
-                    //CurrentMainTabIndex = 1;
+                    CurrentMainTabIndex = 1;
                     TableDataCount = dataTable != null ? dataTable.Rows.Count : 0;
                     TableDataExecutionTime = sw.Elapsed;
 
@@ -782,10 +782,13 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.ViewModel
         public void ProcessCommandLineArguments()
         {
             var args = Environment.GetCommandLineArgs();
-            if (args.Length == 2)
+            if (args.Length > 1)
             {
                 LaunchedWithArgument = true;
                 dataSource = args[1];
+
+                if (args.Length > 2)
+                    password = args[2];
 
                 var ext = Path.GetExtension(dataSource);
                 if (String.Compare(ext, ".sdf", StringComparison.OrdinalIgnoreCase) == 0)
