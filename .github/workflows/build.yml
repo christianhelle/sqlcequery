@@ -28,6 +28,7 @@ jobs:
         ((Get-Content -Path Source\SqlCeDatabase40\Properties\AssemblyInfo.cs -Raw) -Replace "1.0.*", "${{ env.VERSION }}"")]") | Set-Content -Path Source\SqlCeDatabase40\Properties\AssemblyInfo.cs
         ((Get-Content -Path Source\Setup-x86.iss -Raw) -Replace "1.0.0", "${{ env.VERSION }}") | Set-Content -Path Source\Setup-x86.iss
         ((Get-Content -Path Source\Setup-x64.iss -Raw) -Replace "1.0.0", "${{ env.VERSION }}") | Set-Content -Path Source\Setup-x64.iss
+        ((Get-Content -Path Source\Packages\sqlcequery\sqlcequery.nuspec -Raw) -Replace "1.0.0", "${{ env.VERSION }}") | Set-Content -Path Source\Packages\sqlcequery\sqlcequery.nuspec
 
     - name: Cake Build
       run: ./build.ps1 --verbosity Diagnostic
