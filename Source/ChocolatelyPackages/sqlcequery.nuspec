@@ -66,7 +66,7 @@ This is a nuspec. It mostly adheres to https://docs.nuget.org/create/Nuspec-Refe
     <!--<replaces>NOT YET IMPLEMENTED</replaces>-->
   </metadata>
   <files>
-    <file src="..\..\Binaries\Release\x64\**" target="tools" />
+    <file src="..\Binaries\Release\x64\**" target="tools" />
     <file src="tools\**" target="tools" />
   </files>
 </package>

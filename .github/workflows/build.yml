@@ -28,11 +28,13 @@ jobs:
         ((Get-Content -Path Source\SqlCeDatabase40\Properties\AssemblyInfo.cs -Raw) -Replace "1.0.*", "${{ env.VERSION }}"")]") | Set-Content -Path Source\SqlCeDatabase40\Properties\AssemblyInfo.cs
         ((Get-Content -Path Source\Setup-x86.iss -Raw) -Replace "1.0.0", "${{ env.VERSION }}") | Set-Content -Path Source\Setup-x86.iss
         ((Get-Content -Path Source\Setup-x64.iss -Raw) -Replace "1.0.0", "${{ env.VERSION }}") | Set-Content -Path Source\Setup-x64.iss
-        ((Get-Content -Path Source\Packages\sqlcequery\sqlcequery.nuspec -Raw) -Replace "1.0.0", "${{ env.VERSION }}") | Set-Content -Path Source\Packages\sqlcequery\sqlcequery.nuspec
 
     - name: Cake Build
       run: ./build.ps1 --verbosity Diagnostic
       working-directory: Source
+    
+    - name: Build Chocolately Package
+      run: choco pack Source\ChocolatelyPackages\sqlcequery.nuspec --version ${{ env.VERSION }}
 
     - name: Publish artifacts
       uses: actions/upload-artifact@v3
@@ -57,3 +59,9 @@ jobs:
       with:
         name: Binaries (x86)
         path: Source/Binaries/Release/x86/**/*
+    
+    - name: Publish artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: Chocolately Package
+        path: Source\ChocolatelyPackages\sqlcequery.${{ env.VERSION }}.nupkg
