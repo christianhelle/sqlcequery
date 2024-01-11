@@ -32,6 +32,9 @@ jobs:
     - name: Cake Build
       run: ./build.ps1 --verbosity Diagnostic
       working-directory: Source
+    
+    - name: Build Chocolately Package
+      run: choco pack Source\ChocolatelyPackages\sqlcequery.nuspec --version ${{ env.VERSION }}
 
     - name: Publish artifacts
       uses: actions/upload-artifact@v3
@@ -56,6 +59,12 @@ jobs:
       with:
         name: Binaries (x86)
         path: Source/Artifacts/SQLCEQueryAnalyzer-Binaries-x86.zip
+    
+    - name: Publish artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: ChocolatelyPackage
+        path: Source/ChocolatelyPackages/sqlcequery.${{ env.VERSION }}.nupkg
   
   publish:
 
@@ -68,7 +77,7 @@ jobs:
       with:
         github-token: ${{ github.token }}
         script: |
-          github.git.createRef({
+          github.rest.git.createRef({
             owner: context.repo.owner,
             repo: context.repo.repo,
             ref: "refs/tags/${{ env.VERSION }}",
@@ -129,3 +138,8 @@ jobs:
         asset_path: artifacts/Binaries (x86)/SQLCEQueryAnalyzer-Binaries-x86.zip
         asset_name: SQLCEQueryAnalyzer-Binaries-x86.zip
         asset_content_type: application/zip
+
+    - name: Upload Chocolately Package asset
+      run: |
+        choco apikey --key ${{ secrets.CHOCOLATEY_API_KEY }} --source https://push.chocolatey.org/
+        choco push artifacts/ChocolatelyPackage/sqlcequery.${{ env.VERSION }}.nupkg --source https://push.chocolatey.org/
