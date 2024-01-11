@@ -70,7 +70,7 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: ChocolatelyPackage
-        path: Source\ChocolatelyPackages\sqlcequery.${{ env.VERSION }}-alpha.nupkg
+        path: sqlcequery.${{ env.VERSION }}-alpha.nupkg
 
     - name: Upload Chocolately Package asset
       if: github.ref == 'refs/heads/master'

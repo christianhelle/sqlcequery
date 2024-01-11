@@ -64,7 +64,7 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: ChocolatelyPackage
-        path: Source/ChocolatelyPackages/sqlcequery.${{ env.VERSION }}.nupkg
+        path: sqlcequery.${{ env.VERSION }}.nupkg
   
   publish:
 
