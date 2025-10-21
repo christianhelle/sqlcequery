@@ -31,8 +31,24 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.Controls
 
         protected override void OnCellFormatting(DataGridViewCellFormattingEventArgs e)
         {
-            e.CellStyle.Font = e.Value == DBNull.Value ? italicFont : normalFont;
-            e.CellStyle.ForeColor = e.Value == DBNull.Value ? SystemColors.GrayText : SystemColors.WindowText;
+            if (e.Value == DBNull.Value)
+            {
+                e.CellStyle.Font = italicFont;
+                e.CellStyle.ForeColor = SystemColors.GrayText;
+            }
+            else
+            {
+                e.CellStyle.Font = normalFont;
+                e.CellStyle.ForeColor = SystemColors.WindowText;
+                
+                // Format DateTime values to include seconds
+                if (e.Value is DateTime dateTimeValue)
+                {
+                    e.Value = dateTimeValue.ToString("yyyy-MM-dd HH:mm:ss");
+                    e.FormattingApplied = true;
+                }
+            }
+            
             base.OnCellFormatting(e);
         }
 
