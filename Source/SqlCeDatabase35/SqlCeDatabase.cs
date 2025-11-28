@@ -137,7 +137,7 @@ namespace ChristianHelle.DatabaseTools.SqlCe
                         {
                             try
                             {
-                                if (sql.StartsWith("select", StringComparison.InvariantCultureIgnoreCase))
+                                if (sql.Trim().StartsWith("select", StringComparison.InvariantCultureIgnoreCase))
                                 {
                                     using (var adapter = new SqlCeDataAdapter(sql, conn))
                                     {

@@ -60,7 +60,7 @@ namespace ChristianHelle.DatabaseTools.SqlCe
                 foreach (var column in table.Columns.Where(column => column.Value.ManagedType != typeof(byte[])))
                 {
                     var value = row[column.Value.Ordinal - 1];
-                    if (value == null)
+                    if (value == null || value == DBNull.Value)
                     {
                         builder.Append("NULL,");
                         continue;
