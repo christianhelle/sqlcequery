@@ -55,12 +55,10 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.Misc
                     // Write the data and make it do the encryption 
                     cs.Write(clearData, 0, clearData.Length);
 
-                    // Close the crypto stream (or do FlushFinalBlock). 
-                    // This will tell it that we have done our encryption and
-                    // there is no more data coming in, 
-                    // and it is now a good time to apply the padding and
-                    // finalize the encryption process. 
-                    cs.Close();
+                    // FlushFinalBlock tells the crypto stream we have done our encryption
+                    // and there is no more data coming in, and it is now a good time
+                    // to apply the padding and finalize the encryption process. 
+                    cs.FlushFinalBlock();
 
                     // Now get the encrypted data from the MemoryStream.
                     // Some people make a mistake of using GetBuffer() here,
@@ -244,12 +242,10 @@ namespace ChristianHelle.DatabaseTools.SqlCe.QueryAnalyzer.Misc
                     // Write the data and make it do the decryption 
                     cs.Write(cipherData, 0, cipherData.Length);
 
-                    // Close the crypto stream (or do FlushFinalBlock). 
-                    // This will tell it that we have done our decryption
-                    // and there is no more data coming in, 
-                    // and it is now a good time to remove the padding
-                    // and finalize the decryption process. 
-                    cs.Close();
+                    // FlushFinalBlock tells the crypto stream we have done our decryption
+                    // and there is no more data coming in, and it is now a good time
+                    // to remove the padding and finalize the decryption process. 
+                    cs.FlushFinalBlock();
 
                     // Now get the decrypted data from the MemoryStream. 
                     // Some people make a mistake of using GetBuffer() here,
