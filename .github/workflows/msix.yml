@@ -1,0 +1,84 @@
+name: MSIX Package
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - 'release'
+    paths:
+      - 'Source/**'
+      - '.github/workflows/msix.yml'
+
+env:
+  VERSION: 1.3.${{ github.run_number }}.0
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        platform: [x86, x64]
+
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: '0'
+
+    - name: Update Version
+      run: |
+        ((Get-Content -Path Source\Editor\Properties\AssemblyInfo.cs -Raw) -Replace "1.0.*", "${{ env.VERSION }}"")]") | Set-Content -Path Source\Editor\Properties\AssemblyInfo.cs
+        ((Get-Content -Path Source\SqlCeDatabase\Properties\AssemblyInfo.cs -Raw) -Replace "1.0.*", "${{ env.VERSION }}"")]") | Set-Content -Path Source\SqlCeDatabase\Properties\AssemblyInfo.cs
+        ((Get-Content -Path Source\SqlCeDatabase31\Properties\AssemblyInfo.cs -Raw) -Replace "1.0.*", "${{ env.VERSION }}"")]") | Set-Content -Path Source\SqlCeDatabase31\Properties\AssemblyInfo.cs
+        ((Get-Content -Path Source\SqlCeDatabase35\Properties\AssemblyInfo.cs -Raw) -Replace "1.0.*", "${{ env.VERSION }}"")]") | Set-Content -Path Source\SqlCeDatabase35\Properties\AssemblyInfo.cs
+        ((Get-Content -Path Source\SqlCeDatabase40\Properties\AssemblyInfo.cs -Raw) -Replace "1.0.*", "${{ env.VERSION }}"")]") | Set-Content -Path Source\SqlCeDatabase40\Properties\AssemblyInfo.cs
+
+    - name: Update MSIX Version
+      run: |
+        $manifest = Get-Content -Path Source\PackageProject\Package.appxmanifest -Raw
+        $manifest = $manifest -Replace 'Version="1.3.4.0"', "Version=`"${{ env.VERSION }}`""
+        Set-Content -Path Source\PackageProject\Package.appxmanifest -Value $manifest
+
+    - name: Setup NuGet
+      uses: nuget/setup-nuget@v2
+
+    - name: Restore NuGet Packages
+      run: nuget restore Source\QueryAnalyzer.sln
+
+    - name: Setup MSBuild
+      uses: microsoft/setup-msbuild@v2
+
+    - name: Build MSIX Package
+      run: |
+        msbuild Source\PackageProject\PackageProject.wapproj `
+          /p:Configuration=Release `
+          /p:Platform=${{ matrix.platform }} `
+          /p:UapAppxPackageBuildMode=SideloadOnly `
+          /p:AppxPackageSigningEnabled=false `
+          /p:AppxBundle=Never `
+          /p:GenerateAppxPackageOnBuild=true
+
+    - name: Find MSIX Package
+      id: find-msix
+      run: |
+        $msix = Get-ChildItem -Path Source\PackageProject\bin\ -Filter *.msix -Recurse | Select-Object -First 1
+        if ($msix) {
+          Write-Output "msix_path=$($msix.FullName)" >> $env:GITHUB_OUTPUT
+          Write-Output "Found MSIX: $($msix.FullName)"
+        } else {
+          Write-Warning "No MSIX file found, looking for appx..."
+          $appx = Get-ChildItem -Path Source\PackageProject\bin\ -Filter *.appx -Recurse | Select-Object -First 1
+          if ($appx) {
+            Write-Output "msix_path=$($appx.FullName)" >> $env:GITHUB_OUTPUT
+            Write-Output "Found APPX: $($appx.FullName)"
+          } else {
+            Write-Error "No MSIX or APPX package found"
+            exit 1
+          }
+        }
+
+    - name: Publish MSIX artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: MSIX-${{ matrix.platform }}
+        path: Source\PackageProject\bin\**\*.msix
