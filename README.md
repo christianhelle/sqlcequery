@@ -1,4 +1,4 @@
-![Build](https://github.com/christianhelle/sqlcequery/workflows/Build/badge.svg)
+[![Build](https://github.com/christianhelle/sqlcequery/actions/workflows/build.yml/badge.svg)](https://github.com/christianhelle/sqlcequery/actions/workflows/build.yml)
 ![GitHub All Releases](https://img.shields.io/github/downloads/christianhelle/sqlcequery/total)
 [![buymeacoffee](https://img.shields.io/badge/buy%20me%20a%20coffee-donate-yellow.svg)](https://www.buymeacoffee.com/christianhelle)
 
